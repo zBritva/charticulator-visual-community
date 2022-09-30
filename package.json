@@ -1,0 +1,26 @@
+{
+  "name": "charticulator-visual-community",
+  "version": "0.0.1",
+  "description": "Community version of Charticulator visual",
+  "repository": "https://github.com/zBritva/charticulator-visual-community",
+  "author": "zBritva",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "visual",
+    "charticulator"
+  ],
+  "scripts": {
+    "postinstall": "yarn copyfiles .\\config.yml .\\charticulator\\",
+    "build": "yarn workspace charticulator build && yarn workspace visual package",
+    "start": "yarn workspace charticulator start && yarn workspace visual start"
+  },
+  "dependencies": {
+    "copyfiles": "^2.4.1",
+    "ts-node": "^10.9.1"
+  },
+  "resolutions": {
+    "@types/express-serve-static-core": "4.17.24"
+  },
+  "browser": ""
+}
