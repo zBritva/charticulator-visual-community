@@ -128,7 +128,11 @@ module.exports = {
             },
             {
                 test: /\.(css|scss|less)?$/,
-                use: [require.resolve('style-loader'), require.resolve('css-loader'), require.resolve('sass-loader')],
+                use: [
+                    require.resolve('style-loader'),
+                    require.resolve('css-loader'),
+                    require.resolve('sass-loader')
+                ],
             },
             {
                 test: /\.(woff|ttf|ico|woff2|jpg|jpeg|png|webp|svg)$/i,
@@ -152,8 +156,8 @@ module.exports = {
     output: {
         publicPath: '/assets',
         path: path.join(__dirname, "/.tmp", "drop"),
-        library: +powerbiApi.version.replace(/\./g, "") >= 320 ? pbivizFile.visual.guid : undefined,
-        libraryTarget: +powerbiApi.version.replace(/\./g, "") >= 320 ? 'var' : undefined,
+        library: pbivizFile.visual.guid,
+        libraryTarget: 'var',
     },
     devServer: {
         static: false,

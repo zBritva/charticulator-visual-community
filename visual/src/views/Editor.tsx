@@ -5,11 +5,12 @@ import { AppStore, Migrator } from "charticulator/src/app/stores";
 import { makeDefaultDataset } from "charticulator/src/app/default_dataset";
 import { CharticulatorWorker, CharticulatorWorkerInterface } from "charticulator/src/worker";
 import { initialize } from "charticulator/src/core/index";
-import { CharticulatorAppConfig, getConfig } from "charticulator/src/app/config";
+import { CharticulatorAppConfig } from "charticulator/src/app/config";
 
-const script = require("raw-loader!./../../charticulator/dist/scripts/worker.bundle.js");
+const script = require("raw-loader!charticulator/dist/scripts/worker.bundle.js");
 const charticulatorConfig = require("json-loader!./../../charticulator/dist/scripts/config.json");
 
+console.log('script', script.default);
 initialize(charticulatorConfig);
 
 
@@ -30,11 +31,9 @@ export const Editor: React.FC<EditorProps> = ({
 
     let mainView: MainView = null;
     
-    debugger;
     const config: CharticulatorAppConfig = React.useMemo(() => charticulatorConfig, [charticulatorConfig]);
-
     const workerScript = React.useMemo(() => {
-        const blob = new Blob([script], { type: "application/javascript" });
+        const blob = new Blob([script.default], { type: "application/javascript" });
 
         const workerScript = URL.createObjectURL(blob);
 
@@ -59,9 +58,16 @@ export const Editor: React.FC<EditorProps> = ({
                 store={appStore}
                 ref={(e) => (mainView = e)}
                 viewConfiguration={config.MainView}
-                // menuBarHandlers={handlers?.menuBarHandlers}
-                // tabButtons={handlers?.tabButtons}
-                // telemetry={handlers?.telemetry}
+                menuBarHandlers={{
+                    onContactUsLink: () => {},
+                    onCopyToClipboardClick: () => {},
+                    onExportTemplateClick: () => {},
+                    onImportTemplateClick: () => {},
+                }}
+                tabButtons={null}
+                telemetry={{
+                    record: () => {}
+                }}
             />
         </>
         
