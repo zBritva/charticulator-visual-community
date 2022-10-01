@@ -19,12 +19,14 @@ const pbivizFile = require(path.join(__dirname, pbivizPath));
 const capabilitiesPath = "./capabilities.json";
 const capabilitiesFile = require(path.join(__dirname, capabilitiesPath));
 
-const pluginLocation = './.tmp/precompile/visualPlugin.ts'; // path to visual plugin file, the file generates by the plugin
+const pluginLocation = './src/visualPlugin.ts'; // path to visual plugin file, the file generates by the plugin
 
 // string resources
 const resourcesFolder = path.join(".", "stringResources");
 const localizationFolders = fs.existsSync(resourcesFolder) && fs.readdirSync(resourcesFolder);
 const statsLocation = "../../webpack.statistics.html";
+
+const { version } = require("../charticulator/package.json");
 
 // babel options to support IE11
 let babelOptions = {
@@ -59,7 +61,7 @@ module.exports = {
     },
     optimization: {
         concatenateModules: false,
-        minimize: true // enable minimization for create *.pbiviz file less than 2 Mb, can be disabled for dev mode
+        minimize: false // enable minimization for create *.pbiviz file less than 2 Mb, can be disabled for dev mode
     },
     devtool: 'source-map',
     mode: "development",
@@ -68,6 +70,15 @@ module.exports = {
             {
                 parser: {
                     amd: false
+                }
+            },
+            {
+                test: /\.pegjs$/,
+                loader: require.resolve('pegjs-loader'),
+                options: {
+                  allowedStartRules: ["start", "start_text"],
+                  cache: true,
+                  optimize: "size"
                 }
             },
             {
@@ -132,6 +143,10 @@ module.exports = {
     resolve: {
         extensions: ['.tsx', '.ts', '.jsx', '.js', '.css'],
         alias: {
+            charticulator: path.resolve(__dirname, "./../charticulator/"),
+            visual: path.resolve(__dirname, '/src'),
+            resources: path.resolve(__dirname, "../../charticulator/resources"),
+            src: path.resolve(__dirname, '/..charticulator/src'),
         },
     },
     output: {
@@ -154,18 +169,20 @@ module.exports = {
         },
         hot: false
     },
-    externals: powerbiApi.version.replace(/\./g, "") >= 320 ?
-        {
-            "powerbi-visuals-api": 'null',
-            "fakeDefine": 'false',
-        } :
-        {
-            "powerbi-visuals-api": 'null',
-            "fakeDefine": 'false',
-            "corePowerbiObject": "Function('return this.powerbi')()",
-            "realWindow": "Function('return this')()"
-        },
+    externals: {
+        "powerbi-visuals-api": 'null',
+        "fakeDefine": 'false',
+        "corePowerbiObject": "Function('return this.powerbi')()",
+        "realWindow": "Function('return this')()",
+        "CHARTICULATOR_PACKAGE": `{version:${version}}`
+    },
     plugins: [
+        new webpack.DefinePlugin({
+            CHARTICULATOR_PACKAGE: JSON.stringify({
+              version,
+              buildTimestamp: new Date().getTime()
+            })
+        }),
         new MiniCssExtractPlugin({
             filename: "visual.css",
             chunkFilename: "[id].css"
@@ -202,7 +219,7 @@ module.exports = {
             generateResources: true,
             modules: true,
             visualSourceLocation: "../../src/visual",
-            pluginLocation: pluginLocation,
+            // pluginLocation: pluginLocation,
             packageOutPath: path.join(__dirname, "dist")
         }),
         new ExtraWatchWebpackPlugin({
@@ -211,14 +228,10 @@ module.exports = {
                 capabilitiesPath
             ]
         }),
-        powerbiApi.version.replace(/\./g, "") >= 320 ?
-            new webpack.ProvidePlugin({
-                define: 'fakeDefine',
-            }) :
-            new webpack.ProvidePlugin({
-                window: 'realWindow',
-                define: 'fakeDefine',
-                powerbi: 'corePowerbiObject'
-            })
+        new webpack.ProvidePlugin({
+            window: 'realWindow',
+            define: 'fakeDefine',
+            powerbi: 'corePowerbiObject'
+        }),
     ]
 };

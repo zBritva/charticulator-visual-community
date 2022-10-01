@@ -20,7 +20,10 @@
     "ts-node": "^10.9.1"
   },
   "resolutions": {
-    "@types/express-serve-static-core": "4.17.24"
+    "@types/express-serve-static-core": "4.17.24",
+    "@types/react": "17.0.22",
+    "@types/react-dom": "18.0.6",
+    "typescript": "3.9.7"
   },
   "browser": ""
 }

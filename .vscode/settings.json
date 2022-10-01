@@ -20,19 +20,19 @@
     "json.schemas": [
         {
             "fileMatch": [
-                "./visual/pbiviz.json"
+                "visual/pbiviz.json"
             ],            
             "url": "./node_modules/powerbi-visuals-api/schema.pbiviz.json"
         },
         {
             "fileMatch": [
-                "./visual/capabilities.json"
+                "visual/capabilities.json"
             ],            
             "url": "./node_modules/powerbi-visuals-api/schema.capabilities.json"
         },
         {
             "fileMatch": [
-                "./visual/dependencies.json"
+                "visual/dependencies.json"
             ],            
             "url": "./node_modules/powerbi-visuals-api/schema.dependencies.json"
         }        

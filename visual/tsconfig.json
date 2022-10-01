@@ -3,20 +3,27 @@
         "allowJs": false,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "target": "es6",
-        "sourceMap": true,
         "outDir": "./.tmp/build/",
         "moduleResolution": "node",
+        "target": "es5",
+        "strict": false,
         "declaration": true,
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
-        "lib": [
-            "es2015",
-            "dom"
-        ],
-        "jsx": "react"
+        "downlevelIteration": true,
+        "noImplicitAny": true,
+        "sourceMap": true,
+        "lib": [ "es2019", "dom", "esnext.array", "ES2015.Generator"],
+        "jsx": "react",
+        "baseUrl": "./",
+        "paths": {
+            "charticulator": ["./charticulator/src/*"],
+            "visual": [".visual/src/*"],
+            "resources": ["./charticulator/resources/*"]
+        }
     },
     "files": [
-        "./src/visual.ts"
-    ]
+        "../charticulator/src/package.d.ts",
+        "./src/visualPlugin.ts"
+    ],
 }

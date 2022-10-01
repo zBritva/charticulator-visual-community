@@ -25,6 +25,11 @@
 */
 "use strict";
 
+import React from 'react';
+import reactDom from 'react-dom';
+import { Application } from './views/Application';
+
+
 import "./../style/visual.less";
 import powerbi from "powerbi-visuals-api";
 import VisualConstructorOptions = powerbi.extensibility.visual.VisualConstructorOptions;
@@ -38,9 +43,11 @@ import VisualObjectInstanceEnumerationObject = powerbi.VisualObjectInstanceEnume
 import { VisualSettings } from "./settings";
 export class Visual implements IVisual {
     private target: HTMLElement;
-    private updateCount: number;
     private settings: VisualSettings;
-    private textNode: Text;
+
+    private appliccationRef: React.RefObject<{
+        setOptions: (options: VisualUpdateOptions) => void;
+    }>;
 
     constructor(options?: VisualConstructorOptions) {
         console.log('Visual constructor', options);
@@ -48,24 +55,20 @@ export class Visual implements IVisual {
             return;
         }
         this.target = options.element;
-        this.updateCount = 0;
         if (document) {
-            const new_p: HTMLElement = document.createElement("p");
-            new_p.appendChild(document.createTextNode("Update count:"));
-            const new_em: HTMLElement = document.createElement("em");
-            this.textNode = document.createTextNode(this.updateCount.toString());
-            new_em.appendChild(this.textNode);
-            new_p.appendChild(new_em);
-            this.target.appendChild(new_p);
+            this.appliccationRef = React.createRef<{
+                setOptions: ((options: VisualUpdateOptions) => void) | null
+            } >();
+            reactDom.render(React.createElement(Application, {
+                ref: this.appliccationRef,
+                host: options.host
+              }), this.target);
         }
     }
 
     public update(options: VisualUpdateOptions) {
         this.settings = Visual.parseSettings(options && options.dataViews && options.dataViews[0]);
-        console.log('Visual update', options);
-        if (this.textNode) {
-            this.textNode.textContent = (this.updateCount++).toString();
-        }
+        this.appliccationRef.current?.setOptions(options);
     }
 
     private static parseSettings(dataView: DataView): VisualSettings {

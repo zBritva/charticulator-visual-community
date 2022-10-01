@@ -7,7 +7,6 @@
         }
     ],
     "privileges": [
-        
     ],
     "objects": {
         "dataPoint": {
@@ -78,5 +77,21 @@
                 }
             }
         }
-    ]
+    ],
+    "advancedEditModeSupport": 2,
+    "supportsHighlight": false,
+    "supportsLandingPage": true,
+    "sorting": {
+        "default": {}
+    },
+    "tooltips": {
+        "supportedTypes": {
+            "canvas": true,
+            "default": true
+        },
+        "roles": [
+            "data"
+        ],
+        "supportEnhancedTooltips": true
+    }
 }
