@@ -11,3 +11,4 @@ key.pem
 .tmp/
 .env
 .idea/
+visual/webpack.statistics.html
