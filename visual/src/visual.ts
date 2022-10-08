@@ -41,11 +41,13 @@ import DataView = powerbi.DataView;
 import VisualObjectInstanceEnumerationObject = powerbi.VisualObjectInstanceEnumerationObject;
 
 import { VisualSettings } from "./settings";
+
+
 export class Visual implements IVisual {
     private target: HTMLElement;
     private settings: VisualSettings;
 
-    private appliccationRef: React.RefObject<{
+    private applicationRef: React.RefObject<{
         setOptions: (options: VisualUpdateOptions) => void;
     }>;
 
@@ -56,11 +58,11 @@ export class Visual implements IVisual {
         }
         this.target = options.element;
         if (document) {
-            this.appliccationRef = React.createRef<{
+            this.applicationRef = React.createRef<{
                 setOptions: ((options: VisualUpdateOptions) => void) | null
             } >();
             reactDom.render(React.createElement(Application, {
-                ref: this.appliccationRef,
+                ref: this.applicationRef,
                 host: options.host
               }), this.target);
         }
@@ -68,7 +70,7 @@ export class Visual implements IVisual {
 
     public update(options: VisualUpdateOptions) {
         this.settings = Visual.parseSettings(options && options.dataViews && options.dataViews[0]);
-        this.appliccationRef.current?.setOptions(options);
+        this.applicationRef.current?.setOptions(options);
     }
 
     private static parseSettings(dataView: DataView): VisualSettings {
