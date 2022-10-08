@@ -56,14 +56,16 @@ export const Editor: React.FC<EditorProps> = ({
     const setupCallback = React.useCallback(
         (data: NestedEditorData) => {
         const info: NestedEditorData = data;
-        info.specification.mappings.width = {
-          type: MappingType.value,
-          value: info.width,
-        } as Specification.ValueMapping;
-        info.specification.mappings.height = {
-          type: MappingType.value,
-          value: info.height,
-        } as Specification.ValueMapping;
+        if (info.specification && info.specification.mappings) {
+            info.specification.mappings.width = {
+              type: MappingType.value,
+              value: info.width,
+            } as Specification.ValueMapping;
+            info.specification.mappings.height = {
+              type: MappingType.value,
+              value: info.height,
+            } as Specification.ValueMapping;
+        }
   
         const chartManager = new Prototypes.ChartStateManager(
           info.specification,
@@ -149,7 +151,7 @@ export const Editor: React.FC<EditorProps> = ({
         <>
             <MainView
                 store={appStore}
-                ref={(e) => (mainView = e)}
+                // ref={(e) => (mainView = e)}
                 viewConfiguration={config.MainView}
                 menuBarHandlers={{
                     onContactUsLink: () => {},

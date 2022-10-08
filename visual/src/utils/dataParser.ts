@@ -14,7 +14,6 @@ export function convertData(dataView: DataView): Dataset.Dataset | null {
     const categories = dataView.categorical.categories;
     const values = dataView.categorical.values;
 
-    debugger;
     const mainTable: Dataset.Table = {
         displayName: "Main",
         name: "main",
@@ -89,7 +88,6 @@ export function convertData(dataView: DataView): Dataset.Dataset | null {
         });
     }
 
-    debugger;
     return {
         name: "main",
         tables: [

@@ -92,7 +92,7 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
                 <Editor
                     width={option.viewport.width}
                     height={option.viewport.height}
-                    chart={settings.chart.template}
+                    chart={JSON.parse(settings.chart.template)}
                     columnMappings={settings.chart.columnMappings as any}
                     dataset={dataset}
                     onSave={(chart: any) => {
