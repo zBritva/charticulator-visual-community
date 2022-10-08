@@ -12,6 +12,7 @@ import { VisualSettings } from '../settings';
 // import { convertPointToTooltip } from "./tooltiputils";
 // import { strings } from './strings';
 import { sanitize } from "dompurify";
+import { convertData } from './../utils/dataParser';
 // import ErrorBoundary from 'antd/lib/alert/ErrorBoundary';
 export interface ApplicationProps {
     host: powerbi.extensibility.visual.IVisualHost
@@ -63,14 +64,14 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
     // conver data from Power BI to internal structure
     const settings = parseSettings(option?.dataViews[0]);
     const dataView = option?.dataViews[0];
-    const categorical = option?.dataViews[0]?.categorical;
-
+    
+    const dataset = React.useMemo(() => convertData(dataView), [dataView]);
 
     React.useEffect(() => {
         if (option) {
             host.eventService.renderingFinished(option);
         }
-        if (settings && settings.chart.schema === '{}') {
+        if (settings && settings.chart.template === '{}') {
             return;
         }
 
@@ -91,8 +92,13 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
                 <Editor
                     width={option.viewport.width}
                     height={option.viewport.height}
-                    chart={{}}
+                    chart={settings.chart.template}
+                    columnMappings={settings.chart.columnMappings as any}
+                    dataset={dataset}
                     onSave={(chart: any) => {
+
+                    }}
+                    onClose={() => {
 
                     }}
                 />

@@ -1,97 +1,97 @@
 {
-    "dataRoles": [
-        {
-            "displayName": "Data",
-            "name": "category",
-            "kind": "GroupingOrMeasure"
-        }
-    ],
-    "privileges": [
-    ],
-    "objects": {
-        "dataPoint": {
-            "displayName": "Data colors",
-            "properties": {
-                "defaultColor": {
-                    "displayName": "Default color",
-                    "type": {
-                        "fill": {
-                            "solid": {
-                                "color": true
-                            }
-                        }
-                    }
-                },
-                "showAllDataPoints": {
-                    "displayName": "Show all",
-                    "type": {
-                        "bool": true
-                    }
-                },
-                "fill": {
-                    "displayName": "Fill",
-                    "type": {
-                        "fill": {
-                            "solid": {
-                                "color": true
-                            }
-                        }
-                    }
-                },
-                "fillRule": {
-                    "displayName": "Color saturation",
-                    "type": {
-                        "fill": {}
-                    }
-                },
-                 "fontSize": {
-                    "displayName": "Text Size",
-                    "type": {
-                        "formatting": {
-                            "fontSize": true
-                        }
-                    }
-                }
-            }
-        }
+  "dataRoles": [
+    {
+      "displayName": "Data",
+      "displayNameKey": "Charticulator_Data",
+      "name": "primarykey",
+      "kind": "GroupingOrMeasure"
     },
-    "dataViewMappings": [
-        {
-            "categorical": {
-                "categories": {
-                    "for": {
-                        "in": "category"
-                    },
-                    "dataReductionAlgorithm": {
-                        "top": {}
-                    }
-                },
-                "values": {
-                    "select": [
-                        {
-                            "bind": {
-                                "to": "measure"
-                            }
-                        }
-                    ]
-                }
-            }
-        }
-    ],
-    "advancedEditModeSupport": 2,
-    "supportsHighlight": false,
-    "supportsLandingPage": true,
-    "sorting": {
-        "default": {}
-    },
-    "tooltips": {
-        "supportedTypes": {
-            "canvas": true,
-            "default": true
-        },
-        "roles": [
-            "data"
-        ],
-        "supportEnhancedTooltips": true
+    {
+      "displayName": "Links",
+      "displayNameKey": "Charticulator_Links",
+      "name": "links",
+      "kind": "GroupingOrMeasure"
     }
+  ],
+  "privileges": [],
+  "objects": {
+    "dataPoint": {
+      "displayName": "Data colors",
+      "properties": {
+        "defaultColor": {
+          "displayName": "Default color",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "showAllDataPoints": {
+          "displayName": "Show all",
+          "type": {
+            "bool": true
+          }
+        },
+        "fill": {
+          "displayName": "Fill",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "fillRule": {
+          "displayName": "Color saturation",
+          "type": {
+            "fill": {}
+          }
+        },
+        "fontSize": {
+          "displayName": "Text Size",
+          "type": {
+            "formatting": {
+              "fontSize": true
+            }
+          }
+        }
+      }
+    }
+  },
+  "dataViewMappings": [
+    {
+      "categorical": {
+        "categories": {
+          "select": [
+            { "bind": { "to": "primarykey" } },
+            { "bind": { "to": "links" } }
+          ],
+          "dataReductionAlgorithm": { "top": { "count": 30000 } }
+        },
+        "values": {
+          "select": [
+            { "bind": { "to": "primarykey" } },
+            { "bind": { "to": "links" } }
+          ]
+        }
+      }
+    }
+  ],
+  "advancedEditModeSupport": 2,
+  "supportsHighlight": false,
+  "supportsLandingPage": true,
+  "sorting": {
+    "default": {}
+  },
+  "tooltips": {
+    "supportedTypes": {
+      "canvas": true,
+      "default": true
+    },
+    "roles": ["data"],
+    "supportEnhancedTooltips": true
+  }
 }

@@ -38,5 +38,6 @@ export class VisualSettings extends DataViewObjectsParser {
 
 
 export class ChartSettings {
-  public schema: string = "{}";
+  public template: string = "{}";
+  public columnMappings: string = "{}";
 }
