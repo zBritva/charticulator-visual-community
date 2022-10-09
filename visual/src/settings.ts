@@ -28,6 +28,8 @@
 
 import { DataViewObjectsParser } from "./utils/dataViewObjectsParser";
 
+const defaultTemplatte = require("raw-loader!visual/../assets/chart.tmplt");
+
 export class VisualSettings extends DataViewObjectsParser {
   public chart: ChartSettings = new ChartSettings();
 
@@ -38,6 +40,6 @@ export class VisualSettings extends DataViewObjectsParser {
 
 
 export class ChartSettings {
-  public template: string = "{}";
+  public template: string = defaultTemplatte.default;
   public columnMappings: string = "{}";
 }

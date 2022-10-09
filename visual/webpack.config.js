@@ -82,6 +82,10 @@ module.exports = {
                 }
             },
             {
+                test: /\.tmplt$/,
+                loader: require.resolve('raw-loader'),
+            },
+            {
                 test: /(\.ts)x|\.ts$/,
                 use: [
                     {

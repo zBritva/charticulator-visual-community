@@ -4,7 +4,7 @@ import { MainView  } from "charticulator/src/app/main_view";
 import { AppStore, Migrator } from "charticulator/src/app/stores";
 import { makeDefaultDataset } from "charticulator/src/app/default_dataset";
 import { CharticulatorWorker, CharticulatorWorkerInterface } from "charticulator/src/worker";
-import { deepClone, initialize, Prototypes, Specification } from "charticulator/src/core/index";
+import { deepClone, Prototypes, Specification } from "charticulator/src/core/index";
 import { CharticulatorAppConfig } from "charticulator/src/app/config";
 import { Actions, NestedEditorData } from "charticulator/src/app";
 import { MappingType } from "charticulator/src/core/specification";
@@ -15,10 +15,6 @@ import { NestedEditorMessage, NestedEditorMessageType } from "charticulator/src/
 
 const script = require("raw-loader!charticulator/dist/scripts/worker.bundle.js");
 const charticulatorConfig = require("json-loader!./../../charticulator/dist/scripts/config.json");
-
-console.log('script', script.default);
-initialize(charticulatorConfig);
-
 
 export interface EditorProps {
     width: number;
@@ -39,7 +35,7 @@ export const Editor: React.FC<EditorProps> = ({
     onSave,
     onClose
 }) => {
-    // let mainView: MainView = null;
+    let mainView: MainView = null;
     
     const config: CharticulatorAppConfig = React.useMemo(() => charticulatorConfig, [charticulatorConfig]);
     const workerScript = React.useMemo(() => {
@@ -51,7 +47,12 @@ export const Editor: React.FC<EditorProps> = ({
     }, [script]);
 
     const worker: CharticulatorWorkerInterface =  React.useMemo(() => new CharticulatorWorker(workerScript), []);
-    const appStore = new AppStore(worker, dataset || makeDefaultDataset());
+    const defaultDataset = React.useMemo(() => {
+        const defaultDataset = makeDefaultDataset();
+        defaultDataset.tables[0].name = "main";
+        return defaultDataset;
+    }, []);
+    const appStore = new AppStore(worker, dataset || defaultDataset);
 
     const setupCallback = React.useCallback(
         (data: NestedEditorData) => {
@@ -66,30 +67,7 @@ export const Editor: React.FC<EditorProps> = ({
               value: info.height,
             } as Specification.ValueMapping;
         }
-  
-        const chartManager = new Prototypes.ChartStateManager(
-          info.specification,
-          info.dataset,
-          null,
-          {},
-          {},
-          deepClone(info.specification)
-        );
-  
-        // if version wasn't saved in tempalte we asume it is 2.0.3
-        if (info.template && info.template.version == undefined) {
-          info.template.version = defaultVersionOfTemplate;
-        }
-        const newState = new Migrator().migrate(
-          {
-            chart: chartManager.chart,
-            chartState: chartManager.chartState,
-            dataset: chartManager.dataset,
-            version: info.template?.version || defaultVersionOfTemplate,
-            originDataset: appStore.originDataset,
-          },
-          CHARTICULATOR_PACKAGE.version
-        );
+
         appStore.dispatcher.dispatch(
           new Actions.ImportChartAndDataset(
             info.specification,
@@ -100,25 +78,11 @@ export const Editor: React.FC<EditorProps> = ({
             info.originSpecification
           )
         );
-  
-        if (info.template) {
-          info.template.version = newState.version;
-        }
         if (onClose) {
           appStore.addListener(AppStore.EVENT_NESTED_EDITOR_CLOSE, () => {
             onClose();
           });
         }
-  
-        let type = EditorType.Embedded;
-        //   this.config.CorsPolicy && this.config.CorsPolicy.Embedded
-        //     ? EditorType.Embedded
-        //     : EditorType.Nested;
-  
-        // // settings from outside overrides the configuration
-        // if (editorMode) {
-        //   type = editorMode;
-        // }
   
         appStore.setupNestedEditor((newSpecification) => {
           const template = deepClone(appStore.buildChartTemplate());
@@ -126,7 +90,7 @@ export const Editor: React.FC<EditorProps> = ({
             specification: newSpecification,
             template,
           } as NestedEditorMessage);
-        }, type);
+        }, EditorType.Embedded);
       }
     , [appStore]);
 
@@ -134,16 +98,19 @@ export const Editor: React.FC<EditorProps> = ({
         (async () => {
             await worker.initialize(config);
             setupCallback({
-                template: chart,
+                template: null,
                 height,
                 width, 
                 type: null,
                 dataset: dataset,
-                id: "",
+                id: "1",
                 specification: chart,
                 originSpecification: chart,
                 filterCondition: null
-            })
+            });
+            if (mainView) {
+                mainView.forceUpdate();
+            }
         })();
     }, [worker, config]);
 
@@ -151,13 +118,13 @@ export const Editor: React.FC<EditorProps> = ({
         <>
             <MainView
                 store={appStore}
-                // ref={(e) => (mainView = e)}
+                ref={(e) => (mainView = e)}
                 viewConfiguration={config.MainView}
                 menuBarHandlers={{
                     onContactUsLink: () => {},
                     onCopyToClipboardClick: () => {},
                     onExportTemplateClick: () => {},
-                    onImportTemplateClick: () => {},
+                    onImportTemplateClick: () => {}
                 }}
                 tabButtons={null}
                 telemetry={{

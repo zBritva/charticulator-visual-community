@@ -13,7 +13,10 @@ import { VisualSettings } from '../settings';
 // import { strings } from './strings';
 import { sanitize } from "dompurify";
 import { convertData } from './../utils/dataParser';
-// import ErrorBoundary from 'antd/lib/alert/ErrorBoundary';
+import { ChartTemplate } from 'charticulator/src/container';
+import { initialize } from "charticulator/src/core/index";
+const charticulatorConfig = require("json-loader!./../../charticulator/dist/scripts/config.json");
+
 export interface ApplicationProps {
     host: powerbi.extensibility.visual.IVisualHost
 }
@@ -25,6 +28,8 @@ export interface ApplicationPropsRef {
 
 // tslint:disable-next-line
 const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, ApplicationProps> = ({host}: ApplicationProps, ref: React.ForwardedRef<ApplicationPropsRef>) => {
+
+    const [solverInitialized, setInitialization] = React.useState<boolean>(false);
 
     const [option, setOptions] = React.useState<VisualUpdateOptions | null>(null);
     if (option) {
@@ -61,27 +66,56 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
         return host.createSelectionManager();
     }, [host]);
 
-    // conver data from Power BI to internal structure
-    const settings = parseSettings(option?.dataViews[0]);
-    const dataView = option?.dataViews[0];
-    
-    const dataset = React.useMemo(() => convertData(dataView), [dataView]);
-
     React.useEffect(() => {
-        if (option) {
-            host.eventService.renderingFinished(option);
-        }
-        if (settings && settings.chart.template === '{}') {
-            return;
-        }
+        (async () => {
+            await initialize(charticulatorConfig);
+            setInitialization(true);
 
-    }, [settings]);
+            if (option) {
+                host.eventService.renderingFinished(option);
+            }
+        })();
+    }, [setInitialization]);
 
     React.useImperativeHandle(ref, () => ({
         setOptions: (option: VisualUpdateOptions) => setOptions(option)
     }));
 
-    if (!option) {
+    // conver data from Power BI to internal structure
+    const settings = parseSettings(option?.dataViews[0]);
+    const dataView = option?.dataViews[0];
+    const template = settings && settings.chart?.template;
+    const dataset = React.useMemo(() => convertData(dataView), [dataView]);
+
+    const createChartFromTemplate = React.useCallback(() => {
+        const chartJSON = JSON.parse(template);
+        const chartTemplate = new ChartTemplate(
+            chartJSON
+        );
+
+        const chartTables = chartJSON.tables;
+
+        chartTables.forEach((table: any) => {
+        chartTemplate.assignTable(
+            table.name,
+            table.name
+        );
+        table.columns.forEach((column: any) => {
+            chartTemplate.assignColumn(
+            table.name,
+            column.name,
+            column.name
+            );
+        })
+        });
+
+        const instance = chartTemplate.instantiate(dataset);
+        const { chart } = instance;
+
+        return chart;
+    }, [template]);
+
+    if (!option || !solverInitialized) {
         return (<p>Loading...</p>)
     }
 
@@ -92,11 +126,10 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
                 <Editor
                     width={option.viewport.width}
                     height={option.viewport.height}
-                    chart={JSON.parse(settings.chart.template)}
+                    chart={createChartFromTemplate()}
                     columnMappings={settings.chart.columnMappings as any}
                     dataset={dataset}
                     onSave={(chart: any) => {
-
                     }}
                     onClose={() => {
 
@@ -108,7 +141,13 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
 
         return (
             <>
-                <ChartViewer width={option.viewport.width} height={option.viewport.height} chart={{}}/>
+                <ChartViewer
+                    width={option.viewport.width}
+                    height={option.viewport.height}
+                    chart={createChartFromTemplate()}
+                    defaultAttributes={{}}    
+                    dataset={dataset}
+                />
             </>
         )
     }

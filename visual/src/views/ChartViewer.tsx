@@ -1,21 +1,31 @@
+import { ChartContainer, Dataset, Specification } from "charticulator/src/container";
 import React from "react";
 
 export interface ViewerProps {
     width: number;
     height: number;
-    chart: any;
+    chart: Specification.Chart;
+    dataset: Dataset.Dataset;
+    defaultAttributes: any
 }
 
 
 export const ChartViewer: React.FC<ViewerProps> = ({
     width,
-    chart,
     height,
+    chart,
+    dataset,
+    defaultAttributes,
 }) => {
+    const container = React.useMemo(() => {
+        const container = new ChartContainer({ chart, defaultAttributes }, dataset);
 
-    return (
-        <p>
-            Viewer
-        </p>
-    )
+        return container;
+    }, [chart, defaultAttributes, dataset, width, height]);
+
+    React.useEffect(() => {
+        
+    }, []);
+
+    return container.reactMount(width, height);
 }

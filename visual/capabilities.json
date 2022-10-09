@@ -15,51 +15,22 @@
   ],
   "privileges": [],
   "objects": {
-    "dataPoint": {
-      "displayName": "Data colors",
-      "properties": {
-        "defaultColor": {
-          "displayName": "Default color",
-          "type": {
-            "fill": {
-              "solid": {
-                "color": true
-              }
-            }
-          }
-        },
-        "showAllDataPoints": {
-          "displayName": "Show all",
-          "type": {
-            "bool": true
-          }
-        },
-        "fill": {
-          "displayName": "Fill",
-          "type": {
-            "fill": {
-              "solid": {
-                "color": true
-              }
-            }
-          }
-        },
-        "fillRule": {
-          "displayName": "Color saturation",
-          "type": {
-            "fill": {}
-          }
-        },
-        "fontSize": {
-          "displayName": "Text Size",
-          "type": {
-            "formatting": {
-              "fontSize": true
-            }
+    "chart": {
+        "displayName": "Chart template",
+        "descriptionKey": "Charticulator_ChartTemplate",
+        "properties": {
+          "template": {
+            "displayName": "Template",
+            "displayNameKey": "Charticulator_Template",
+            "type": { "text": true }
+          },
+          "columnMappings": {
+            "displayName": "Column mappings",
+            "displayNameKey": "Charticulator_ColumnMappings",
+            "type": { "text": true }
           }
         }
       }
-    }
   },
   "dataViewMappings": [
     {
