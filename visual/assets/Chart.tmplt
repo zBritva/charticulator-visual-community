@@ -1,13 +1,13 @@
 {
   "specification": {
-    "_id": "e66y3a22rld",
+    "_id": "sk560phebor",
     "classID": "chart.rectangle",
     "properties": {
       "name": "Chart",
       "backgroundColor": null,
       "backgroundOpacity": 1,
       "enableContextMenu": true,
-      "exposed": false
+      "exposed": true
     },
     "mappings": {
       "marginTop": {
@@ -25,15 +25,15 @@
     },
     "glyphs": [
       {
-        "_id": "30ezx49r9vw",
+        "_id": "8tbq6db1yst",
         "classID": "glyph.rectangle",
         "properties": {
           "name": "Glyph"
         },
-        "table": "main",
+        "table": "Temperature",
         "marks": [
           {
-            "_id": "tnta0a7fgmj",
+            "_id": "7n2q29j6foa",
             "classID": "mark.anchor",
             "properties": {
               "name": "Anchor"
@@ -56,10 +56,10 @@
     ],
     "elements": [
       {
-        "_id": "530yndq56uk",
+        "_id": "auvmancnohe",
         "classID": "plot-segment.cartesian",
-        "glyph": "30ezx49r9vw",
-        "table": "main",
+        "glyph": "8tbq6db1yst",
+        "table": "Temperature",
         "filter": null,
         "mappings": {
           "x1": {
@@ -119,14 +119,14 @@
     "resources": []
   },
   "defaultAttributes": {
-    "tnta0a7fgmj": {
+    "7n2q29j6foa": {
       "x": 0,
       "y": 0
     }
   },
   "tables": [
     {
-      "name": "main",
+      "name": "Temperature",
       "type": "Main",
       "columns": []
     }
@@ -134,7 +134,7 @@
   "inference": [],
   "properties": [
     {
-      "objectID": "e66y3a22rld",
+      "objectID": "sk560phebor",
       "target": {
         "attribute": "marginLeft"
       },
@@ -143,7 +143,7 @@
       "displayName": "Chart/marginLeft"
     },
     {
-      "objectID": "e66y3a22rld",
+      "objectID": "sk560phebor",
       "target": {
         "attribute": "marginRight"
       },
@@ -152,7 +152,7 @@
       "displayName": "Chart/marginRight"
     },
     {
-      "objectID": "e66y3a22rld",
+      "objectID": "sk560phebor",
       "target": {
         "attribute": "marginTop"
       },
@@ -161,7 +161,7 @@
       "displayName": "Chart/marginTop"
     },
     {
-      "objectID": "e66y3a22rld",
+      "objectID": "sk560phebor",
       "target": {
         "attribute": "marginBottom"
       },
