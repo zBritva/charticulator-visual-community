@@ -129,7 +129,19 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
                     chart={createChartFromTemplate()}
                     columnMappings={settings.chart.columnMappings as any}
                     dataset={dataset}
-                    onSave={(chart: any) => {
+                    onSave={({
+                        template,
+                    }: any) => {
+                        const chartJSON = JSON.stringify(template);
+                        host.persistProperties({
+                            merge: [{
+                                objectName: 'chart',
+                                properties: {
+                                    'template': chartJSON
+                                },
+                                selector: null
+                            }]
+                        })
                     }}
                     onClose={() => {
 

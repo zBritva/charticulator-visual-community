@@ -33,7 +33,10 @@ export interface EditorProps {
     chart: any;
     dataset: Dataset.Dataset;
     columnMappings: { [key: string]: string };
-    onSave: (chart: any) => void;
+    onSave: (chart: {
+        chart: Specification.Chart,
+        template: Specification.Template.ChartTemplate
+    }) => void;
     onClose: () => void;
 }
 
@@ -99,12 +102,12 @@ export const Editor: React.FC<EditorProps> = ({
                 });
             }
 
-            appStore.setupNestedEditor((newSpecification) => {
+            appStore.setupNestedEditor((chart) => {
                 const template = deepClone(appStore.buildChartTemplate());
                 onSave({
-                    specification: newSpecification,
+                    chart,
                     template,
-                } as NestedEditorMessage);
+                });
             }, EditorType.Embedded);
         },
         []
