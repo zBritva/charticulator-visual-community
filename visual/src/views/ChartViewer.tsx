@@ -24,8 +24,8 @@ export const ChartViewer: React.FC<ViewerProps> = ({
     }, [chart, defaultAttributes, dataset, width, height]);
 
     React.useEffect(() => {
-        
-    }, []);
+        container.resize(width, height);    
+    }, [container, width, height]);
 
     return container.reactMount(width, height);
 }
