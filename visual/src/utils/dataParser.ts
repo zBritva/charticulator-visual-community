@@ -1,12 +1,57 @@
 
 import powerbi from "powerbi-visuals-api";
 import DataView = powerbi.DataView;
+import ValueTypeDescriptor = powerbi.ValueTypeDescriptor;
 
 import { Dataset } from "charticulator/src/container";
 
+export function mapColumnType(pbiType: ValueTypeDescriptor): Dataset.DataType {
+    if (pbiType.bool) {
+        return Dataset.DataType.Boolean;
+    }
+    if (pbiType.dateTime) {
+        return Dataset.DataType.Date;
+    }
+    if (pbiType.enumeration) {
+        return Dataset.DataType.String;
+    }
+    if (pbiType.integer) {
+        return Dataset.DataType.Number;
+    }
+    if (pbiType.numeric) {
+        return Dataset.DataType.Number;
+    }
+    if (pbiType.text) {
+        return Dataset.DataType.String;
+    }
+
+    return Dataset.DataType.String;
+}
+
+export function mapColumnKind(pbiType: ValueTypeDescriptor): Dataset.DataKind {
+    if (pbiType.bool) {
+        return Dataset.DataKind.Categorical;
+    }
+    if (pbiType.dateTime) {
+        return Dataset.DataKind.Temporal;
+    }
+    if (pbiType.enumeration) {
+        return Dataset.DataKind.Categorical;
+    }
+    if (pbiType.integer) {
+        return Dataset.DataKind.Numerical;
+    }
+    if (pbiType.numeric) {
+        return Dataset.DataKind.Numerical;
+    }
+    if (pbiType.text) {
+        return Dataset.DataKind.Categorical;
+    }
+
+    return Dataset.DataKind.Categorical;
+}
 
 export function convertData(dataView: DataView): Dataset.Dataset | null {
-
     if (!dataView || !dataView.categorical) {
         return null;
     }
@@ -40,9 +85,9 @@ export function convertData(dataView: DataView): Dataset.Dataset | null {
                 mainTable.columns.push({
                     displayName,
                     name: displayName,
-                    type: Dataset.DataType.String,
+                    type: mapColumnType(source.type),
                     metadata: {
-                        kind: Dataset.DataKind.Categorical,
+                        kind: mapColumnKind(source.type),
                     }
                 });
             }
@@ -51,9 +96,9 @@ export function convertData(dataView: DataView): Dataset.Dataset | null {
                 linksTable.columns.push({
                     displayName,
                     name: displayName,
-                    type: Dataset.DataType.String,
+                    type: mapColumnType(source.type),
                     metadata: {
-                        kind: Dataset.DataKind.Categorical,
+                        kind: mapColumnKind(source.type),
                     }
                 });
             }
