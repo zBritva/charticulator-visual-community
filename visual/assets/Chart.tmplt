@@ -30,7 +30,7 @@
         "properties": {
           "name": "Glyph"
         },
-        "table": "Temperature",
+        "table": "main",
         "marks": [
           {
             "_id": "7n2q29j6foa",
@@ -59,7 +59,7 @@
         "_id": "auvmancnohe",
         "classID": "plot-segment.cartesian",
         "glyph": "8tbq6db1yst",
-        "table": "Temperature",
+        "table": "main",
         "filter": null,
         "mappings": {
           "x1": {
@@ -126,7 +126,7 @@
   },
   "tables": [
     {
-      "name": "Temperature",
+      "name": "main",
       "type": "Main",
       "columns": []
     }
