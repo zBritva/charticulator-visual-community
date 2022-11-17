@@ -47,7 +47,7 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
             objectName: "chart",
             selector: {},
             properties: {
-                schema: json_string
+                template: json_string
             }
         };
 
@@ -58,8 +58,11 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
         });
     }, [host]);
 
-    const onSave = React.useCallback((json_string: string) => {
-        persistProperty(json_string);
+    const onSave = React.useCallback(({
+        template,
+    }: any) => {
+        const chartJSON = JSON.stringify(template);
+        persistProperty(chartJSON);
     }, [persistProperty]);
 
     const selectionManager = React.useMemo(() => {
@@ -129,20 +132,7 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
                     chart={createChartFromTemplate()}
                     columnMappings={settings.chart.columnMappings as any}
                     dataset={dataset}
-                    onSave={({
-                        template,
-                    }: any) => {
-                        const chartJSON = JSON.stringify(template);
-                        host.persistProperties({
-                            merge: [{
-                                objectName: 'chart',
-                                properties: {
-                                    'template': chartJSON
-                                },
-                                selector: null
-                            }]
-                        })
-                    }}
+                    onSave={onSave}
                     onClose={() => {
 
                     }}
