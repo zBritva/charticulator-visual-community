@@ -2,6 +2,8 @@
 import powerbi from "powerbi-visuals-api";
 import DataView = powerbi.DataView;
 import ValueTypeDescriptor = powerbi.ValueTypeDescriptor;
+import ISelectionIdBuilder = powerbi.extensibility.ISelectionIdBuilder;
+import ISelectionId = powerbi.extensibility.ISelectionId;
 
 import { Dataset } from "charticulator/src/container";
 
@@ -51,9 +53,9 @@ export function mapColumnKind(pbiType: ValueTypeDescriptor): Dataset.DataKind {
     return Dataset.DataKind.Categorical;
 }
 
-export function convertData(dataView: DataView): Dataset.Dataset | null {
+export function convertData(dataView: DataView, createSelectionBuilder: () => ISelectionIdBuilder): [Dataset.Dataset | null, Map<number, ISelectionId> | null] {
     if (!dataView || !dataView.categorical) {
-        return null;
+        return [null, null];
     }
 
     const categories = dataView.categorical.categories;
@@ -66,6 +68,8 @@ export function convertData(dataView: DataView): Dataset.Dataset | null {
         rows: [],
         type: Dataset.TableType.Main
     }
+
+    const mainTableSelectionIds = new Map<number, ISelectionId>();
 
     const linksTable: Dataset.Table = {
         displayName: "Links",
@@ -105,15 +109,20 @@ export function convertData(dataView: DataView): Dataset.Dataset | null {
         });
 
         mainTable.rows = allColumns[0].values.map<Dataset.Row>((_cat, index) => {
+            const builder = createSelectionBuilder();
+            
+            const selectionID = builder.withCategory(categories[0], index).createSelectionId();
+            mainTableSelectionIds.set(index, selectionID);
+
             const row: Dataset.Row = {
-                _id: "index" + index
+                _id: "index" + index,
             }
 
             mainTable.columns.forEach(column => {
                 const categoryColumn = allColumns.find(category => category.source.displayName === column.displayName);
 
                 row[column.displayName] = categoryColumn.values[index] as any; 
-            })
+            });
             
             return row;
         });
@@ -133,11 +142,14 @@ export function convertData(dataView: DataView): Dataset.Dataset | null {
         });
     }
 
-    return {
-        name: "main",
-        tables: [
-            mainTable,
-            linksTable
-        ].filter(table => table.columns.length)
-    }
+    return [
+        {
+            name: "main",
+            tables: [
+                mainTable,
+                linksTable
+            ].filter(table => table.columns.length)
+        },
+        mainTableSelectionIds
+    ];
 }

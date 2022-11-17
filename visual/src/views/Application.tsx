@@ -4,14 +4,13 @@ import powerbi from "powerbi-visuals-api";
 import VisualUpdateOptions = powerbi.extensibility.visual.VisualUpdateOptions;
 
 import { Editor } from './Editor';
-import { ChartViewer } from './ChartViewer';
+import { ChartViewer, IModifiers } from './ChartViewer';
 // import { Mapping } from "./Mapping"
 // import { Tutorial } from "./Tutorial"
 import { VisualSettings } from '../settings';
 // import { checkColumns, applyMapping, updateDataValues, colorKey, defaultDompurifyConfig } from "./utils";
 // import { convertPointToTooltip } from "./tooltiputils";
 // import { strings } from './strings';
-import { sanitize } from "dompurify";
 import { convertData } from './../utils/dataParser';
 import { ChartTemplate } from 'charticulator/src/container';
 import { initialize } from "charticulator/src/core/index";
@@ -68,6 +67,11 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
     const selectionManager = React.useMemo(() => {
         return host.createSelectionManager();
     }, [host]);
+    
+
+    const selectionBuilderCreator = React.useMemo(() => {
+        return () => host.createSelectionIdBuilder();
+    }, [host]);
 
     React.useEffect(() => {
         (async () => {
@@ -88,7 +92,7 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
     const settings = parseSettings(option?.dataViews[0]);
     const dataView = option?.dataViews[0];
     const template = settings && settings.chart?.template;
-    const dataset = React.useMemo(() => convertData(dataView), [dataView]);
+    const [dataset, selections] = React.useMemo(() => convertData(dataView, selectionBuilderCreator), [dataView, selectionBuilderCreator]);
 
     const createChartFromTemplate = React.useCallback(() => {
         const chartJSON = JSON.parse(template);
@@ -117,6 +121,22 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
 
         return chart;
     }, [template]);
+
+    const onSelect = React.useCallback((table: string, rowIndices: number[], modifiers?: IModifiers) => {
+        // TODO handle selection
+        selectionManager.select(rowIndices.map(index => selections.get(index)).filter(s => s), modifiers?.ctrlKey); // TODO check meta for MacOS
+    }, [dataView, selections]);
+
+    const onContextMenu = React.useCallback((table: string, rowIndices: number[], modifiers: IModifiers) => {
+        // TODO handle selection
+        selectionManager.showContextMenu(
+            rowIndices.map(index => selections.get(index)).filter(s => s),
+            {
+                x: modifiers.clientX, 
+                y: modifiers.clientY
+            }
+        );
+    }, [dataView, selections]);
 
     if (!option || !solverInitialized) {
         return (<p>Loading...</p>)
@@ -149,6 +169,8 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
                     chart={createChartFromTemplate()}
                     defaultAttributes={{}}    
                     dataset={dataset}
+                    onSelect={onSelect}
+                    onContextMenu={onContextMenu}
                 />
             </>
         )
