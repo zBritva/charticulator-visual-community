@@ -39,6 +39,7 @@ export interface EditorProps {
     }) => void;
     onClose: () => void;
     onExport: (template: Specification.Template.ChartTemplate, clipboard: boolean) => void;
+    onImport: () => Promise<Specification.Chart>;
 }
 
 export const Editor: React.FC<EditorProps> = ({
@@ -48,7 +49,8 @@ export const Editor: React.FC<EditorProps> = ({
     dataset,
     onSave,
     onClose,
-    onExport
+    onExport,
+    onImport
 }) => {
     const [appStore, setAppStore] = React.useState<AppStore | null>(null);
     const config: CharticulatorAppConfig = React.useMemo(
@@ -156,8 +158,19 @@ export const Editor: React.FC<EditorProps> = ({
                         const template = deepClone(appStore.buildChartTemplate());
                         onExport(template, false);
                     },
-                    onImportTemplateClick: () => {
-                        debugger;
+                    onImportTemplateClick: async () => {
+                        const specification = await onImport();
+                        console.log(specification);
+                        appStore.dispatcher.dispatch(
+                            new Actions.ImportChartAndDataset(
+                              specification,
+                              dataset,
+                              {
+                                filterCondition: null,
+                              },
+                              specification
+                            )
+                          );
                     },
                 }}
                 tabButtons={null}

@@ -12,9 +12,9 @@ import { VisualSettings } from '../settings';
 // import { convertPointToTooltip } from "./tooltiputils";
 // import { strings } from './strings';
 import { convertData } from './../utils/dataParser';
-import { ChartTemplate } from 'charticulator/src/container';
+import { ChartTemplate, Dataset } from 'charticulator/src/container';
 import { initialize } from "charticulator/src/core/index";
-import { copyToClipboard } from 'charticulator/src/app/utils';
+import { copyToClipboard, readFileAsString } from 'charticulator/src/app/utils';
 const charticulatorConfig = require("json-loader!./../../charticulator/dist/scripts/config.json");
 
 export interface ApplicationProps {
@@ -95,7 +95,7 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
     const template = settings && settings.chart?.template;
     const [dataset, selections] = React.useMemo(() => convertData(dataView, selectionBuilderCreator), [dataView, selectionBuilderCreator]);
 
-    const createChartFromTemplate = React.useCallback(() => {
+    const createChartFromTemplate = React.useCallback((template: string, dataset: Dataset.Dataset) => {
         const chartJSON = JSON.parse(template);
         const chartTemplate = new ChartTemplate(
             chartJSON
@@ -121,7 +121,7 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
         const { chart } = instance;
 
         return chart;
-    }, [template]);
+    }, []);
 
     const onSelect = React.useCallback((table: string, rowIndices: number[], modifiers?: IModifiers) => {
         // TODO handle selection
@@ -139,6 +139,38 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
         );
     }, [dataView, selections]);
 
+    const importTempalte = React.useCallback(() => {
+        return new Promise<any>((resolve, reject) => {
+            const inputElement = document.createElement("input");
+            inputElement.type = "file";
+            let file: File = null;
+            inputElement.accept = ["tmplt", "json"]
+            .map((x) => "." + x)
+            .join(",");
+            // eslint-disable-next-line
+            inputElement.onchange = async () => {
+                if (inputElement.files.length == 1) {
+                    file = inputElement.files[0];
+                    if (file) {
+                        try {
+                            const template = await readFileAsString(file);
+                            JSON.parse(template); // parse ensure that string is JSON
+                            persistProperty(template);
+                            const specification = createChartFromTemplate(template, dataset);
+                            resolve(specification);
+                        } catch (e) {
+                            console.error(e);
+                            reject();
+                        }
+                    }
+                } else {
+                    reject();
+                }
+            }
+            inputElement.click();
+        });
+    }, [persistProperty, readFileAsString, dataset]); 
+
     if (!option || !solverInitialized) {
         return (<p>Loading...</p>)
     }
@@ -150,7 +182,7 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
                 <Editor
                     width={option.viewport.width}
                     height={option.viewport.height}
-                    chart={createChartFromTemplate()}
+                    chart={createChartFromTemplate(template, dataset)}
                     columnMappings={settings.chart.columnMappings as any}
                     dataset={dataset}
                     onSave={onSave}
@@ -175,6 +207,7 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
                             await host.downloadService.exportVisualsContent(json, `${template.specification._id}.json`, 'json', 'template');
                         }
                     }}
+                    onImport={importTempalte}
                 />
             </>
         );
@@ -185,7 +218,7 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
                 <ChartViewer
                     width={option.viewport.width}
                     height={option.viewport.height}
-                    chart={createChartFromTemplate()}
+                    chart={createChartFromTemplate(template, dataset)}
                     defaultAttributes={{}}    
                     dataset={dataset}
                     onSelect={onSelect}
