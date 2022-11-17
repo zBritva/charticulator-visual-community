@@ -13,7 +13,12 @@
       "kind": "GroupingOrMeasure"
     }
   ],
-  "privileges": [],
+  "privileges": [
+    {
+      "essential": true,
+      "name": "ExportContent"
+    }
+  ],
   "objects": {
     "chart": {
         "displayName": "Chart template",

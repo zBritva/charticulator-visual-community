@@ -14,6 +14,7 @@ import { VisualSettings } from '../settings';
 import { convertData } from './../utils/dataParser';
 import { ChartTemplate } from 'charticulator/src/container';
 import { initialize } from "charticulator/src/core/index";
+import { copyToClipboard } from 'charticulator/src/app/utils';
 const charticulatorConfig = require("json-loader!./../../charticulator/dist/scripts/config.json");
 
 export interface ApplicationProps {
@@ -155,6 +156,24 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
                     onSave={onSave}
                     onClose={() => {
 
+                    }}
+                    onExport={async (template, clipboard) => {
+                        const json = JSON.stringify(template);
+                        if (clipboard) {
+                            try {
+                                const clipboardPermissions = await navigator.permissions.query({ name: 'clipboard-write' as any });
+                                if (clipboardPermissions.state === 'granted') {
+                                    window.focus();
+                                    await navigator.clipboard.writeText(json);
+                                } else {
+                                    copyToClipboard(json);
+                                }
+                            } catch(e) {
+                                console.error(e);
+                            }
+                        } else {
+                            await host.downloadService.exportVisualsContent(json, `${template.specification._id}.json`, 'json', 'template');
+                        }
                     }}
                 />
             </>

@@ -38,6 +38,7 @@ export interface EditorProps {
         template: Specification.Template.ChartTemplate
     }) => void;
     onClose: () => void;
+    onExport: (template: Specification.Template.ChartTemplate, clipboard: boolean) => void;
 }
 
 export const Editor: React.FC<EditorProps> = ({
@@ -47,9 +48,8 @@ export const Editor: React.FC<EditorProps> = ({
     dataset,
     onSave,
     onClose,
+    onExport
 }) => {
-    const mainView = React.useRef<MainView>(null);
-
     const [appStore, setAppStore] = React.useState<AppStore | null>(null);
     const config: CharticulatorAppConfig = React.useMemo(
         () => charticulatorConfig,
@@ -149,9 +149,16 @@ export const Editor: React.FC<EditorProps> = ({
                 viewConfiguration={config.MainView}
                 menuBarHandlers={{
                     onContactUsLink: () => { },
-                    onCopyToClipboardClick: () => { },
-                    onExportTemplateClick: () => { },
-                    onImportTemplateClick: () => { },
+                    onCopyToClipboardClick: () => {
+                        const template = deepClone(appStore.buildChartTemplate());
+                        onExport(template, true);},
+                    onExportTemplateClick: () => {
+                        const template = deepClone(appStore.buildChartTemplate());
+                        onExport(template, false);
+                    },
+                    onImportTemplateClick: () => {
+                        debugger;
+                    },
                 }}
                 tabButtons={null}
                 telemetry={{

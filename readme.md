@@ -11,6 +11,6 @@ The visual under development and some features is not developed yet.
 * Mapping columns
 * Supporting Power BI color palette
 * ~~Support selections~~
-* Support highlights
 * Import template file
-* Export template to file
+* ~~Export template to file~~
+* Update scales and axes
