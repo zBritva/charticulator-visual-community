@@ -50,7 +50,7 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
     const persistProperty = React.useCallback((json_string: string) => {
         const instance: powerbi.VisualObjectInstance = {
             objectName: "chart",
-            selector: {},
+            selector: null,
             properties: {
                 template: json_string
             }
@@ -98,7 +98,7 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
                 host.eventService.renderingFinished(option);
             }
         })();
-    }, [setInitialization]);
+    }, [setInitialization, setFormatOptions, initialize, host]);
 
     React.useImperativeHandle(ref, () => ({
         setOptions: (option: VisualUpdateOptions) => setOptions(option)

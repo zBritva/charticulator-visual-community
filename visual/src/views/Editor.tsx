@@ -132,7 +132,7 @@ export const Editor: React.FC<EditorProps> = ({
                 utcTimeZone: utcTimeZone,
             });
         },
-        []
+        [appStore, onClose, onSave]
     );
 
     React.useEffect(() => {
@@ -191,7 +191,7 @@ export const Editor: React.FC<EditorProps> = ({
                               specification
                             )
                           );
-                    },
+                    }
                 }}
                 tabButtons={null}
                 telemetry={{
