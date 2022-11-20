@@ -24,5 +24,8 @@
     "@types/react": "^16.3.14",
     "@types/react-dom": "^16.0.5",
     "typescript": "3.9.7"
+  },
+  "browser": {
+    "[module-name]": false 
   }
 }
