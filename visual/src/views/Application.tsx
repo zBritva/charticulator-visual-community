@@ -12,7 +12,7 @@ import { convertData } from './../utils/dataParser';
 import { ChartTemplate, ColorUtils, Dataset, defaultDigitsGroup } from 'charticulator/src/container';
 import { initialize } from "charticulator/src/core/index";
 import { copyToClipboard, readFileAsString } from 'charticulator/src/app/utils';
-const charticulatorConfig = require("json-loader!./../../charticulator/dist/scripts/config.json");
+import charticulatorConfig from "json-loader!./../../charticulator/dist/scripts/config.json";
 
 import {
     setFormatOptions,
