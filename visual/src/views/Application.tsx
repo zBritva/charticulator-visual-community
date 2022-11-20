@@ -12,7 +12,7 @@ import { VisualSettings } from '../settings';
 // import { convertPointToTooltip } from "./tooltiputils";
 // import { strings } from './strings';
 import { convertData } from './../utils/dataParser';
-import { ChartTemplate, Dataset, defaultDigitsGroup } from 'charticulator/src/container';
+import { ChartTemplate, ColorUtils, Dataset, defaultDigitsGroup } from 'charticulator/src/container';
 import { initialize } from "charticulator/src/core/index";
 import { copyToClipboard, readFileAsString } from 'charticulator/src/app/utils';
 const charticulatorConfig = require("json-loader!./../../charticulator/dist/scripts/config.json");
@@ -89,7 +89,10 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
                 decimal: localizaiton?.decemalDelimiter,
                 thousands:
                   localizaiton?.thousandsDelimiter,
-              });
+            });
+
+            ColorUtils.setDefaultColorPaletteGenerator(key => ColorUtils.colorFromHTMLColor(host.colorPalette.getColor(key).value));
+            ColorUtils.setDefaultColorGeneratorResetFunction(() => host.colorPalette.reset());
 
             if (option) {
                 host.eventService.renderingFinished(option);
