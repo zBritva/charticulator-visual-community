@@ -12,7 +12,7 @@
   ],
   "scripts": {
     "postinstall": "yarn copyfiles .\\config.yml .\\charticulator\\",
-    "build": "yarn workspace charticulator build && yarn workspace visual package",
+    "build": "yarn workspace charticulator build && yarn workspace visual build",
     "start": "yarn workspace visual start"
   },
   "dependencies": {
