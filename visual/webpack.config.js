@@ -139,7 +139,7 @@ module.exports = {
         ]
     },
     resolve: {
-        extensions: ['.tsx', '.ts', '.jsx', '.js', '.css'],
+        extensions: ['.tsx', '.ts', '.jsx', '.js', '.css','.json'],
         alias: {
             charticulator: path.resolve(__dirname, "./../charticulator/"),
             visual: path.resolve(__dirname, './src'),
