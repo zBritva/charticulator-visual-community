@@ -28,19 +28,25 @@ jobs:
           source: config.yml
           target: ./charticulator/config.yml
 
-      - name: Build charticulator
+      # - name: Build charticulator
+      #   env:
+      #     NODE_OPTIONS: "--max-old-space-size=8192"
+      #   working-directory: ./charticulator
+      #   run: yarn build
+
+      # - name: Build charticulator visual
+      #   env:
+      #     NODE_OPTIONS: "--max-old-space-size=8192"
+      #   working-directory: ./visual
+      #   run: yarn build
+
+      - name: Build charticulator and visual
         env:
           NODE_OPTIONS: "--max-old-space-size=8192"
-        working-directory: ./charticulator
+        working-directory: ./
         run: yarn build
 
-      - name: Build charticulator visual
-        env:
-          NODE_OPTIONS: "--max-old-space-size=8192"
-        working-directory: ./visual
-        run: yarn build
-
-      - name: Build and publish
+      - name: Publish *.pbiviz
         uses: actions/upload-artifact@v3
         with:
           name: visual
