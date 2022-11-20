@@ -8,7 +8,7 @@ The visual under development and some features is not developed yet.
 
 ## Roadmap for public *.pbiviz
 
-* Mapping columns
+* ~~Mapping columns~~
 * ~~Supporting Power BI color palette~~
 * ~~Support selections~~
 * ~~Import template file~~
