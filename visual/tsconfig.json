@@ -19,8 +19,9 @@
         "baseUrl": "./",
         "paths": {
             "charticulator": ["./charticulator/src/*"],
-            "visual": [".visual/src/*"],
-            "resources": ["./charticulator/resources/*"]
+            "visual": ["./visual/src/*"],
+            "resources": ["./charticulator/resources/*"],
+            "assets": ["./visual/assets/*"]
         }
     },
     "files": [
