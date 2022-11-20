@@ -9,20 +9,23 @@ import {
 } from "charticulator/src/worker";
 import {
     deepClone,
+    defaultDigitsGroup,
     Prototypes,
+    setFormatOptions,
     Specification,
 } from "charticulator/src/core/index";
-import { CharticulatorAppConfig } from "charticulator/src/app/config";
+import { CharticulatorAppConfig, MainViewConfig } from "charticulator/src/app/config";
 import { Actions, NestedEditorData } from "charticulator/src/app";
 import { MappingType } from "charticulator/src/core/specification";
 import { Dataset } from "charticulator/src/core";
-import { defaultVersionOfTemplate } from "charticulator/src/app/stores/defaults";
+// import { defaultVersionOfTemplate } from "charticulator/src/app/stores/defaults";
 import { EditorType } from "charticulator/src/app/stores/app_store";
 import {
     NestedEditorEventType,
-    NestedEditorMessage,
-    NestedEditorMessageType,
+    // NestedEditorMessage,
+    // NestedEditorMessageType,
 } from "charticulator/src/app/application";
+import { LocalizationConfig } from "charticulator/src/container/container";
 
 const script = require("raw-loader!charticulator/dist/scripts/worker.bundle.js");
 const charticulatorConfig = require("json-loader!./../../charticulator/dist/scripts/config.json");
@@ -33,10 +36,13 @@ export interface EditorProps {
     chart: any;
     dataset: Dataset.Dataset;
     columnMappings: { [key: string]: string };
+    mainView?: MainViewConfig,
     onSave: (chart: {
         chart: Specification.Chart,
         template: Specification.Template.ChartTemplate
     }) => void;
+    localizaiton?: LocalizationConfig,
+    utcTimeZone: boolean,
     onClose: () => void;
     onExport: (template: Specification.Template.ChartTemplate, clipboard: boolean) => void;
     onImport: () => Promise<Specification.Chart>;
@@ -47,6 +53,9 @@ export const Editor: React.FC<EditorProps> = ({
     chart,
     height,
     dataset,
+    localizaiton,
+    utcTimeZone,
+    mainView,
     onSave,
     onClose,
     onExport,
@@ -111,6 +120,17 @@ export const Editor: React.FC<EditorProps> = ({
                     template,
                 });
             }, EditorType.Embedded);
+
+            appStore.setLocaleFileFormat({
+                currency: localizaiton.currency,
+                delimiter: localizaiton.decemalDelimiter,
+                group: `[${defaultDigitsGroup}, 0]`,
+                numberFormat: {
+                    decimal: localizaiton.decemalDelimiter,
+                    remove: localizaiton.thousandsDelimiter,
+                },
+                utcTimeZone: utcTimeZone,
+            });
         },
         []
     );
@@ -148,7 +168,7 @@ export const Editor: React.FC<EditorProps> = ({
             <MainView
                 store={appStore}
                 // ref={mainView}
-                viewConfiguration={config.MainView}
+                viewConfiguration={mainView ?? config.MainView}
                 menuBarHandlers={{
                     onContactUsLink: () => { },
                     onCopyToClipboardClick: () => {

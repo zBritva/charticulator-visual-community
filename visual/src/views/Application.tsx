@@ -12,10 +12,15 @@ import { VisualSettings } from '../settings';
 // import { convertPointToTooltip } from "./tooltiputils";
 // import { strings } from './strings';
 import { convertData } from './../utils/dataParser';
-import { ChartTemplate, Dataset } from 'charticulator/src/container';
+import { ChartTemplate, Dataset, defaultDigitsGroup } from 'charticulator/src/container';
 import { initialize } from "charticulator/src/core/index";
 import { copyToClipboard, readFileAsString } from 'charticulator/src/app/utils';
 const charticulatorConfig = require("json-loader!./../../charticulator/dist/scripts/config.json");
+
+import {
+    setFormatOptions,
+} from "charticulator/src/core/index";
+import { PositionsLeftRight, PositionsLeftRightTop, UndoRedoLocation } from 'charticulator/src/app/main_view';
 
 export interface ApplicationProps {
     host: powerbi.extensibility.visual.IVisualHost
@@ -78,6 +83,13 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
         (async () => {
             await initialize(charticulatorConfig);
             setInitialization(true);
+            setFormatOptions({
+                currency: [localizaiton?.currency, ""],
+                grouping: defaultDigitsGroup,
+                decimal: localizaiton?.decemalDelimiter,
+                thousands:
+                  localizaiton?.thousandsDelimiter,
+              });
 
             if (option) {
                 host.eventService.renderingFinished(option);
@@ -94,6 +106,12 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
     const dataView = option?.dataViews[0];
     const template = settings && settings.chart?.template;
     const [dataset, selections] = React.useMemo(() => convertData(dataView, selectionBuilderCreator), [dataView, selectionBuilderCreator]);
+    const localizaiton = React.useMemo(() => ({
+        currency: settings?.localization.currency,
+        decemalDelimiter: settings?.localization.decemalDelimiter,
+        thousandsDelimiter: settings?.localization.thousandsDelimiter
+    }), [settings]);
+
 
     const createChartFromTemplate = React.useCallback((template: string, dataset: Dataset.Dataset) => {
         const chartJSON = JSON.parse(template);
@@ -186,6 +204,18 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
                     columnMappings={settings.chart.columnMappings as any}
                     dataset={dataset}
                     onSave={onSave}
+                    localizaiton={localizaiton}
+                    utcTimeZone={settings.localization.utcTimeZone}
+                    mainView={{
+                        ColumnsPosition: settings.panels.defaultDatasetPanelPosition as PositionsLeftRight,
+                        EditorPanelsPosition:  settings.panels.defaultPanelsPosition as PositionsLeftRight,
+                        ToolbarPosition: PositionsLeftRightTop.Top,
+                        ToolbarLabels: true,
+                        Name: "Charticulator (Community version)",
+                        MenuBarButtons: PositionsLeftRight.Right,
+                        MenuBarSaveButtons: PositionsLeftRight.Left,
+                        UndoRedoLocation: UndoRedoLocation.ToolBar
+                    }}
                     onClose={() => {
 
                     }}
@@ -223,6 +253,8 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
                     dataset={dataset}
                     onSelect={onSelect}
                     onContextMenu={onContextMenu}
+                    localizaiton={localizaiton}
+                    utcTimeZone={settings.localization.utcTimeZone}
                 />
             </>
         )

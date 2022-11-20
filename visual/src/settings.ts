@@ -32,6 +32,11 @@ const defaultTemplate = require("raw-loader!visual/../assets/chart.tmplt");
 
 export class VisualSettings extends DataViewObjectsParser {
   public chart: ChartSettings = new ChartSettings();
+  public localization: Localization = new Localization();
+  public defaults: Defaults = new Defaults();
+  public panels: Panels = new Panels();
+  public colors: Colors = new Colors();
+  public highlight: Highlight = new Highlight();
 
   constructor() {
     super();
@@ -43,3 +48,34 @@ export class ChartSettings {
   public template: string = defaultTemplate.default;
   public columnMappings: string = "{}";
 }
+
+export class Localization {
+  public decemalDelimiter: string = ".";
+  public thousandsDelimiter: string = ",";
+  public currency: string = "$";
+  public utcTimeZone: boolean = false;
+}
+
+export class Defaults {
+  public left: number = 20;
+  public right: number = 20;
+  public top: number = 20;
+  public bottom: number = 20;
+  public width: number = 600;
+  public height: number = 400;
+}
+
+export class Panels {
+  public defaultPanelsPosition: string = "right";
+  public defaultDatasetPanelPosition: string = "right";
+}
+
+
+export class Colors {
+  public updateColors: boolean = true;  
+}
+
+export class Highlight {
+  public addHighlightColumns: boolean = false;
+}
+

@@ -1,4 +1,5 @@
-import { ChartContainer, Dataset, Specification } from "charticulator/src/container";
+import { ChartContainer, Dataset, isUtcTimeZone, Specification } from "charticulator/src/container";
+import { LocalizationConfig } from "charticulator/src/container/container";
 import React from "react";
 
 
@@ -15,6 +16,8 @@ export interface ViewerProps {
     chart: Specification.Chart;
     dataset: Dataset.Dataset;
     defaultAttributes: any;
+    localizaiton?: LocalizationConfig,
+    utcTimeZone: boolean,
     onSelect?: (table: string, rowIndices: number[], modifiers?: IModifiers) => void;
     onContextMenu?: (table: string, rowIndices: number[], modifiers: IModifiers) => void; 
 }
@@ -26,11 +29,13 @@ export const ChartViewer: React.FC<ViewerProps> = ({
     chart,
     dataset,
     defaultAttributes,
+    localizaiton,
+    utcTimeZone,
     onSelect,
     onContextMenu
 }) => {
     const container = React.useMemo(() => {
-        const container = new ChartContainer({ chart, defaultAttributes }, dataset);
+        const container = new ChartContainer({ chart, defaultAttributes }, dataset, undefined, localizaiton, utcTimeZone);
 
         return container;
     }, [chart, defaultAttributes, dataset, width, height]);
