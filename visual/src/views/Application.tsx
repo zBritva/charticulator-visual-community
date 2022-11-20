@@ -4,6 +4,7 @@ import powerbi from "powerbi-visuals-api";
 import VisualUpdateOptions = powerbi.extensibility.visual.VisualUpdateOptions;
 
 import { Editor } from './Editor';
+import { IUnmappedColumns, Mapping, UnmappedColumnName } from './Mapping';
 import { ChartViewer, IModifiers } from './ChartViewer';
 // import { Mapping } from "./Mapping"
 // import { Tutorial } from "./Tutorial"
@@ -47,12 +48,12 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
         }
     }, [option]);
 
-    const persistProperty = React.useCallback((json_string: string) => {
+    const persistProperty = React.useCallback((object: string, property: string, value: string) => {
         const instance: powerbi.VisualObjectInstance = {
-            objectName: "chart",
+            objectName: object,
             selector: null,
             properties: {
-                template: json_string
+                [property]: value
             }
         };
 
@@ -67,7 +68,8 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
         template,
     }: any) => {
         const chartJSON = JSON.stringify(template);
-        persistProperty(chartJSON);
+        persistProperty('chart', 'template', chartJSON);
+        persistProperty('chart', 'columnMappings', JSON.stringify(unmappedColumns));
     }, [persistProperty]);
 
     const selectionManager = React.useMemo(() => {
@@ -107,6 +109,7 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
     // conver data from Power BI to internal structure
     const settings = parseSettings(option?.dataViews[0]);
     const dataView = option?.dataViews[0];
+    const storedMappedColumns = (settings?.chart && JSON.parse(settings.chart.columnMappings)) ?? [];
     const template = settings && settings.chart?.template;
     const [dataset, selections] = React.useMemo(() => convertData(dataView, selectionBuilderCreator), [dataView, selectionBuilderCreator]);
     const localizaiton = React.useMemo(() => ({
@@ -115,34 +118,57 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
         thousandsDelimiter: settings?.localization.thousandsDelimiter
     }), [settings]);
 
+    const [unmappedColumns, setUnmappedColumn] = React.useState<IUnmappedColumns[]>(storedMappedColumns);
 
     const createChartFromTemplate = React.useCallback((template: string, dataset: Dataset.Dataset) => {
         const chartJSON = JSON.parse(template);
         const chartTemplate = new ChartTemplate(
             chartJSON
         );
+        debugger;
 
         const chartTables = chartJSON.tables;
+        const newUnmappedColumns: IUnmappedColumns[] = [];
 
         chartTables.forEach((table: any) => {
-        chartTemplate.assignTable(
-            table.name,
-            table.name
-        );
-        table.columns.forEach((column: any) => {
-            chartTemplate.assignColumn(
-            table.name,
-            column.name,
-            column.name
+            chartTemplate.assignTable(
+                table.name,
+                table.name
             );
-        })
+
+            const datasetTable = dataset.tables.find(t => table.type == t.type);
+
+            table.columns.forEach((column: any) => {
+                const datasetColumn =datasetTable?.columns.find(c => c.name === column.name || unmappedColumns.find(uc => uc.powerbiColumn == c.name))
+
+                if (datasetColumn) {
+                    chartTemplate.assignColumn(
+                        table.name,
+                        column.name,
+                        datasetColumn.name
+                    );
+                } else {
+                    newUnmappedColumns.push({
+                        table: table.name,
+                        tableType: table.type,
+                        column: column.name,
+                        columnType: column.type,
+                        powerbiColumn: UnmappedColumnName
+                    });
+                }
+            })
         });
 
-        const instance = chartTemplate.instantiate(dataset);
-        const { chart } = instance;
-
-        return chart;
-    }, []);
+        if (newUnmappedColumns.filter(c => c.powerbiColumn === UnmappedColumnName).length === 0) {
+            const instance = chartTemplate.instantiate(dataset);
+            const { chart } = instance;
+            
+            return chart;
+        } else {
+            setUnmappedColumn(newUnmappedColumns);
+            return null;
+        }
+    }, [setUnmappedColumn, unmappedColumns]);
 
     const onSelect = React.useCallback((table: string, rowIndices: number[], modifiers?: IModifiers) => {
         // TODO handle selection
@@ -176,7 +202,7 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
                         try {
                             const template = await readFileAsString(file);
                             JSON.parse(template); // parse ensure that string is JSON
-                            persistProperty(template);
+                            persistProperty('chart', 'template', template);
                             const specification = createChartFromTemplate(template, dataset);
                             resolve(specification);
                         } catch (e) {
@@ -198,69 +224,96 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
 
     if (option && option.editMode === powerbi.EditMode.Advanced) {
         host.tooltipService.hide({immediately: true, isTouchEvent: false});
-        return (
-            <>
-                <Editor
-                    width={option.viewport.width}
-                    height={option.viewport.height}
-                    chart={createChartFromTemplate(template, dataset)}
-                    columnMappings={settings.chart.columnMappings as any}
-                    dataset={dataset}
-                    onSave={onSave}
-                    localizaiton={localizaiton}
-                    utcTimeZone={settings.localization.utcTimeZone}
-                    mainView={{
-                        ColumnsPosition: settings.panels.defaultDatasetPanelPosition as PositionsLeftRight,
-                        EditorPanelsPosition:  settings.panels.defaultPanelsPosition as PositionsLeftRight,
-                        ToolbarPosition: PositionsLeftRightTop.Top,
-                        ToolbarLabels: true,
-                        Name: "Charticulator (Community version)",
-                        MenuBarButtons: PositionsLeftRight.Right,
-                        MenuBarSaveButtons: PositionsLeftRight.Left,
-                        UndoRedoLocation: UndoRedoLocation.ToolBar
-                    }}
-                    onClose={() => {
-
-                    }}
-                    onExport={async (template, clipboard) => {
-                        const json = JSON.stringify(template);
-                        if (clipboard) {
-                            try {
-                                const clipboardPermissions = await navigator.permissions.query({ name: 'clipboard-write' as any });
-                                if (clipboardPermissions.state === 'granted') {
-                                    window.focus();
-                                    await navigator.clipboard.writeText(json);
-                                } else {
-                                    copyToClipboard(json);
+        const chart =createChartFromTemplate(template, dataset);
+        if (chart) {
+            return (
+                <>
+                    <Editor
+                        width={option.viewport.width}
+                        height={option.viewport.height}
+                        chart={createChartFromTemplate(template, dataset)}
+                        columnMappings={settings.chart.columnMappings as any}
+                        dataset={dataset}
+                        onSave={onSave}
+                        localizaiton={localizaiton}
+                        utcTimeZone={settings.localization.utcTimeZone}
+                        mainView={{
+                            ColumnsPosition: settings.panels.defaultDatasetPanelPosition as PositionsLeftRight,
+                            EditorPanelsPosition:  settings.panels.defaultPanelsPosition as PositionsLeftRight,
+                            ToolbarPosition: PositionsLeftRightTop.Top,
+                            ToolbarLabels: true,
+                            Name: "Charticulator (Community version)",
+                            MenuBarButtons: PositionsLeftRight.Right,
+                            MenuBarSaveButtons: PositionsLeftRight.Left,
+                            UndoRedoLocation: UndoRedoLocation.ToolBar
+                        }}
+                        onClose={() => {
+    
+                        }}
+                        onExport={async (template, clipboard) => {
+                            const json = JSON.stringify(template);
+                            if (clipboard) {
+                                try {
+                                    const clipboardPermissions = await navigator.permissions.query({ name: 'clipboard-write' as any });
+                                    if (clipboardPermissions.state === 'granted') {
+                                        window.focus();
+                                        await navigator.clipboard.writeText(json);
+                                    } else {
+                                        copyToClipboard(json);
+                                    }
+                                } catch(e) {
+                                    console.error(e);
                                 }
-                            } catch(e) {
-                                console.error(e);
+                            } else {
+                                await host.downloadService.exportVisualsContent(json, `${template.specification._id}.json`, 'json', 'template');
                             }
-                        } else {
-                            await host.downloadService.exportVisualsContent(json, `${template.specification._id}.json`, 'json', 'template');
-                        }
-                    }}
-                    onImport={importTempalte}
-                />
-            </>
-        );
+                        }}
+                        onImport={importTempalte}
+                    />
+                </>
+            );
+        } else {
+            return (<>
+                <p>Chart is not loaded to editor...</p>
+            </>);
+        }
     } else {
-
-        return (
-            <>
-                <ChartViewer
-                    width={option.viewport.width}
-                    height={option.viewport.height}
-                    chart={createChartFromTemplate(template, dataset)}
-                    defaultAttributes={{}}    
-                    dataset={dataset}
-                    onSelect={onSelect}
-                    onContextMenu={onContextMenu}
-                    localizaiton={localizaiton}
-                    utcTimeZone={settings.localization.utcTimeZone}
-                />
-            </>
-        )
+        if (unmappedColumns.filter(c => c.powerbiColumn === UnmappedColumnName).length > 0) {
+            return (
+                <>
+                    <Mapping
+                        dataset={dataset}
+                        unmappedColumns={unmappedColumns}
+                        onConfirmMapping={(mappedColumns: IUnmappedColumns[]) => {
+                            setUnmappedColumn(mappedColumns);
+                            persistProperty('chart', 'columnMappings', JSON.stringify(mappedColumns));
+                        }}
+                    />
+                </>
+            );
+        }
+        const chart =createChartFromTemplate(template, dataset);
+        if (chart) {
+            return (
+                <>
+                    <ChartViewer
+                        width={option.viewport.width}
+                        height={option.viewport.height}
+                        chart={chart}
+                        defaultAttributes={{}}    
+                        dataset={dataset}
+                        onSelect={onSelect}
+                        onContextMenu={onContextMenu}
+                        localizaiton={localizaiton}
+                        utcTimeZone={settings.localization.utcTimeZone}
+                    />
+                </>
+            );
+        } else {
+            return (<>
+                <p>Chart is not loaded...</p>
+            </>);
+        }
     }
 }
 

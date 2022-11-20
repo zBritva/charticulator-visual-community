@@ -2,10 +2,73 @@
 
 p {
     font-size: 20px;
-    font-weight: bold;
     em {
         background: yellow;
         padding: 5px;
         
     }
+}
+
+.mapping {
+    margin: 30px;
+    padding: 2px;
+    overflow-y: auto;
+
+    h1 {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    p {
+        font-size: 14px;
+    }
+
+    table {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        tr {
+            text-align: left;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+
+            th,td {
+                height: 40px;
+                display: flex;
+                flex: 1;
+                align-items: center;
+            }
+
+            th {
+                color: #333333;
+            }
+
+            td.columns {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: stretch;
+                vertical-align: middle;
+
+                button {
+                    width: 100%;
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                }
+            }
+        }
+
+        width: 100%;
+        color: #666666;
+        font-size: 14px;
+    }
+}
+
+.mapping tr {     
+    border-bottom: 1px solid #d8d8d8;
+}
+
+.confirm {
+    float: right;
+    margin-top: 10px;
 }

@@ -46,7 +46,7 @@ export class VisualSettings extends DataViewObjectsParser {
 
 export class ChartSettings {
   public template: string = defaultTemplate.default;
-  public columnMappings: string = "{}";
+  public columnMappings: string = "[]";
 }
 
 export class Localization {

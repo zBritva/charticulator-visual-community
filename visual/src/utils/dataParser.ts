@@ -80,7 +80,7 @@ export function convertData(dataView: DataView, createSelectionBuilder: () => IS
     }
 
     if (categories?.length || values?.length) {
-        const allColumns = [...categories, ...values];
+        const allColumns = [...(categories ?? []), ...(values ?? [])];
         allColumns.forEach(category => {
             const source = category.source;
             const displayName = source.displayName;
