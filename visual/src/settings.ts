@@ -28,7 +28,7 @@
 
 import { DataViewObjectsParser } from "./utils/dataViewObjectsParser";
 
-const defaultTemplate = require("../assets/chart.json");
+import defaultTemplate from "../assets/chart.json";
 
 export class VisualSettings extends DataViewObjectsParser {
   public chart: ChartSettings = new ChartSettings();
@@ -45,7 +45,7 @@ export class VisualSettings extends DataViewObjectsParser {
 
 
 export class ChartSettings {
-  public template: string = defaultTemplate.default;
+  public template: string = JSON.stringify(defaultTemplate);
   public columnMappings: string = "[]";
 }
 
