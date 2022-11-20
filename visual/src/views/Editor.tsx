@@ -10,8 +10,6 @@ import {
 import {
     deepClone,
     defaultDigitsGroup,
-    Prototypes,
-    setFormatOptions,
     Specification,
 } from "charticulator/src/core/index";
 import { CharticulatorAppConfig, MainViewConfig } from "charticulator/src/app/config";

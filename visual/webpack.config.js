@@ -68,6 +68,11 @@ module.exports = {
     module: {
         rules: [
             {
+                parser: {
+                    amd: false
+                }
+            },
+            {
                 test: /\.pegjs$/,
                 loader: require.resolve('pegjs-loader'),
                 options: {
@@ -119,6 +124,11 @@ module.exports = {
                     }
                 ],
                 exclude: [/node_modules/]
+            },
+            {
+                test: /\.json$/,
+                loader: require.resolve('json-loader'),
+                type: "javascript/auto"
             },
             {
                 test: /\.(css|scss|less)?$/,
