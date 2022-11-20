@@ -1,7 +1,7 @@
 {
   "visual": {
-    "name": "Charticulator (Community version)",
-    "displayName": "visual",
+    "name": "CharticulatorCommunityVersion",
+    "displayName": "Charticulator (Community version)",
     "guid": "charticulatorVisualCommunity487D3ADCA7E14F729E78065092536DBD",
     "visualClassName": "Visual",
     "version": "0.0.1",
