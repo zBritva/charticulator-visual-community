@@ -153,8 +153,7 @@ module.exports = {
         alias: {
             charticulator: path.resolve(__dirname, "./../charticulator/"),
             visual: path.resolve(__dirname, '/src'),
-            resources: path.resolve(__dirname, "../../charticulator/resources"),
-            src: path.resolve(__dirname, '/..charticulator/src'),
+            resources: path.resolve(__dirname, "../charticulator/resources"),
         },
     },
     output: {
