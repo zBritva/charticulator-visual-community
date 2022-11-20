@@ -28,7 +28,7 @@
 
 import { DataViewObjectsParser } from "./utils/dataViewObjectsParser";
 
-import defaultTemplate from "../assets/chart.json";
+import defaultTemplate from "../assets/chart";
 
 export class VisualSettings extends DataViewObjectsParser {
   public chart: ChartSettings = new ChartSettings();
