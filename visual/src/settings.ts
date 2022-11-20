@@ -28,7 +28,7 @@
 
 import { DataViewObjectsParser } from "./utils/dataViewObjectsParser";
 
-const defaultTemplate = require("../assets/chart.tmplt");
+const defaultTemplate = require("../assets/chart.json");
 
 export class VisualSettings extends DataViewObjectsParser {
   public chart: ChartSettings = new ChartSettings();
