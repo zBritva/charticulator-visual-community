@@ -6,12 +6,8 @@ import VisualUpdateOptions = powerbi.extensibility.visual.VisualUpdateOptions;
 import { Editor } from './Editor';
 import { IUnmappedColumns, Mapping, UnmappedColumnName } from './Mapping';
 import { ChartViewer, IModifiers } from './ChartViewer';
-// import { Mapping } from "./Mapping"
-// import { Tutorial } from "./Tutorial"
+import { Tutorial } from "./Tutorial";
 import { VisualSettings } from '../settings';
-// import { checkColumns, applyMapping, updateDataValues, colorKey, defaultDompurifyConfig } from "./utils";
-// import { convertPointToTooltip } from "./tooltiputils";
-// import { strings } from './strings';
 import { convertData } from './../utils/dataParser';
 import { ChartTemplate, ColorUtils, Dataset, defaultDigitsGroup } from 'charticulator/src/container';
 import { initialize } from "charticulator/src/core/index";
@@ -220,6 +216,10 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
 
     if (!option || !solverInitialized) {
         return (<p>Loading...</p>)
+    }
+
+    if (!dataView) {
+        return (<Tutorial />);
     }
 
     if (option && option.editMode === powerbi.EditMode.Advanced) {
