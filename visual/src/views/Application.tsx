@@ -124,6 +124,13 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
 
         const chartTables = chartJSON.tables;
         const newUnmappedColumns: IUnmappedColumns[] = [];
+        // tweak tables for old templates
+        if (chartTables[0] != undefined && chartTables[0]?.type === undefined) {
+            chartTables[0].type = Dataset.TableType.Main;
+        }
+        if (chartTables[1] != undefined && chartTables[1].type === undefined) {
+            chartTables[1].type = Dataset.TableType.Links;
+        }
 
         chartTables.forEach((table: any) => {
             chartTemplate.assignTable(
