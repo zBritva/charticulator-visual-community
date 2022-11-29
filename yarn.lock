@@ -8570,10 +8570,10 @@ powerbi-visuals-utils-dataviewutils@2.4.1:
   resolved "https://registry.yarnpkg.com/powerbi-visuals-utils-dataviewutils/-/powerbi-visuals-utils-dataviewutils-2.4.1.tgz#8657a24d773ac9e471b621195f04e9a24ccd8138"
   integrity sha512-xgI4ru1KWcYFTbftLsR7Pzg14cslVPajUZUyRk6nzCEQvUMN/kVtPpVT5+s8UuhDZe7zpqSDAhSGS5yAcn9GcA==
 
-powerbi-visuals-webpack-plugin@3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/powerbi-visuals-webpack-plugin/-/powerbi-visuals-webpack-plugin-3.0.0.tgz#8fdeea26d6889db6786406346202d9b1780de6a7"
-  integrity sha512-/fXTO4R+l9pE/6Rk0AVSDG+CUQTV37jgnU5u5D2/Kq7h3wtsPF/4eL8XzcP2LORkyNPTgoEirBt8HLE4RezwXw==
+powerbi-visuals-webpack-plugin@3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/powerbi-visuals-webpack-plugin/-/powerbi-visuals-webpack-plugin-3.1.1.tgz#9e6c14f210e141e37f183f5d4d22571177d3e2af"
+  integrity sha512-W76SwYF/6XNA+dMksL92sEbqS05Ih3vkSXsrR7p7eo8lXbXmhAO5azagIosVURoIXfaLnRfuqI+d8zoMpkDzFg==
   dependencies:
     ajv "6.12.3"
     chalk "^4.1.1"
@@ -8581,7 +8581,7 @@ powerbi-visuals-webpack-plugin@3.0.0:
     fs-extra "9.0.1"
     jszip "^3.7.0"
     lodash.clonedeep "4.5.0"
-    webpack-sources "^3.2.1"
+    webpack-sources "^3.2.3"
 
 preact-compat@^3.18.3:
   version "3.19.0"
@@ -11185,7 +11185,7 @@ webpack-sources@^1.4.0, webpack-sources@^1.4.1:
     source-list-map "^2.0.0"
     source-map "~0.6.1"
 
-webpack-sources@^3.2.1, webpack-sources@^3.2.3:
+webpack-sources@^3.2.3:
   version "3.2.3"
   resolved "https://registry.yarnpkg.com/webpack-sources/-/webpack-sources-3.2.3.tgz#2d4daab8451fd4b240cc27055ff6a0c2ccea0cde"
   integrity sha512-/DyMEOrDgLKKIG0fmvtz+4dUX/3Ghozwgm6iPp8KRhvn+eQf9+Q7GWxVNMk3+uCPWfdXYC4ExGBckIXdFEfH1w==

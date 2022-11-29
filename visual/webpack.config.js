@@ -184,6 +184,11 @@ module.exports = {
         "realWindow": "Function('return this')()",
         "CHARTICULATOR_PACKAGE": `{version:${version}}`
     },
+    performance: {
+        hints: false,
+        maxEntrypointSize: 512000,
+        maxAssetSize: 512000
+    },
     plugins: [
         new webpack.DefinePlugin({
             CHARTICULATOR_PACKAGE: JSON.stringify({
