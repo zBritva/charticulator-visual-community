@@ -175,7 +175,6 @@ module.exports = {
             "access-control-allow-origin": "*",
             "cache-control": "public, max-age=0"
         },
-        hot: false
     },
     externals: {
         "powerbi-visuals-api": 'null',
