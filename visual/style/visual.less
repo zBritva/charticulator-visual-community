@@ -1,21 +1,34 @@
 @import "./../../charticulator/dist/styles/app.css";
 
-p {
-    font-size: 20px;
-    em {
-        background: yellow;
-        padding: 5px;
-        
+h1 {
+    font-size: 16px;
+}
+
+.tutorialView {
+    overflow-y: scroll;
+    height: 100%;
+}
+
+.tutorial, .linkedin, .twitter, .youtube, .templates {
+    h1 {
+        font-weight: bold;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    h2 {
+        margin-top: 5px;
+        margin-bottom: 5px;
+        font-size: 14px;
+    }
+
+    p {
+        font-size: 12px;
     }
 }
 
-h1 {
-    margin-bottom: 10px;
-    font-weight: bold;
-}
-
-.tutorial {
-    h2 {
+.youtube, .templates {
+    p {
         margin-bottom: 5px;
     }
 }
@@ -24,10 +37,6 @@ h1 {
     margin: 30px;
     padding: 2px;
     overflow-y: auto;
-
-    h1 {
-        font-size: 16px;
-    }
 
     p {
         font-size: 14px;

@@ -225,7 +225,7 @@ const ApplicationContainer: React.ForwardRefRenderFunction<ApplicationPropsRef, 
     }
 
     if (!dataView) {
-        return (<Tutorial />);
+        return (<Tutorial openURL={(url: string) => host.launchUrl(url)} />);
     }
 
     if (option && option.editMode === powerbi.EditMode.Advanced) {
