@@ -1,0 +1,13 @@
+package-lock.json
+node_modules/
+extensions/
+datasets/
+dist/
+.sass-cache/
+docs/
+cert.pem
+key.pem
+.tmp/
+.env
+.idea/
+visual/webpack.statistics.html

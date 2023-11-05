@@ -1,0 +1,20 @@
+{
+  "visual": {
+    "name": "CharticulatorCommunityVersion",
+    "displayName": "Charticulator (Community version)",
+    "guid": "charticulatorVisualCommunity487D3ADCA7E14F729E78065092536DBD",
+    "visualClassName": "Visual",
+    "version": "0.0.3",
+    "description": "The community version of the charticulator visual. The visual in development mode doesn't include all functionalities implemented in the original version. But the visual uses the latest version of the Charticulator with new features and bug fixes",
+    "supportUrl": "https://github.com/zBritva/charticulator-visual-community/issues",
+    "gitHubUrl": "https://github.com/zBritva/charticulator-visual-community"
+  },
+  "apiVersion": "4.7.0",
+  "author": { "name": "Ilfat Galiev", "email": "zbritva@gmail.com" },
+  "assets": { "icon": "assets/icon.png" },
+  "externalJS": [],
+  "style": "style/visual.less",
+  "capabilities": "capabilities.json",
+  "dependencies": null,
+  "stringResources": []
+}

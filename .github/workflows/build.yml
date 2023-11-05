@@ -1,0 +1,53 @@
+on:
+  release:
+    types: [created]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Checkout submodules
+        run: git submodule update --init --recursive
+      
+      - name: Install node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install packages
+        working-directory: ./
+        run: yarn install --ignore-engines
+      
+      - name: Copy config.yml
+        uses: canastro/copy-action@0.0.2
+        with:
+          source: config.yml
+          target: ./charticulator/config.yml
+
+      # - name: Build charticulator
+      #   env:
+      #     NODE_OPTIONS: "--max-old-space-size=8192"
+      #   working-directory: ./charticulator
+      #   run: yarn build
+
+      # - name: Build charticulator visual
+      #   env:
+      #     NODE_OPTIONS: "--max-old-space-size=8192"
+      #   working-directory: ./visual
+      #   run: yarn build
+
+      - name: Build charticulator and visual
+        env:
+          NODE_OPTIONS: "--max-old-space-size=8192"
+        working-directory: ./
+        run: yarn build
+
+      - name: Publish *.pbiviz
+        uses: actions/upload-artifact@v3
+        with:
+          name: visual
+          path: visual/dist/charticulatorVisualCommunity487D3ADCA7E14F729E78065092536DBD.*.pbiviz
