@@ -4,7 +4,7 @@ import React from 'react';
 
 import { Dropdown, PrimaryButton, IDropdownOption } from "@fluentui/react"
 import { Dataset } from 'charticulator/src/core';
-import { IUnmappedColumns } from 'src/redux/slices/visualSlice';
+import { IColumnsMapping } from 'src/redux/slices/visualSlice';
 
 export const UnmappedColumnName = 'unmapped';
 
@@ -21,7 +21,7 @@ export const Mapping: React.FC<MappingProps> = ({
     dataset,
     onConfirmMapping
 }) => {
-    const [mappingState, setMapping] = React.useState<IUnmappedColumns[]>(unmappedColumns);
+    const [mappingState, setMapping] = React.useState<IColumnsMapping[]>(unmappedColumns);
 
     React.useEffect(() => {
         if (unmappedColumns != mappingState) {

@@ -27,7 +27,7 @@ import {
     // NestedEditorMessageType,
 } from "charticulator/src/app/application";
 import { LocalizationConfig } from "charticulator/src/container/container";
-import { useAppSelector } from "src/redux/hooks";
+import { useAppSelector } from "../redux/hooks";
 
 const script = require("raw-loader!charticulator/dist/scripts/worker.bundle.js");
 const charticulatorConfig = require("json-loader!./../../charticulator/dist/scripts/config.json");
@@ -51,13 +51,8 @@ export interface EditorProps {
 }
 
 export const Editor: React.FC<EditorProps> = ({
-    width,
-    chart,
-    height,
-    dataset,
     localizaiton,
     utcTimeZone,
-    // mainView,
     onSave,
     onClose,
     onExport,
@@ -65,6 +60,10 @@ export const Editor: React.FC<EditorProps> = ({
 }) => {
     console.log('Editor');
     const settings = useAppSelector((store) => store.visual.settings);
+    const template = useAppSelector((store) => store.visual.template);
+    const dataset = useAppSelector((store) => store.visual.dataset);
+    // const { height, width } = useAppSelector((store) => store.visual.viewport);
+    // const mapping = useAppSelector((store) => store.visual.mapping);
 
     const [appStore, setAppStore] = React.useState<AppStore | null>(null);
     const config: CharticulatorAppConfig = React.useMemo(
@@ -85,61 +84,6 @@ export const Editor: React.FC<EditorProps> = ({
         return defaultDataset;
     }, []);
 
-    const setupCallback = React.useCallback(
-        (appStore: AppStore) => (data: NestedEditorData) => {
-            const info: NestedEditorData = data;
-            if (info.specification && info.specification.mappings) {
-                info.specification.mappings.width = {
-                    type: MappingType.value,
-                    value: info.width,
-                } as Specification.ValueMapping;
-                info.specification.mappings.height = {
-                    type: MappingType.value,
-                    value: info.height,
-                } as Specification.ValueMapping;
-            }
-            if (!appStore) {
-                return;
-            }
-
-            appStore.dispatcher.dispatch(
-                new Actions.ImportChartAndDataset(
-                    info.specification,
-                    info.dataset,
-                    {
-                        filterCondition: info.filterCondition,
-                    },
-                    info.originSpecification
-                )
-            );
-            if (onClose) {
-                appStore.addListener(AppStore.EVENT_NESTED_EDITOR_CLOSE, () => {
-                    onClose();
-                });
-            }
-
-            appStore.setupNestedEditor((chart) => {
-                const template = deepClone(appStore.buildChartTemplate());
-                onSave({
-                    chart,
-                    template,
-                });
-            }, EditorType.Embedded);
-
-            appStore.setLocaleFileFormat({
-                currency: localizaiton.currency,
-                delimiter: localizaiton.decemalDelimiter,
-                group: `[${defaultDigitsGroup}, 0]`,
-                numberFormat: {
-                    decimal: localizaiton.decemalDelimiter,
-                    remove: localizaiton.thousandsDelimiter,
-                },
-                utcTimeZone: utcTimeZone,
-            });
-        },
-        [appStore, onClose, onSave]
-    );
-
     React.useEffect(() => {
         (async () => {
             const worker: CharticulatorWorkerInterface = new CharticulatorWorker(
@@ -150,18 +94,32 @@ export const Editor: React.FC<EditorProps> = ({
             const appStore = new AppStore(worker, dataset || defaultDataset);
             appStore.editorType = EditorType.Embedded;
 
-            setupCallback(appStore)({
-                template: null,
-                height,
-                width,
-                type: NestedEditorEventType.Load,
-                dataset: dataset,
-                id: "1",
-                specification: chart,
-                originSpecification: chart,
-                filterCondition: null,
-            });
-            setAppStore(appStore);
+            if (appStore) {
+                setAppStore(appStore);
+                appStore.setLocaleFileFormat({
+                    currency: localizaiton.currency,
+                    delimiter: localizaiton.decemalDelimiter,
+                    group: `[${defaultDigitsGroup}, 0]`,
+                    numberFormat: {
+                        decimal: localizaiton.decemalDelimiter,
+                        remove: localizaiton.thousandsDelimiter,
+                    },
+                    utcTimeZone: utcTimeZone,
+                });
+                if (template && dataset) {
+                    appStore.dispatcher.dispatch(
+                        new Actions.ImportChartAndDataset(
+                            deepClone(template.specification),
+                            deepClone(dataset),
+                            {
+                                filterCondition: null,
+                            },
+                            deepClone(template.specification)
+                        )
+                    );
+                    appStore.solveConstraintsAndUpdateGraphics(false);
+                }
+            }
         })();
     }, [config]);
 
@@ -172,7 +130,6 @@ export const Editor: React.FC<EditorProps> = ({
         <>
             <MainView
                 store={appStore}
-                // ref={mainView}
                 viewConfiguration={
                     {
                         ColumnsPosition: settings.panels.defaultDatasetPanelPosition as PositionsLeftRight,
@@ -189,7 +146,8 @@ export const Editor: React.FC<EditorProps> = ({
                     onContactUsLink: () => { },
                     onCopyToClipboardClick: () => {
                         const template = deepClone(appStore.buildChartTemplate());
-                        onExport(template, true);},
+                        onExport(template, true);
+                    },
                     onExportTemplateClick: () => {
                         const template = deepClone(appStore.buildChartTemplate());
                         onExport(template, false);
@@ -199,14 +157,14 @@ export const Editor: React.FC<EditorProps> = ({
                         console.log(specification);
                         appStore.dispatcher.dispatch(
                             new Actions.ImportChartAndDataset(
-                              specification,
-                              dataset,
-                              {
-                                filterCondition: null,
-                              },
-                              specification
+                                specification,
+                                dataset,
+                                {
+                                    filterCondition: null,
+                                },
+                                specification
                             )
-                          );
+                        );
                     }
                 }}
                 tabButtons={null}

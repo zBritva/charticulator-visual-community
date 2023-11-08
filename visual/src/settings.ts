@@ -28,7 +28,10 @@
 
 import { DataViewObjectsParser } from "./utils/dataViewObjectsParser";
 
-import defaultTemplate from "../assets/Chart.json";
+import template from "../assets/Chart.json";
+import { Specification } from "charticulator/src/container";
+
+export const defaultTemplate = template as Specification.Template.ChartTemplate;
 
 export interface IVisualSettings {
     chart: ChartSettings

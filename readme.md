@@ -14,3 +14,11 @@ The visual under development and some features is not developed yet.
 * ~~Import template file~~
 * ~~Export template to file~~
 * Update scales and axes
+
+
+## Build $ run
+
+`yarn run start:view` - start dev server for viewer container, without editor
+
+`yarn run start:editor` - start dev server for editor 
+ 

@@ -78,10 +78,10 @@ export class Visual implements IVisual {
         const dispatch = store.dispatch;
         this.settings = Visual.parseSettings(options && options.dataViews && options.dataViews[0]);
         dispatch(setViewport(deepClone(options.viewport)));
-        dispatch(setSettings(deepClone(this.settings)));
         dispatch(setDataView(deepClone(options.dataViews[0])));
         dispatch(setMode(options.editMode));
         dispatch(setViewMode(options.viewMode));
+        dispatch(setSettings(deepClone(this.settings)));
         console.log('end');
     }
 

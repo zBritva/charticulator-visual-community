@@ -17,20 +17,27 @@ import {
 } from "charticulator/src/core/index";
 
 import { useAppSelector, useAppDispatch } from '../redux/hooks'
-import { setSolverInitialized, setProperty, setUnmappedColumn, IUnmappedColumns } from '../redux/slices/visualSlice';
+import { setSolverInitialized, setProperty, setMapping, IColumnsMapping, setTemplate } from '../redux/slices/visualSlice';
 import { useSelector } from 'react-redux';
+import { deepClone } from '../utils/main';
+import { templateToChart } from '../utils/template';
+import { importTempalte } from '../utils/importTemplate';
+
 
 // tslint:disable-next-line
 export const Application: React.FC = () => {
 
     console.log('Application');
     const dataView = useAppSelector((store) => store.visual.dataview);
+    const dataset = useAppSelector((store) => store.visual.dataset);
+    const selections = useAppSelector((store) => store.visual.selections);
     const mode = useAppSelector((store) => store.visual.mode);
     const view = useAppSelector((store) => store.visual.view);
     const host = useAppSelector((store) => store.visual.host);
     const settings = useAppSelector((store) => store.visual.settings);
     const viewport = useAppSelector((store) => store.visual.viewport);
     const solverInitialized = useAppSelector((store) => store.visual.solverInitialized);
+    const chart = useAppSelector((store) => store.visual.chart);
     const dispatch = useAppDispatch();
 
     if (dataView) {
@@ -53,99 +60,36 @@ export const Application: React.FC = () => {
         return host.createSelectionManager();
     }, [host]);
 
-    const selectionBuilderCreator = React.useMemo(() => {
-        return () => host.createSelectionIdBuilder();
-    }, [host]);
-
     React.useEffect(() => {
         (async () => {
             await initialize(charticulatorConfig);
-            dispatch(setSolverInitialized());
             setFormatOptions({
                 currency: [localizaiton?.currency, ""],
                 grouping: defaultDigitsGroup,
                 decimal: localizaiton?.decemalDelimiter,
                 thousands:
-                    localizaiton?.thousandsDelimiter,
+                localizaiton?.thousandsDelimiter,
             });
-
+            
             ColorUtils.setDefaultColorPaletteGenerator(key => ColorUtils.colorFromHTMLColor(host.colorPalette.getColor(key).value));
             ColorUtils.setDefaultColorGeneratorResetFunction(() => host.colorPalette.reset());
-
+            
             if (dataView) {
                 host.eventService.renderingFinished({});
             }
+            dispatch(setSolverInitialized());
         })();
     }, [setSolverInitialized, setFormatOptions, initialize, host]);
 
     // conver data from Power BI to internal structure
-    const storedMappedColumns = (settings?.chart && JSON.parse(settings.chart.columnMappings)) ?? [];
-    const template = settings && settings.chart?.template;
-    const [dataset, selections] = React.useMemo(() => convertData(dataView, selectionBuilderCreator), [dataView, selectionBuilderCreator]);
+    // const storedMappedColumns = (settings?.chart && JSON.parse(settings.chart.columnMappings)) ?? [];
     const localizaiton = React.useMemo(() => ({
         currency: settings?.localization.currency,
         decemalDelimiter: settings?.localization.decemalDelimiter,
         thousandsDelimiter: settings?.localization.thousandsDelimiter
     }), [settings]);
 
-
     const unmappedColumns = useAppSelector((state) => state.visual.unmappedColumns);
-
-    const createChartFromTemplate = React.useCallback((template: string, dataset: Dataset.Dataset) => {
-        const chartJSON = JSON.parse(template);
-        const chartTemplate = new ChartTemplate(
-            chartJSON
-        );
-
-        const chartTables = chartJSON.tables;
-        const newUnmappedColumns: IUnmappedColumns[] = [];
-        // tweak tables for old templates
-        if (chartTables[0] != undefined && chartTables[0]?.type === undefined) {
-            chartTables[0].type = Dataset.TableType.Main;
-        }
-        if (chartTables[1] != undefined && chartTables[1].type === undefined) {
-            chartTables[1].type = Dataset.TableType.Links;
-        }
-
-        chartTables.forEach((table: any) => {
-            chartTemplate.assignTable(
-                table.name,
-                table.name
-            );
-
-            const datasetTable = dataset.tables.find(t => table.type == t.type);
-
-            table.columns.forEach((column: any) => {
-                const datasetColumn = datasetTable?.columns.find(c => c.name === column.name || unmappedColumns.find(uc => uc.powerbiColumn == c.name))
-
-                if (datasetColumn) {
-                    chartTemplate.assignColumn(
-                        table.name,
-                        column.name,
-                        datasetColumn.name
-                    );
-                } else {
-                    newUnmappedColumns.push({
-                        table: table.name,
-                        tableType: table.type,
-                        column: column.name,
-                        columnType: column.type,
-                        powerbiColumn: UnmappedColumnName
-                    });
-                }
-            })
-        });
-
-        if (newUnmappedColumns.filter(c => c.powerbiColumn === UnmappedColumnName).length === 0) {
-            const instance = chartTemplate.instantiate(dataset);
-            const { chart } = instance;
-
-            return chart;
-        } else {
-            dispatch(setUnmappedColumn(newUnmappedColumns));
-            return null;
-        }
-    }, [setUnmappedColumn, unmappedColumns]);
 
     const onSelect = React.useCallback((table: string, rowIndices: number[], modifiers?: IModifiers) => {
         // TODO handle selection
@@ -163,58 +107,34 @@ export const Application: React.FC = () => {
         );
     }, [dataView, selections]);
 
-    // const importTempalte = React.useCallback(() => {
-    //     return new Promise<any>((resolve, reject) => {
-    //         const inputElement = document.createElement("input");
-    //         inputElement.type = "file";
-    //         let file: File = null;
-    //         inputElement.accept = ["tmplt", "json"]
-    //             .map((x) => "." + x)
-    //             .join(",");
-    //         // eslint-disable-next-line
-    //         inputElement.onchange = async () => {
-    //             if (inputElement.files.length == 1) {
-    //                 file = inputElement.files[0];
-    //                 if (file) {
-    //                     try {
-    //                         const template = await readFileAsString(file);
-    //                         JSON.parse(template); // parse ensure that string is JSON
-    //                         setProperty({
-    //                             objectName: 'chart', objectProperty: 'template', value: template
-    //                         });
-    //                         const specification = createChartFromTemplate(template, dataset);
-    //                         resolve(specification);
-    //                     } catch (e) {
-    //                         console.error(e);
-    //                         reject();
-    //                     }
-    //                 }
-    //             } else {
-    //                 reject();
-    //             }
-    //         }
-    //         inputElement.click();
-    //     });
-    // }, [setProperty, readFileAsString, dataset]);
+    const onImportTempalte = React.useCallback(async () => {
+        const template = await importTempalte();
+        dispatch(setTemplate(template));
 
-    if (!dataView || !solverInitialized) {
+        const { chart } = templateToChart(template, dataset, []);
+
+        return chart;
+    }, [setProperty]);
+
+    if (!dataset || !solverInitialized) {
         return (<p>Loading...</p>)
     }
 
-    if (!dataView) {
+    if (!dataset) {
         return (<Tutorial openURL={(url: string) => host.launchUrl(url)} />);
     }
 
-    if (dataView && mode === powerbi.EditMode.Advanced) {
+    if (dataset && mode === powerbi.EditMode.Advanced) {
+        
         host.tooltipService.hide({ immediately: true, isTouchEvent: false });
-        const chart = createChartFromTemplate(template, dataset);
+        // const chart = createChartFromTemplate(template, dataset);
         if (chart) {
             return (
                 <>
                     <Editor
                         width={viewport.width}
                         height={viewport.height}
-                        chart={createChartFromTemplate(template, dataset)}
+                        chart={chart}
                         columnMappings={settings.chart.columnMappings as any}
                         dataset={dataset}
                         onSave={onSave}
@@ -251,7 +171,7 @@ export const Application: React.FC = () => {
                         //         await host.downloadService.exportVisualsContent(json, `${template.specification._id}.json`, 'json', 'template');
                         //     }
                         // }}
-                        // onImport={importTempalte}
+                        onImport={onImportTempalte}
                     />
                 </>
             );
@@ -261,23 +181,24 @@ export const Application: React.FC = () => {
             </>);
         }
     } else {
+        
         if (unmappedColumns.filter(c => c.powerbiColumn === UnmappedColumnName).length > 0) {
             return (
                 <>
                     <Mapping
                         dataset={dataset}
-                        unmappedColumns={unmappedColumns}
-                        onConfirmMapping={(mappedColumns: IUnmappedColumns[]) => {
-                            setUnmappedColumn(mappedColumns);
-                            setProperty({
+                        unmappedColumns={deepClone(unmappedColumns)}
+                        onConfirmMapping={(mappedColumns: IColumnsMapping[]) => {
+                            dispatch(setMapping(mappedColumns));
+                            dispatch(setProperty({
                                 objectName: 'chart', objectProperty: 'columnMappings', value: JSON.stringify(mappedColumns)
-                            });
+                            }));
                         }}
                     />
                 </>
             );
         }
-        const chart = createChartFromTemplate(template, dataset);
+        // const chart = createChartFromTemplate(template, dataset);
         if (chart && viewport) {
             if (view === powerbi.ViewMode.View) {
                 return (<>

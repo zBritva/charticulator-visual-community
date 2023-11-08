@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { IVisualSettings, VisualSettings } from '../../settings'
+import { IVisualSettings, VisualSettings, defaultTemplate } from '../../settings'
 
 import powerbi from "powerbi-visuals-api"
 import IViewport = powerbi.IViewport
@@ -9,11 +9,13 @@ import EditMode = powerbi.EditMode
 import ViewMode = powerbi.ViewMode
 import IVisualHost = powerbi.extensibility.visual.IVisualHost
 
-import { Dataset } from 'charticulator/src/core';
+import { Dataset, Specification } from 'charticulator/src/core';
 
 import { persistProperty } from './persistProperty'
+import { templateToChart } from '../../utils/template'
+import { convertData } from '../../utils/dataParser'
 
-export interface IUnmappedColumns {
+export interface IColumnsMapping {
     table: string,
     tableType: Dataset.TableType,
     column: string,
@@ -23,13 +25,18 @@ export interface IUnmappedColumns {
 
 export interface VisualState {
     settings: IVisualSettings
+    template: Specification.Template.ChartTemplate
+    chart: Specification.Chart
+    dataset: Dataset.Dataset
+    selections: Map<number, powerbi.extensibility.ISelectionId>
     viewport: IViewport
     dataview: DataView
     mode: EditMode
     view: ViewMode
     solverInitialized: boolean
     host: IVisualHost
-    unmappedColumns: IUnmappedColumns[]
+    unmappedColumns: IColumnsMapping[]
+    mapping: IColumnsMapping[]
 }
 
 export interface Property {
@@ -39,17 +46,25 @@ export interface Property {
 }
 
 const initialState: VisualState = {
-    settings: VisualSettings.getDefault() as VisualSettings,
     viewport: {
         height: 0,
         width: 0
     },
     dataview: null,
     mode: EditMode.Default,
+    settings: VisualSettings.getDefault() as VisualSettings,
+    chart: null,
+    dataset: {
+        name: "main",
+        tables: []
+    },
+    selections: new Map(),
+    template: defaultTemplate,
     solverInitialized: false,
     host: null,
     unmappedColumns: [],
-    view: ViewMode.View
+    view: ViewMode.View,
+    mapping: []
 }
 
 export const visualSlice = createSlice({
@@ -62,11 +77,30 @@ export const visualSlice = createSlice({
         setSettings: (state, action: PayloadAction<IVisualSettings>) => {
             state.settings = action.payload
         },
+        setTemplate: (state, action: PayloadAction<Specification.Template.ChartTemplate>) => {
+            state.template = action.payload
+
+            const { chart } = templateToChart(state.template, state.dataset, state.mapping);
+
+            state.chart = chart
+        },
         setViewport: (state, action: PayloadAction<IViewport>) => {
             state.viewport = action.payload
         },
         setDataView: (state, action: PayloadAction<DataView>) => {
             state.dataview = action.payload
+            const [dataset, selections] = convertData(state.dataview, state.host.createSelectionIdBuilder);
+            state.dataset = dataset
+            state.selections = selections
+
+            
+            const template = JSON.parse(state.settings.chart.template)
+            const mapping = state.mapping
+
+            state.template = template
+            const { chart } = templateToChart(template, dataset, mapping)
+
+            state.chart = chart
         },
         setMode: (state, action: PayloadAction<EditMode>) => {
             state.mode = action.payload
@@ -81,9 +115,11 @@ export const visualSlice = createSlice({
             const property = action.payload
             persistProperty(state.host, property.objectName, property.objectProperty, property.value);
         },
-        setUnmappedColumn: (state, action: PayloadAction<IUnmappedColumns[]>) => {
-            state.unmappedColumns = action.payload
-        },
+        setMapping: (state, action: PayloadAction<IColumnsMapping[]>) => {
+            state.mapping = action.payload
+            const { chart } = templateToChart(state.template, state.dataset, action.payload);
+            state.chart = chart;
+        }
     },
 })
 
@@ -97,7 +133,8 @@ export const {
     setSolverInitialized,
     setHost,
     setProperty,
-    setUnmappedColumn
+    setMapping,
+    setTemplate
 } = visualSlice.actions
 
 export default visualSlice.reducer
