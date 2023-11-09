@@ -18,7 +18,7 @@ import {
 import { useAppSelector, useAppDispatch } from '../redux/hooks'
 import { setSolverInitialized, setProperty, setMapping, IColumnsMapping, setTemplate } from '../redux/slices/visualSlice';
 import { deepClone } from '../utils/main';
-import { createChartFromTemplate, templateToChart } from '../utils/template';
+import { createChartFromTemplate } from '../utils/template';
 import { importTempalte } from '../utils/importTemplate';
 
 
@@ -79,12 +79,18 @@ export const Application: React.FC = () => {
     const unmappedColumns = useAppSelector((state) => state.visual.unmappedColumns);
 
     const onSelect = React.useCallback((table: string, rowIndices: number[], modifiers?: IModifiers) => {
+        if (!rowIndices) {
+            return;
+        }
         // TODO handle selection
         selectionManager.select(rowIndices.map(index => selections.get(index)).filter(s => s), modifiers?.ctrlKey); // TODO check meta for MacOS
     }, [dataView, selections]);
 
     const onContextMenu = React.useCallback((table: string, rowIndices: number[], modifiers: IModifiers) => {
         // TODO handle selection
+        if (!rowIndices) {
+            return;
+        }
         selectionManager.showContextMenu(
             rowIndices.map(index => selections.get(index)).filter(s => s),
             {
@@ -178,9 +184,6 @@ export const Application: React.FC = () => {
                     unmappedColumns={deepClone(unmappedColumns)}
                     onConfirmMapping={(mappedColumns: IColumnsMapping[]) => {
                         dispatch(setMapping(mappedColumns));
-                        dispatch(setProperty({
-                            objectName: 'chart', objectProperty: 'columnMappings', value: JSON.stringify(mappedColumns)
-                        }));
                     }}
                 />
             </>

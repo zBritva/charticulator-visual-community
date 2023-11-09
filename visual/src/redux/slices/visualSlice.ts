@@ -9,11 +9,13 @@ import EditMode = powerbi.EditMode
 import ViewMode = powerbi.ViewMode
 import IVisualHost = powerbi.extensibility.visual.IVisualHost
 
-import { Dataset, Specification } from 'charticulator/src/core';
+import { Dataset, Prototypes, Specification } from 'charticulator/src/core';
 
 import { persistProperty } from './persistProperty'
-import { createChartFromTemplate, templateToChart } from '../../utils/template'
+import { createChartFromTemplate } from '../../utils/template'
 import { convertData } from '../../utils/dataParser'
+import { deepClone } from '../../utils/main'
+import { ChartTemplateBuilder } from 'charticulator/src/app/template'
 
 export interface IColumnsMapping {
     table: string,
@@ -67,6 +69,27 @@ const initialState: VisualState = {
     mapping: []
 }
 
+function rebuildTemplate(templateString: string, dataset: Dataset.Dataset, mapping: IColumnsMapping[]) {
+    const { chart, unmappedColumns } = createChartFromTemplate(templateString, dataset, mapping)
+            
+    const chartManager = new Prototypes.ChartStateManager(
+        chart,
+        dataset,
+        null,
+        {},
+        {}
+    )
+
+    const builder = new ChartTemplateBuilder(
+        chart,
+        dataset,
+        chartManager,
+        CHARTICULATOR_PACKAGE.version
+    );
+
+    return { template: builder.build(), unmappedColumns, chart }
+}
+
 export const visualSlice = createSlice({
     name: 'visual',
     initialState,
@@ -83,9 +106,10 @@ export const visualSlice = createSlice({
             const templateString = action.payload
             const dataset = state.dataset
             const mapping = state.mapping
-
-            const { chart, unmappedColumns, template } = createChartFromTemplate(templateString, dataset, mapping)
+            debugger;
             
+            const { template, unmappedColumns, chart } = rebuildTemplate(templateString, dataset, mapping)
+
             state.template = template
             state.unmappedColumns = unmappedColumns
             state.chart = chart
@@ -124,8 +148,17 @@ export const visualSlice = createSlice({
         },
         setMapping: (state, action: PayloadAction<IColumnsMapping[]>) => {
             state.mapping = action.payload
-            const { chart } = templateToChart(state.template, state.dataset, action.payload);
+
+            const templateString = JSON.stringify(state.template);
+            const { template, unmappedColumns, chart } = rebuildTemplate(templateString, state.dataset, state.mapping)
+
             state.chart = chart;
+            state.template = template
+            state.unmappedColumns = unmappedColumns
+
+            // save the chart with new mapping;
+            persistProperty(state.host, 'chart', 'template', JSON.stringify(template));
+            persistProperty(state.host, 'chart', 'columnMappings', JSON.stringify(state.mapping));
         }
     },
 })

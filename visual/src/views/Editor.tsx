@@ -13,7 +13,7 @@ import {
     Specification,
 } from "charticulator/src/core/index";
 import { CharticulatorAppConfig, MainViewConfig } from "charticulator/src/app/config";
-import { Actions, NestedEditorData } from "charticulator/src/app";
+import { Actions } from "charticulator/src/app";
 import { Dataset } from "charticulator/src/core";
 // import { defaultVersionOfTemplate } from "charticulator/src/app/stores/defaults";
 import { EditorType } from "charticulator/src/app/stores/app_store";
@@ -23,6 +23,7 @@ import { PositionsLeftRight, PositionsLeftRightTop, UndoRedoLocation } from 'cha
 import { LocalizationConfig } from "charticulator/src/container/container";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { setProperty, setTemplate } from "../redux/slices/visualSlice";
+import { defaultVersionOfTemplate } from "charticulator/src/app/stores/defaults";
 
 const script = require("raw-loader!charticulator/dist/scripts/worker.bundle.js");
 const charticulatorConfig = require("json-loader!./../../charticulator/dist/scripts/config.json");
@@ -56,6 +57,7 @@ export const Editor: React.FC<EditorProps> = ({
     console.log('Editor');
     const settings = useAppSelector((store) => store.visual.settings);
     const template = useAppSelector((store) => store.visual.template);
+    console.log('editor template', template);
     const dataset = useAppSelector((store) => store.visual.dataset);
     // const { height, width } = useAppSelector((store) => store.visual.viewport);
     // const mapping = useAppSelector((store) => store.visual.mapping);
@@ -106,6 +108,11 @@ export const Editor: React.FC<EditorProps> = ({
                     utcTimeZone: utcTimeZone,
                 });
                 if (template && dataset) {
+
+                    if (template && template.version == undefined) {
+                        template.version = defaultVersionOfTemplate;
+                    }
+
                     // TODO fix loading chart with mapped columns
                     appStore.dispatcher.dispatch(
                         new Actions.ImportChartAndDataset(

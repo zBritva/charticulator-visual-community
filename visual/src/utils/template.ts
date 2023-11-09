@@ -2,33 +2,6 @@ import { ChartTemplate, Dataset, Specification } from "charticulator/src/contain
 import { IColumnsMapping } from "../redux/slices/visualSlice";
 import { UnmappedColumnName } from "../views/Mapping";
 
-export function templateToChart(template: Specification.Template.ChartTemplate, dataset: Dataset.Dataset, mapping: IColumnsMapping[]) {
-    const chartTemplate = new ChartTemplate(template);
-    chartTemplate.assignTable(template.tables[0].name, dataset.tables[0].name);
-
-    for (const column of template.tables[0].columns) {
-        chartTemplate.assignColumn(template.tables[0].name, column.name, mapping[column.name] || column.name);
-    }
-
-    if (dataset.tables[1] && template.tables[1]) {
-        chartTemplate.assignTable(template.tables[1].name, dataset.tables[1].name);
-
-        for (const column of template.tables[1].columns) {
-            chartTemplate.assignColumn(dataset.tables[1].name, column.name, mapping[column.name] || column.name);
-        }
-    }
-
-    const {
-        chart,
-        defaultAttributes
-    } = chartTemplate.instantiate(dataset);
-    return {
-        chartTemplate,
-        chart,
-        defaultAttributes
-    };
-}
-
 export function createChartFromTemplate(template: string, dataset: Dataset.Dataset, unmappedColumns: any) {
     const chartJSON = JSON.parse(template);
     const chartTemplate = new ChartTemplate(
@@ -45,6 +18,7 @@ export function createChartFromTemplate(template: string, dataset: Dataset.Datas
         chartTables[1].type = Dataset.TableType.Links;
     }
 
+    debugger;
     chartTables.forEach((table: any) => {
         chartTemplate.assignTable(
             table.name,
@@ -78,8 +52,8 @@ export function createChartFromTemplate(template: string, dataset: Dataset.Datas
         const instance = chartTemplate.instantiate(dataset);
         const { chart } = instance;
 
-        return { unmappedColumns: newUnmappedColumns, chart, template: chartJSON };
+        return { unmappedColumns: newUnmappedColumns, chart };
     } else {
-        return { unmappedColumns: newUnmappedColumns, chart: null, template: chartJSON };
+        return { unmappedColumns: newUnmappedColumns, chart: null };
     }
 }

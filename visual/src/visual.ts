@@ -26,7 +26,7 @@
 "use strict";
 
 import React from 'react';
-import reactDom from 'react-dom';
+import reactDom from 'react-dom/client';
 import { Application } from './views/Application';
 
 import { store } from './redux/store'
@@ -69,7 +69,8 @@ export class Visual implements IVisual {
                 children: [application]
             });
 
-            reactDom.render(provider, this.target);
+            const root = reactDom.createRoot(this.target);
+            root.render(provider);
         }
     }
 
