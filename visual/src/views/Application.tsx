@@ -17,7 +17,7 @@ import {
 
 import { useAppSelector, useAppDispatch } from '../redux/hooks'
 import { setSolverInitialized, setProperty, setMapping, IColumnsMapping, setTemplate } from '../redux/slices/visualSlice';
-import { deepClone } from '../utils/main';
+import { deepClone, isEditor } from '../utils/main';
 import { createChartFromTemplate } from '../utils/template';
 import { importTempalte } from '../utils/importTemplate';
 
@@ -42,6 +42,10 @@ export const Application: React.FC = () => {
     if (dataView) {
         host.eventService.renderingStarted({});
     }
+
+    const onUrl = React.useCallback((url) => {
+        return () => host.launchUrl(url);
+    }, [host]);
 
     const selectionManager = React.useMemo(() => {
         return host.createSelectionManager();
@@ -190,6 +194,17 @@ export const Application: React.FC = () => {
         );
     }
 
+    if (view === powerbi.ViewMode.View && isEditor()) {
+        return (<>
+            <div className='view-warning'>
+                <h4>This version of the visual doesn't support view mode</h4>
+                <p>Please switch the visual to view version before save the report</p>
+                <p>Read more about Charticulator visual (community) in official documentation:</p>
+                <a onClick={onUrl('https://zbritva.github.io/charticulator-doc/')}>https://zbritva.github.io/charticulator-doc/</a>
+            </div>
+        </>);
+    }
+
     if (chart && unmappedColumns.filter(c => c.powerbiColumn === UnmappedColumnName).length === 0) {
         return (
             <>
@@ -207,19 +222,5 @@ export const Application: React.FC = () => {
                 />
             </>
         );
-    }
-
-    // const chart = createChartFromTemplate(template, dataset);
-    if (chart && viewport) {
-        if (view === powerbi.ViewMode.View) {
-            return (<>
-                <h4>This version of the visual doesn't support view mode</h4>
-                <p>Please switch the visual to view version before save the report</p>
-            </>);
-        }
-    } else {
-        return (<>
-            <p>Chart is not loaded...</p>
-        </>);
     }
 }

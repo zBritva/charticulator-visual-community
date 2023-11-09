@@ -30,6 +30,8 @@ export interface EditorProps {
 
 export const Editor: React.FC<EditorProps> = () => {
     return (<>
-        <h4>It's view container, to edit the chart switch to Charticulator Editor</h4>
+        <div className="editor-warning">
+            <h4>It's view container, to edit the chart switch to Charticulator Editor</h4>
+        </div>
     </>);
 };
