@@ -106,7 +106,6 @@ export const visualSlice = createSlice({
             const templateString = action.payload
             const dataset = state.dataset
             const mapping = state.mapping
-            debugger;
             
             const { template, unmappedColumns, chart } = rebuildTemplate(templateString, dataset, mapping)
 

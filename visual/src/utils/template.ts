@@ -18,7 +18,6 @@ export function createChartFromTemplate(template: string, dataset: Dataset.Datas
         chartTables[1].type = Dataset.TableType.Links;
     }
 
-    debugger;
     chartTables.forEach((table: any) => {
         chartTemplate.assignTable(
             table.name,
