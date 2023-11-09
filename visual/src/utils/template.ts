@@ -29,7 +29,7 @@ export function templateToChart(template: Specification.Template.ChartTemplate, 
     };
 }
 
-const createChartFromTemplate = (template: string, dataset: Dataset.Dataset, unmappedColumns: any) => {
+export function createChartFromTemplate(template: string, dataset: Dataset.Dataset, unmappedColumns: any) {
     const chartJSON = JSON.parse(template);
     const chartTemplate = new ChartTemplate(
         chartJSON
@@ -78,8 +78,8 @@ const createChartFromTemplate = (template: string, dataset: Dataset.Dataset, unm
         const instance = chartTemplate.instantiate(dataset);
         const { chart } = instance;
 
-        return chart;
+        return { unmappedColumns: newUnmappedColumns, chart, template: chartJSON };
     } else {
-        return null;
+        return { unmappedColumns: newUnmappedColumns, chart: null, template: chartJSON };
     }
 }

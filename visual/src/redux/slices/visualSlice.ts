@@ -12,7 +12,7 @@ import IVisualHost = powerbi.extensibility.visual.IVisualHost
 import { Dataset, Specification } from 'charticulator/src/core';
 
 import { persistProperty } from './persistProperty'
-import { templateToChart } from '../../utils/template'
+import { createChartFromTemplate, templateToChart } from '../../utils/template'
 import { convertData } from '../../utils/dataParser'
 
 export interface IColumnsMapping {
@@ -76,12 +76,18 @@ export const visualSlice = createSlice({
         },
         setSettings: (state, action: PayloadAction<IVisualSettings>) => {
             state.settings = action.payload
+
+            state.mapping = JSON.parse(state.settings.chart.columnMappings)
         },
-        setTemplate: (state, action: PayloadAction<Specification.Template.ChartTemplate>) => {
-            state.template = action.payload
+        setTemplate: (state, action: PayloadAction<string>) => {
+            const templateString = action.payload
+            const dataset = state.dataset
+            const mapping = state.mapping
 
-            const { chart } = templateToChart(state.template, state.dataset, state.mapping);
-
+            const { chart, unmappedColumns, template } = createChartFromTemplate(templateString, dataset, mapping)
+            
+            state.template = template
+            state.unmappedColumns = unmappedColumns
             state.chart = chart
         },
         setViewport: (state, action: PayloadAction<IViewport>) => {
@@ -93,12 +99,13 @@ export const visualSlice = createSlice({
             state.dataset = dataset
             state.selections = selections
 
-            
-            const template = JSON.parse(state.settings.chart.template)
+            const template = state.settings.chart.template
             const mapping = state.mapping
 
-            state.template = template
-            const { chart } = templateToChart(template, dataset, mapping)
+            state.template = JSON.parse(template)
+            const { chart, unmappedColumns } = createChartFromTemplate(state.settings.chart.template, dataset, mapping)
+
+            state.unmappedColumns = unmappedColumns;
 
             state.chart = chart
         },
@@ -138,3 +145,4 @@ export const {
 } = visualSlice.actions
 
 export default visualSlice.reducer
+

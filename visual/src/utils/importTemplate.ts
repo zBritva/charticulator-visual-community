@@ -1,7 +1,7 @@
 import { readFileAsString } from "charticulator/src/app/utils";
 
 export function importTempalte() {
-    return new Promise<any>((resolve, reject) => {
+    return new Promise<string>((resolve, reject) => {
         const inputElement = document.createElement("input");
         inputElement.type = "file";
         let file: File = null;

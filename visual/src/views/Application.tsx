@@ -7,8 +7,7 @@ import { Editor } from './Editor';
 import { Mapping, UnmappedColumnName } from './Mapping';
 import { ChartViewer, IModifiers } from './ChartViewer';
 import { Tutorial } from "./Tutorial";
-import { convertData } from './../utils/dataParser';
-import { ChartTemplate, ColorUtils, Dataset, defaultDigitsGroup } from 'charticulator/src/container';
+import { ColorUtils, defaultDigitsGroup } from 'charticulator/src/container';
 import { initialize } from "charticulator/src/core/index";
 import charticulatorConfig from "./../../../charticulator/dist/scripts/config.json";
 
@@ -18,9 +17,8 @@ import {
 
 import { useAppSelector, useAppDispatch } from '../redux/hooks'
 import { setSolverInitialized, setProperty, setMapping, IColumnsMapping, setTemplate } from '../redux/slices/visualSlice';
-import { useSelector } from 'react-redux';
 import { deepClone } from '../utils/main';
-import { templateToChart } from '../utils/template';
+import { createChartFromTemplate, templateToChart } from '../utils/template';
 import { importTempalte } from '../utils/importTemplate';
 
 
@@ -38,23 +36,12 @@ export const Application: React.FC = () => {
     const viewport = useAppSelector((store) => store.visual.viewport);
     const solverInitialized = useAppSelector((store) => store.visual.solverInitialized);
     const chart = useAppSelector((store) => store.visual.chart);
+    const mapping = useAppSelector((store) => store.visual.mapping);
     const dispatch = useAppDispatch();
 
     if (dataView) {
         host.eventService.renderingStarted({});
     }
-
-    const onSave = React.useCallback(({
-        template,
-    }: any) => {
-        const chartJSON = JSON.stringify(template);
-        dispatch(setProperty({
-            objectName: 'chart', objectProperty: 'template', value: chartJSON
-        }));
-        dispatch(setProperty({
-            objectName: 'chart', objectProperty: 'columnMappings', value: JSON.stringify(unmappedColumns)
-        }));
-    }, [setProperty]);
 
     const selectionManager = React.useMemo(() => {
         return host.createSelectionManager();
@@ -68,12 +55,12 @@ export const Application: React.FC = () => {
                 grouping: defaultDigitsGroup,
                 decimal: localizaiton?.decemalDelimiter,
                 thousands:
-                localizaiton?.thousandsDelimiter,
+                    localizaiton?.thousandsDelimiter,
             });
-            
+
             ColorUtils.setDefaultColorPaletteGenerator(key => ColorUtils.colorFromHTMLColor(host.colorPalette.getColor(key).value));
             ColorUtils.setDefaultColorGeneratorResetFunction(() => host.colorPalette.reset());
-            
+
             if (dataView) {
                 host.eventService.renderingFinished({});
             }
@@ -107,11 +94,12 @@ export const Application: React.FC = () => {
         );
     }, [dataView, selections]);
 
+    // TODO refactor
     const onImportTempalte = React.useCallback(async () => {
         const template = await importTempalte();
         dispatch(setTemplate(template));
 
-        const { chart } = templateToChart(template, dataset, []);
+        const { chart } = createChartFromTemplate(template, dataset, mapping);
 
         return chart;
     }, [setProperty]);
@@ -125,7 +113,7 @@ export const Application: React.FC = () => {
     }
 
     if (dataset && mode === powerbi.EditMode.Advanced) {
-        
+
         host.tooltipService.hide({ immediately: true, isTouchEvent: false });
         // const chart = createChartFromTemplate(template, dataset);
         if (chart) {
@@ -137,7 +125,7 @@ export const Application: React.FC = () => {
                         chart={chart}
                         columnMappings={settings.chart.columnMappings as any}
                         dataset={dataset}
-                        onSave={onSave}
+                        // onSave={onSave}
                         localizaiton={localizaiton}
                         utcTimeZone={settings.localization.utcTimeZone}
                         // mainView={{
@@ -180,52 +168,55 @@ export const Application: React.FC = () => {
                 <p>Chart is not loaded to editor...</p>
             </>);
         }
-    } else {
-        
-        if (unmappedColumns.filter(c => c.powerbiColumn === UnmappedColumnName).length > 0) {
-            return (
-                <>
-                    <Mapping
-                        dataset={dataset}
-                        unmappedColumns={deepClone(unmappedColumns)}
-                        onConfirmMapping={(mappedColumns: IColumnsMapping[]) => {
-                            dispatch(setMapping(mappedColumns));
-                            dispatch(setProperty({
-                                objectName: 'chart', objectProperty: 'columnMappings', value: JSON.stringify(mappedColumns)
-                            }));
-                        }}
-                    />
-                </>
-            );
-        }
-        // const chart = createChartFromTemplate(template, dataset);
-        if (chart && viewport) {
-            if (view === powerbi.ViewMode.View) {
-                return (<>
-                    <h4>This version of the visual doesn't support view mode</h4>
-                    <p>Please switch the visual to view version before save the report</p>
-                </>);
-            }
-            return (
-                <>
-                    <h4>Editor preview:</h4>
-                    <ChartViewer
-                        width={viewport.width}
-                        height={viewport.height}
-                        chart={chart}
-                        defaultAttributes={{}}
-                        dataset={dataset}
-                        onSelect={onSelect}
-                        onContextMenu={onContextMenu}
-                        localizaiton={localizaiton}
-                        utcTimeZone={settings.localization.utcTimeZone}
-                    />
-                </>
-            );
-        } else {
+    }
+
+    if (unmappedColumns.filter(c => c.powerbiColumn === UnmappedColumnName).length > 0) {
+        return (
+            <>
+                <Mapping
+                    dataset={dataset}
+                    unmappedColumns={deepClone(unmappedColumns)}
+                    onConfirmMapping={(mappedColumns: IColumnsMapping[]) => {
+                        dispatch(setMapping(mappedColumns));
+                        dispatch(setProperty({
+                            objectName: 'chart', objectProperty: 'columnMappings', value: JSON.stringify(mappedColumns)
+                        }));
+                    }}
+                />
+            </>
+        );
+    }
+
+    if (chart && unmappedColumns.filter(c => c.powerbiColumn === UnmappedColumnName).length === 0) {
+        return (
+            <>
+                <h4>Editor preview:</h4>
+                <ChartViewer
+                    width={viewport.width}
+                    height={viewport.height}
+                    chart={chart}
+                    defaultAttributes={{}}
+                    dataset={dataset}
+                    onSelect={onSelect}
+                    onContextMenu={onContextMenu}
+                    localizaiton={localizaiton}
+                    utcTimeZone={settings.localization.utcTimeZone}
+                />
+            </>
+        );
+    }
+
+    // const chart = createChartFromTemplate(template, dataset);
+    if (chart && viewport) {
+        if (view === powerbi.ViewMode.View) {
             return (<>
-                <p>Chart is not loaded...</p>
+                <h4>This version of the visual doesn't support view mode</h4>
+                <p>Please switch the visual to view version before save the report</p>
             </>);
         }
+    } else {
+        return (<>
+            <p>Chart is not loaded...</p>
+        </>);
     }
 }

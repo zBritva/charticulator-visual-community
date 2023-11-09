@@ -14,20 +14,15 @@ import {
 } from "charticulator/src/core/index";
 import { CharticulatorAppConfig, MainViewConfig } from "charticulator/src/app/config";
 import { Actions, NestedEditorData } from "charticulator/src/app";
-import { MappingType } from "charticulator/src/core/specification";
 import { Dataset } from "charticulator/src/core";
 // import { defaultVersionOfTemplate } from "charticulator/src/app/stores/defaults";
 import { EditorType } from "charticulator/src/app/stores/app_store";
 
 import { PositionsLeftRight, PositionsLeftRightTop, UndoRedoLocation } from 'charticulator/src/app/main_view';
 
-import {
-    NestedEditorEventType,
-    // NestedEditorMessage,
-    // NestedEditorMessageType,
-} from "charticulator/src/app/application";
 import { LocalizationConfig } from "charticulator/src/container/container";
-import { useAppSelector } from "../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { setProperty, setTemplate } from "../redux/slices/visualSlice";
 
 const script = require("raw-loader!charticulator/dist/scripts/worker.bundle.js");
 const charticulatorConfig = require("json-loader!./../../charticulator/dist/scripts/config.json");
@@ -39,10 +34,10 @@ export interface EditorProps {
     dataset: Dataset.Dataset;
     columnMappings: { [key: string]: string };
     mainView?: MainViewConfig,
-    onSave: (chart: {
-        chart: Specification.Chart,
-        template: Specification.Template.ChartTemplate
-    }) => void;
+    // onSave: (chart: {
+    //     chart: Specification.Chart,
+    //     template: Specification.Template.ChartTemplate
+    // }) => void;
     localizaiton?: LocalizationConfig,
     utcTimeZone: boolean,
     onClose: () => void;
@@ -53,7 +48,7 @@ export interface EditorProps {
 export const Editor: React.FC<EditorProps> = ({
     localizaiton,
     utcTimeZone,
-    onSave,
+    // onSave,
     onClose,
     onExport,
     onImport
@@ -64,6 +59,8 @@ export const Editor: React.FC<EditorProps> = ({
     const dataset = useAppSelector((store) => store.visual.dataset);
     // const { height, width } = useAppSelector((store) => store.visual.viewport);
     // const mapping = useAppSelector((store) => store.visual.mapping);
+    const dispatch = useAppDispatch();
+
 
     const [appStore, setAppStore] = React.useState<AppStore | null>(null);
     const config: CharticulatorAppConfig = React.useMemo(
@@ -85,13 +82,15 @@ export const Editor: React.FC<EditorProps> = ({
     }, []);
 
     React.useEffect(() => {
+        let EVENT_NESTED_EDITOR_EDIT_SUBSCRIPTION = null;
+        let appStore = null;
         (async () => {
             const worker: CharticulatorWorkerInterface = new CharticulatorWorker(
                 workerScript
             );
             // worker should be initialized before creating appstore
             await worker.initialize(config);
-            const appStore = new AppStore(worker, dataset || defaultDataset);
+            appStore = new AppStore(worker, dataset || defaultDataset);
             appStore.editorType = EditorType.Embedded;
 
             if (appStore) {
@@ -107,6 +106,7 @@ export const Editor: React.FC<EditorProps> = ({
                     utcTimeZone: utcTimeZone,
                 });
                 if (template && dataset) {
+                    // TODO fix loading chart with mapped columns
                     appStore.dispatcher.dispatch(
                         new Actions.ImportChartAndDataset(
                             deepClone(template.specification),
@@ -119,8 +119,24 @@ export const Editor: React.FC<EditorProps> = ({
                     );
                     appStore.solveConstraintsAndUpdateGraphics(false);
                 }
+                // when appStore.editorType = EditorType.Embedded appStore fires EVENT_NESTED_EDITOR_EDIT
+                EVENT_NESTED_EDITOR_EDIT_SUBSCRIPTION = appStore.addListener(AppStore.EVENT_NESTED_EDITOR_EDIT, () => {
+                    const template = deepClone(appStore.buildChartTemplate());
+                    const templateString = JSON.stringify(template);
+                    dispatch(setTemplate(templateString));
+                    dispatch(setProperty({
+                        objectName: 'chart',
+                        objectProperty: 'template',
+                        value: JSON.stringify(template)
+                    }));
+                });
             }
         })();
+        return () => {
+            if (appStore && EVENT_NESTED_EDITOR_EDIT_SUBSCRIPTION) {
+                appStore.removeSubscription(EVENT_NESTED_EDITOR_EDIT_SUBSCRIPTION);
+            }
+        }
     }, [config]);
 
     if (!appStore) {
@@ -153,6 +169,7 @@ export const Editor: React.FC<EditorProps> = ({
                         onExport(template, false);
                     },
                     onImportTemplateClick: async () => {
+                        // TODO refactor
                         const specification = await onImport();
                         console.log(specification);
                         appStore.dispatcher.dispatch(
