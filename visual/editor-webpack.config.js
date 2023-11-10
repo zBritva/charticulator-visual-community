@@ -23,7 +23,7 @@ const { merge } = require('webpack-merge');
 const base = require('./base-webpack.config.js');
 
 const GUID = 'charticulatorVisualCommunity487D3ADCA7E14F729E78065092536DBD_EDITOR' || pbivizFile.visual.guid;
-const NAME = 'CharticulatorCommunityVersionEditor' || pbivizFile.visual.name;
+const NAME = 'Charticulator Community Version (Editor)' || pbivizFile.visual.name;
 const DISPLAY_NAME = 'CharticulatorCommunityVersionEditor' || pbivizFile.visual.displayName;
 
 const pluginLocation = './src/visualPluginEditor.ts';
@@ -65,6 +65,9 @@ module.exports = merge(base, {
                 guid: GUID,
                 displayName: DISPLAY_NAME,
                 name: NAME
+            },
+            assets: {
+                icon: "assets/editor_icon.png"
             },
             compression: 9,
             capabilities: capabilitiesFile,

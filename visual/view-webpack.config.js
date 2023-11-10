@@ -23,7 +23,7 @@ const { merge } = require('webpack-merge');
 const base = require('./base-webpack.config.js');
 
 const GUID = 'charticulatorVisualCommunity487D3ADCA7E14F729E78065092536DBD_VIEW' || pbivizFile.visual.guid;
-const NAME = 'CharticulatorCommunityVersionView' || pbivizFile.visual.name;
+const NAME = 'Charticulator Community Version (View)' || pbivizFile.visual.name;
 const DISPLAY_NAME = 'CharticulatorCommunityVersionView' || pbivizFile.visual.displayName;
 
 const pluginLocation = './src/visualPluginView.ts';
@@ -70,6 +70,9 @@ module.exports = merge(base, {
                 guid: GUID,
                 displayName: DISPLAY_NAME,
                 name: NAME
+            },
+            assets: {
+                icon: "assets/view_icon.png"
             },
             compression: 9,
             capabilities: capabilitiesFile,
