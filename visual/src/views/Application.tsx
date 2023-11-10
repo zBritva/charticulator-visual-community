@@ -43,7 +43,7 @@ export const Application: React.FC = () => {
         host.eventService.renderingStarted({});
     }
 
-    const onUrl = React.useCallback((url) => {
+    const onUrl = React.useCallback((url: string) => {
         return () => host.launchUrl(url);
     }, [host]);
 
@@ -196,11 +196,13 @@ export const Application: React.FC = () => {
 
     if (view === powerbi.ViewMode.View && isEditor()) {
         return (<>
-            <div className='view-warning'>
-                <h4>This version of the visual doesn't support view mode</h4>
-                <p>Please switch the visual to view version before save the report</p>
-                <p>Read more about Charticulator visual (community) in official documentation:</p>
-                <a onClick={onUrl('https://zbritva.github.io/charticulator-doc/')}>https://zbritva.github.io/charticulator-doc/</a>
+            <div className='warning-container'>
+                <div className='view-warning'>
+                    <h4>This version of the visual doesn't support view mode</h4>
+                    <p>Please switch the visual to view version before save the report</p>
+                    <p>Read more about Charticulator visual (community) in official documentation:</p>
+                    <a onClick={onUrl('https://zbritva.github.io/charticulator-doc/')}>https://zbritva.github.io/charticulator-doc/</a>
+                </div>
             </div>
         </>);
     }

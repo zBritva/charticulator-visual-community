@@ -8,7 +8,8 @@ import {
 
 import { Dataset } from "charticulator/src/core";
 
-import { MainViewConfig } from "./IEditor";
+import { MainViewConfig } from "./IEditor"
+import { useAppSelector } from '../redux/hooks'
 
 export interface EditorProps {
     width: number;
@@ -29,9 +30,22 @@ export interface EditorProps {
 }
 
 export const Editor: React.FC<EditorProps> = () => {
+
+    const host = useAppSelector((store) => store.visual.host);
+
+    const onUrl = React.useCallback((url: string) => {
+        return () => host.launchUrl(url);
+    }, [host]);
+
     return (<>
-        <div className="editor-warning">
-            <h4>It's view container, to edit the chart switch to Charticulator Editor</h4>
+        <div className='warning-container'>
+            <div className="editor-warning">
+                <h4>This version of the visual doesn't support editing chart.</h4>
+                <p>To edit the chart switch visual to editor version</p>
+                <p>Read more about Charticulator visual (community) in official documentation:</p>
+                <a onClick={onUrl('https://zbritva.github.io/charticulator-doc/')}>https://zbritva.github.io/charticulator-doc/</a>
+            </div>
         </div>
     </>);
 };
+
