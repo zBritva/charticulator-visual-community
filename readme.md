@@ -19,9 +19,14 @@ The visual under development and some features is not developed yet.
 * ~~Import template file~~
 * ~~Export template to file~~
 * Update scales and axes
+* Fix selection
+* Fix highlights
+*  
 
 
 ## Build $ run
+
+`build:charticulator` - to build charticulator (need to build workers)
 
 `yarn run start:view` - start dev server for viewer container, without editor
 
