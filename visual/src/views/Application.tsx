@@ -210,7 +210,7 @@ export const Application: React.FC = () => {
     if (chart && unmappedColumns.filter(c => c.powerbiColumn === UnmappedColumnName).length === 0) {
         return (
             <>
-                <h4>Editor preview:</h4>
+                {isEditor() ? <h4>Editor preview:</h4> : null }
                 <ChartViewer
                     width={viewport.width}
                     height={viewport.height}
