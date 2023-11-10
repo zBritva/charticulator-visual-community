@@ -107,13 +107,13 @@ export const Mapping: React.FC<MappingProps> = ({
                     }
                 </tbody>
             </table>
-            <PrimaryButton
+            <button
                 disabled={buttonDisabled}
                 title={"Confirm"}
-                type="primary" className="button confirm"
+                className="button confirm"
                 onClick={onConfirm} >
                 {"confirm"}
-            </PrimaryButton>
+            </button>
         </div>
     )
 }
