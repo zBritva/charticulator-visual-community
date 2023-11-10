@@ -1,5 +1,7 @@
 import React from "react";
 
+import "./../../style/editor.less";
+
 import { MainView } from "charticulator/src/app/main_view";
 import { AppStore, Migrator } from "charticulator/src/app/stores";
 import { makeDefaultDataset } from "charticulator/src/app/default_dataset";
