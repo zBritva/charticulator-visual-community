@@ -20,7 +20,7 @@ import { setSolverInitialized, setProperty, setMapping, IColumnsMapping, setTemp
 import { deepClone, isEditor } from '../utils/main';
 import { createChartFromTemplate } from '../utils/template';
 import { importTempalte } from '../utils/importTemplate';
-
+import { FluentProvider, teamsLightTheme } from "@fluentui/react-components";
 
 // tslint:disable-next-line
 export const Application: React.FC = () => {
@@ -183,13 +183,15 @@ export const Application: React.FC = () => {
     if (unmappedColumns.filter(c => c.powerbiColumn === UnmappedColumnName).length > 0) {
         return (
             <>
-                <Mapping
-                    dataset={dataset}
-                    unmappedColumns={deepClone(unmappedColumns)}
-                    onConfirmMapping={(mappedColumns: IColumnsMapping[]) => {
-                        dispatch(setMapping(mappedColumns));
-                    }}
-                />
+                <FluentProvider theme={teamsLightTheme}>
+                    <Mapping
+                        dataset={dataset}
+                        unmappedColumns={deepClone(unmappedColumns)}
+                        onConfirmMapping={(mappedColumns: IColumnsMapping[]) => {
+                            dispatch(setMapping(mappedColumns));
+                        }}
+                    />
+                </FluentProvider>
             </>
         );
     }
@@ -210,7 +212,7 @@ export const Application: React.FC = () => {
     if (chart && unmappedColumns.filter(c => c.powerbiColumn === UnmappedColumnName).length === 0) {
         return (
             <>
-                {isEditor() ? <h4>Editor preview:</h4> : null }
+                {isEditor() ? <h4>Editor preview:</h4> : null}
                 <ChartViewer
                     width={viewport.width}
                     height={viewport.height}

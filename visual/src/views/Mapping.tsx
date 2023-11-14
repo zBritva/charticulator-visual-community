@@ -1,8 +1,6 @@
 import React from 'react';
 
-// import { MappingColumns } from './utils';
-
-import { Dropdown, PrimaryButton, IDropdownOption } from "@fluentui/react"
+import { Dropdown, Option } from "@fluentui/react-components";
 import { Dataset } from 'charticulator/src/core';
 import { IColumnsMapping } from 'src/redux/slices/visualSlice';
 
@@ -62,7 +60,7 @@ export const Mapping: React.FC<MappingProps> = ({
                         mappingState.map((item, mappingIndex) => {
                             const key = item.powerbiColumn ? item.powerbiColumn : UnmappedColumnName;
                             return (
-                                <tr key={`${item.column.replace(/\s/g,"_")}-${(item.powerbiColumn || UnmappedColumnName)}-${item.columnType}-${mappingIndex}`}>
+                                <tr key={`${item.column.replace(/\s/g, "_")}-${(item.powerbiColumn || UnmappedColumnName)}-${item.columnType}-${mappingIndex}`}>
                                     <td>
                                         <span>{item.column}</span>
                                     </td>
@@ -71,39 +69,43 @@ export const Mapping: React.FC<MappingProps> = ({
                                     </td>
                                     <td className="columns">
                                         <Dropdown
-                                        options={
-                                            dataset
-                                                .tables
-                                                .filter(t => t.type === item.tableType)
-                                                .flatMap(t => {
-                                                    return t.columns.map(c => ({
-                                                        key: `key${c.name}-${c.type}`,
-                                                        text: c.displayName,
-                                                        selected: c.name === item.powerbiColumn,
-                                                        data: c.name
-                                                    })).concat([{
-                                                        key: `key${UnmappedColumnName}-unknown`,
-                                                        text: UnmappedColumnName,
-                                                        selected: UnmappedColumnName === item.powerbiColumn,
-                                                        data: UnmappedColumnName
-                                                    }]);
-                                                })
-                                            }
-                                        onChange={(event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => {
-                                            const unmappedcolumn = mappingState.find((c) => c.column === item.column);
-                                            if (unmappedcolumn) {
-                                                unmappedcolumn.powerbiColumn = option.data;
-                                                setMapping([
-                                                    ...mappingState
-                                                ]);
-                                            }
-                                        }}    
+                                            onOptionSelect={(_event, { optionValue }) => {
+                                                debugger;
+                                                const unmappedcolumn = mappingState.find((c) => c.column === item.column);
+                                                if (unmappedcolumn) {
+                                                    unmappedcolumn.powerbiColumn = optionValue;
+                                                    setMapping([
+                                                        ...mappingState
+                                                    ]);
+                                                }
+                                            }}
                                         >
+                                        {
+                                            dataset
+                                            .tables
+                                            .filter(t => t.type === item.tableType)
+                                            .flatMap(t => {
+                                                return t.columns.map(c => ({
+                                                    key: `key${c.name}-${c.type}`,
+                                                    text: c.displayName,
+                                                    selected: c.name === item.powerbiColumn,
+                                                    data: c.name
+                                                })).concat([{
+                                                    key: `key${UnmappedColumnName}-unknown`,
+                                                    text: UnmappedColumnName,
+                                                    selected: UnmappedColumnName === item.powerbiColumn,
+                                                    data: UnmappedColumnName
+                                                }]);
+                                            })
+                                            .map(o => {
+                                                return (<Option value={o.key} text={o.text} >{o.text}</Option>)
+                                            })
+                                        }
                                         </Dropdown>
                                     </td>
                                 </tr>
                             )
-                        })      
+                        })
                     }
                 </tbody>
             </table>
