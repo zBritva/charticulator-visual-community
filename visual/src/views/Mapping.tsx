@@ -88,17 +88,19 @@ export const Mapping: React.FC<MappingProps> = ({
                                                 return t.columns.map(c => ({
                                                     key: `key${c.name}-${c.type}`,
                                                     text: c.displayName,
+                                                    value: c.displayName,
                                                     selected: c.name === item.powerbiColumn,
                                                     data: c.name
                                                 })).concat([{
                                                     key: `key${UnmappedColumnName}-unknown`,
                                                     text: UnmappedColumnName,
+                                                    value: UnmappedColumnName,
                                                     selected: UnmappedColumnName === item.powerbiColumn,
                                                     data: UnmappedColumnName
                                                 }]);
                                             })
                                             .map(o => {
-                                                return (<Option value={o.key} text={o.text} >{o.text}</Option>)
+                                                return (<Option value={o.value} text={o.text} >{o.text}</Option>)
                                             })
                                         }
                                         </Dropdown>
