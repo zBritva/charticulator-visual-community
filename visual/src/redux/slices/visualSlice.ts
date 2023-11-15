@@ -91,6 +91,17 @@ function rebuildTemplate(templateString: string, dataset: Dataset.Dataset, mappi
     return { template: builder.build(), unmappedColumns, chart }
 }
 
+function loadTemplateToState(templateString: string, state) {
+    const dataset = state.dataset
+    const mapping = state.mapping
+
+    const { template, unmappedColumns, chart } = rebuildTemplate(templateString, dataset, mapping)
+
+    state.template = template
+    state.unmappedColumns = unmappedColumns
+    state.chart = chart
+}
+
 export const visualSlice = createSlice({
     name: 'visual',
     initialState,
@@ -102,17 +113,14 @@ export const visualSlice = createSlice({
             state.settings = action.payload
 
             state.mapping = JSON.parse(state.settings.chart.columnMappings)
+            loadTemplateToState(action.payload.chart.template, state)
+            const templateJSON: Specification.Template.ChartTemplate = JSON.parse(action.payload.chart.template);
+            if (templateJSON.default) {
+                state.template.default = true;
+            }
         },
         setTemplate: (state, action: PayloadAction<string>) => {
-            const templateString = action.payload
-            const dataset = state.dataset
-            const mapping = state.mapping
-            
-            const { template, unmappedColumns, chart } = rebuildTemplate(templateString, dataset, mapping)
-
-            state.template = template
-            state.unmappedColumns = unmappedColumns
-            state.chart = chart
+            loadTemplateToState(action.payload, state)
         },
         setViewport: (state, action: PayloadAction<IViewport>) => {
             state.viewport = action.payload
@@ -154,10 +162,11 @@ export const visualSlice = createSlice({
         setMapping: (state, action: PayloadAction<IColumnsMapping[]>) => {
             state.mapping = action.payload
 
-            const templateString = JSON.stringify(state.template);
-            const { template, unmappedColumns, chart } = rebuildTemplate(templateString, state.dataset, state.mapping)
+            const templateString = JSON.stringify(state.template); 
+            // TODO remove deep clone
+            const { template, unmappedColumns, chart } = rebuildTemplate(templateString, deepClone(state.dataset), state.mapping)
 
-            state.chart = chart;
+            state.chart = chart
             state.template = template
             state.unmappedColumns = unmappedColumns
 

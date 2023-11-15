@@ -58,9 +58,9 @@ export const Mapping: React.FC<MappingProps> = ({
                     {
                         // Numberundefinedxsrc
                         mappingState.map((item, mappingIndex) => {
-                            const key = item.powerbiColumn ? item.powerbiColumn : UnmappedColumnName;
+                            const key = `${item.column.replace(/\s/g, "_")}-${(item.powerbiColumn || UnmappedColumnName)}-${item.columnType}-${mappingIndex}`
                             return (
-                                <tr key={`${item.column.replace(/\s/g, "_")}-${(item.powerbiColumn || UnmappedColumnName)}-${item.columnType}-${mappingIndex}`}>
+                                <tr key={key}>
                                     <td>
                                         <span>{item.column}</span>
                                     </td>
@@ -69,8 +69,8 @@ export const Mapping: React.FC<MappingProps> = ({
                                     </td>
                                     <td className="columns">
                                         <Dropdown
+                                            value={item.powerbiColumn}
                                             onOptionSelect={(_event, { optionValue }) => {
-                                                debugger;
                                                 const unmappedcolumn = mappingState.find((c) => c.column === item.column);
                                                 if (unmappedcolumn) {
                                                     unmappedcolumn.powerbiColumn = optionValue;
@@ -100,7 +100,7 @@ export const Mapping: React.FC<MappingProps> = ({
                                                 }]);
                                             })
                                             .map(o => {
-                                                return (<Option value={o.value} text={o.text} >{o.text}</Option>)
+                                                return (<Option key={o.key} value={o.value} text={o.text} >{o.text}</Option>)
                                             })
                                         }
                                         </Dropdown>

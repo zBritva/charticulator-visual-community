@@ -119,12 +119,7 @@ export const Application: React.FC = () => {
         return (<p>Loading...</p>)
     }
 
-    if (!dataset) {
-        return (<Tutorial openURL={(url: string) => host.launchUrl(url)} />);
-    }
-
     if (dataset && mode === powerbi.EditMode.Advanced) {
-
         host.tooltipService.hide({ immediately: true, isTouchEvent: false });
         // const chart = createChartFromTemplate(template, dataset);
         if (chart) {
@@ -198,7 +193,7 @@ export const Application: React.FC = () => {
     }
 
     // TODO rework to state pattern
-    if (!chart || template.default && mode === powerbi.EditMode.Default) {
+    if (template.default && mode === powerbi.EditMode.Default) {
         return (<>
             <div className='warning-container'>
                 <div className='view-warning'>
@@ -214,7 +209,7 @@ export const Application: React.FC = () => {
         </>);
     }
 
-    if (chart && unmappedColumns.filter(c => c.powerbiColumn === UnmappedColumnName).length === 0) {
+    if (chart && !template.default && unmappedColumns.filter(c => c.powerbiColumn === UnmappedColumnName).length === 0) {
         return (
             <>
                 {isEditor() ? <h4>Editor preview:</h4> : null}

@@ -2,7 +2,7 @@ import { ChartTemplate, Dataset, Specification } from "charticulator/src/contain
 import { IColumnsMapping } from "../redux/slices/visualSlice";
 import { UnmappedColumnName } from "../views/Mapping";
 
-export function createChartFromTemplate(template: string, dataset: Dataset.Dataset, unmappedColumns: any) {
+export function createChartFromTemplate(template: string, dataset: Dataset.Dataset, unmappedColumns: IColumnsMapping[]) {
     const chartJSON = JSON.parse(template);
     const chartTemplate = new ChartTemplate(
         chartJSON
@@ -27,7 +27,9 @@ export function createChartFromTemplate(template: string, dataset: Dataset.Datas
         const datasetTable = dataset.tables.find(t => table.type == t.type);
 
         table.columns.forEach((column: any) => {
-            const datasetColumn = datasetTable?.columns.find(c => c.name === column.name || unmappedColumns.find(uc => uc.powerbiColumn == c.name))
+            const datasetColumn = datasetTable?.columns.find(c => {
+                return c.name === column.name || unmappedColumns.find(uc => uc.powerbiColumn == c.name && uc.column === column.name);
+            })
 
             if (datasetColumn) {
                 chartTemplate.assignColumn(
