@@ -3,7 +3,7 @@ import React from "react";
 import "./../../style/editor.less";
 
 import { MainView } from "charticulator/src/app/main_view";
-import { AppStore, Migrator } from "charticulator/src/app/stores";
+import { AppStore } from "charticulator/src/app/stores";
 import { makeDefaultDataset } from "charticulator/src/app/default_dataset";
 import {
     CharticulatorWorker,
@@ -26,6 +26,7 @@ import { LocalizationConfig } from "charticulator/src/container/container";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { setProperty, setTemplate } from "../redux/slices/visualSlice";
 import { defaultVersionOfTemplate } from "charticulator/src/app/stores/defaults";
+import { FluentProvider, teamsLightTheme } from "@fluentui/react-components";
 
 const script = require("raw-loader!charticulator/dist/scripts/worker.bundle.js");
 const charticulatorConfig = require("json-loader!./../../charticulator/dist/scripts/config.json");
@@ -110,11 +111,6 @@ export const Editor: React.FC<EditorProps> = ({
                     utcTimeZone: utcTimeZone,
                 });
                 if (template && dataset) {
-
-                    if (template && template.version == undefined) {
-                        template.version = defaultVersionOfTemplate;
-                    }
-
                     // TODO fix loading chart with mapped columns
                     appStore.dispatcher.dispatch(
                         new Actions.ImportChartAndDataset(
@@ -153,51 +149,53 @@ export const Editor: React.FC<EditorProps> = ({
     }
     return (
         <>
-            <MainView
-                store={appStore}
-                viewConfiguration={
-                    {
-                        ColumnsPosition: settings.panels.defaultDatasetPanelPosition as PositionsLeftRight,
-                        EditorPanelsPosition: settings.panels.defaultPanelsPosition as PositionsLeftRight,
-                        ToolbarPosition: PositionsLeftRightTop.Top,
-                        ToolbarLabels: true,
-                        Name: "Charticulator (Community version)",
-                        MenuBarButtons: PositionsLeftRight.Right,
-                        MenuBarSaveButtons: PositionsLeftRight.Left,
-                        UndoRedoLocation: UndoRedoLocation.ToolBar
+            <FluentProvider theme={teamsLightTheme}>
+                <MainView
+                    store={appStore}
+                    viewConfiguration={
+                        {
+                            ColumnsPosition: settings.panels.defaultDatasetPanelPosition as PositionsLeftRight,
+                            EditorPanelsPosition: settings.panels.defaultPanelsPosition as PositionsLeftRight,
+                            ToolbarPosition: PositionsLeftRightTop.Top,
+                            ToolbarLabels: true,
+                            Name: "Charticulator (Community version)",
+                            MenuBarButtons: PositionsLeftRight.Right,
+                            MenuBarSaveButtons: PositionsLeftRight.Left,
+                            UndoRedoLocation: UndoRedoLocation.ToolBar
+                        }
                     }
-                }
-                menuBarHandlers={{
-                    onContactUsLink: () => { },
-                    onCopyToClipboardClick: () => {
-                        const template = deepClone(appStore.buildChartTemplate());
-                        onExport(template, true);
-                    },
-                    onExportTemplateClick: () => {
-                        const template = deepClone(appStore.buildChartTemplate());
-                        onExport(template, false);
-                    },
-                    onImportTemplateClick: async () => {
-                        // TODO refactor
-                        const specification = await onImport();
-                        console.log(specification);
-                        appStore.dispatcher.dispatch(
-                            new Actions.ImportChartAndDataset(
-                                specification,
-                                dataset,
-                                {
-                                    filterCondition: null,
-                                },
-                                specification
-                            )
-                        );
-                    }
-                }}
-                tabButtons={null}
-                telemetry={{
-                    record: () => { },
-                }}
-            />
+                    menuBarHandlers={{
+                        onContactUsLink: () => { },
+                        onCopyToClipboardClick: () => {
+                            const template = deepClone(appStore.buildChartTemplate());
+                            onExport(template, true);
+                        },
+                        onExportTemplateClick: () => {
+                            const template = deepClone(appStore.buildChartTemplate());
+                            onExport(template, false);
+                        },
+                        onImportTemplateClick: async () => {
+                            // TODO refactor
+                            const specification = await onImport();
+                            console.log(specification);
+                            appStore.dispatcher.dispatch(
+                                new Actions.ImportChartAndDataset(
+                                    specification,
+                                    dataset,
+                                    {
+                                        filterCondition: null,
+                                    },
+                                    specification
+                                )
+                            );
+                        }
+                    }}
+                    tabButtons={null}
+                    telemetry={{
+                        record: () => { },
+                    }}
+                />
+            </FluentProvider>
         </>
     );
 };

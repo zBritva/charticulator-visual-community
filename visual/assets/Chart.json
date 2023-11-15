@@ -1,4 +1,5 @@
 {
+  "default": true,
   "specification": {
     "_id": "sk560phebor",
     "classID": "chart.rectangle",

@@ -36,6 +36,7 @@ export const Application: React.FC = () => {
     const viewport = useAppSelector((store) => store.visual.viewport);
     const solverInitialized = useAppSelector((store) => store.visual.solverInitialized);
     const chart = useAppSelector((store) => store.visual.chart);
+    const template = useAppSelector((store) => store.visual.template);
     const mapping = useAppSelector((store) => store.visual.mapping);
     const dispatch = useAppDispatch();
 
@@ -196,12 +197,16 @@ export const Application: React.FC = () => {
         );
     }
 
-    if (view === powerbi.ViewMode.View && isEditor()) {
+    // TODO rework to state pattern
+    if (!chart || template.default && mode === powerbi.EditMode.Default) {
         return (<>
             <div className='warning-container'>
                 <div className='view-warning'>
-                    <h4>This version of the visual doesn't support view mode</h4>
-                    <p>Please switch the visual to view version before save the report</p>
+                    <h4>Default template</h4>
+                    <p>Default template without chart is loaded into the visual container</p>
+                    {isEditor() ? 
+                    <p>Switch to editor to start creating charts by using Charticulator</p> :
+                    <p>Switch to editor version of the visual to start creating charts by using Charticulator</p>}
                     <p>Read more about Charticulator visual (community) in official documentation:</p>
                     <a onClick={onUrl('https://zbritva.github.io/charticulator-doc/')}>https://zbritva.github.io/charticulator-doc/</a>
                 </div>
@@ -226,5 +231,18 @@ export const Application: React.FC = () => {
                 />
             </>
         );
+    }
+    
+    if (view === powerbi.ViewMode.View && isEditor()) {
+        return (<>
+            <div className='warning-container'>
+                <div className='view-warning'>
+                    <h4>This version of the visual doesn't support view mode</h4>
+                    <p>Please switch the visual to view version before save the report</p>
+                    <p>Read more about Charticulator visual (community) in official documentation:</p>
+                    <a onClick={onUrl('https://zbritva.github.io/charticulator-doc/')}>https://zbritva.github.io/charticulator-doc/</a>
+                </div>
+            </div>
+        </>);
     }
 }

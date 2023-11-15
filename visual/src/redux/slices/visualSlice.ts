@@ -16,6 +16,7 @@ import { createChartFromTemplate } from '../../utils/template'
 import { convertData } from '../../utils/dataParser'
 import { deepClone } from '../../utils/main'
 import { ChartTemplateBuilder } from 'charticulator/src/app/template'
+import { defaultVersionOfTemplate } from 'charticulator/src/app/stores/defaults'
 
 export interface IColumnsMapping {
     table: string,
@@ -122,10 +123,15 @@ export const visualSlice = createSlice({
             state.dataset = dataset
             state.selections = selections
 
+            // TODO reset chart on template reset
             const template = state.settings.chart.template
             const mapping = state.mapping
 
+            // TODO add template migration
             state.template = JSON.parse(template)
+            if (state.template && state.template.version == undefined) {
+                state.template.version = defaultVersionOfTemplate
+            }
             const { chart, unmappedColumns } = createChartFromTemplate(state.settings.chart.template, dataset, mapping)
 
             state.unmappedColumns = unmappedColumns;
