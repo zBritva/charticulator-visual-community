@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Dropdown, Option } from "@fluentui/react-components";
+import { Button, Dropdown, Option } from "@fluentui/react-components";
 import { Dataset } from 'charticulator/src/core';
 import { IColumnsMapping } from 'src/redux/slices/visualSlice';
 
@@ -111,13 +111,14 @@ export const Mapping: React.FC<MappingProps> = ({
                     }
                 </tbody>
             </table>
-            <button
+            <Button
+                appearance='primary'
                 disabled={buttonDisabled}
                 title={"Confirm"}
                 className="button confirm"
                 onClick={onConfirm} >
-                {"confirm"}
-            </button>
+                {"Confirm"}
+            </Button>
         </div>
     )
 }
