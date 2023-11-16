@@ -54,7 +54,7 @@ export const Application: React.FC = () => {
 
     React.useEffect(() => {
         (async () => {
-            await initialize(charticulatorConfig);
+            await initialize(charticulatorConfig as unknown);
             setFormatOptions({
                 currency: [localizaiton?.currency, ""],
                 grouping: defaultDigitsGroup,

@@ -35,7 +35,7 @@
 #------------------------------------------------
 # Configure the map service
 #------------------------------------------------
-MapService:
+# MapService:
   ## Option 1: Use Bing Map Service
   ##   a. Obtain an API key here: https://msdn.microsoft.com/en-us/library/ff428642.aspx
   ##   b. Uncomment the following:
