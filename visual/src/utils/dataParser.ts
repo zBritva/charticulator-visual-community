@@ -111,11 +111,13 @@ export function convertData(dataView: DataView, createSelectionBuilder: () => IS
         mainTable.rows = allColumns[0].values.map<Dataset.Row>((_cat, index) => {
             const builder = createSelectionBuilder();
             
-            const selectionID = builder.withCategory(categories[0], index).createSelectionId();
+            const selectionID = builder
+                .withCategory(categories[0], index)
+                .createSelectionId();
             mainTableSelectionIds.set(index, selectionID);
 
             const row: Dataset.Row = {
-                _id: "index" + index,
+                _id: `${index}`,
             }
 
             mainTable.columns.forEach(column => {
@@ -129,7 +131,7 @@ export function convertData(dataView: DataView, createSelectionBuilder: () => IS
 
         linksTable.rows = allColumns[0].values.map<Dataset.Row>((_cat, index) => {
             const row: Dataset.Row = {
-                _id: "index" + index
+                _id: `${index}`
             }
 
             linksTable.columns.forEach(column => {

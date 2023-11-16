@@ -83,12 +83,23 @@ export const Application: React.FC = () => {
 
     const unmappedColumns = useAppSelector((state) => state.visual.unmappedColumns);
 
-    const onSelect = React.useCallback((table: string, rowIndices: number[], modifiers?: IModifiers) => {
+    const onSelect = React.useCallback(async (table: string, rowIndices: number[], modifiers?: IModifiers): Promise<boolean> => {
+        debugger;
         if (!rowIndices) {
             return;
         }
         // TODO handle selection
-        selectionManager.select(rowIndices.map(index => selections.get(index)).filter(s => s), modifiers?.ctrlKey); // TODO check meta for MacOS
+        return selectionManager.select(
+            rowIndices
+                .map(index => selections.get(index))
+                .filter(s => s), modifiers?.ctrlKey
+        ).then((selections) => {
+            if (selections.length === 0) {
+                return false;
+            } else {
+                return true;
+            }
+        }); // TODO check meta for MacOS
     }, [dataView, selections]);
 
     const onContextMenu = React.useCallback((table: string, rowIndices: number[], modifiers: IModifiers) => {

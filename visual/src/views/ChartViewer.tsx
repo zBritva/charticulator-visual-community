@@ -17,7 +17,7 @@ export interface ViewerProps {
     defaultAttributes: any;
     localizaiton?: LocalizationConfig,
     utcTimeZone: boolean,
-    onSelect?: (table: string, rowIndices: number[], modifiers?: IModifiers) => void;
+    onSelect?: (table: string, rowIndices: number[], modifiers?: IModifiers) => Promise<boolean>;
     onContextMenu?: (table: string, rowIndices: number[], modifiers: IModifiers) => void; 
 }
 
@@ -45,7 +45,13 @@ export const ChartViewer: React.FC<ViewerProps> = ({
         container.resize(width, height);    
     }, [container, width, height]);
 
-    container.addSelectionListener(onSelect);
+    container.addSelectionListener((table, rowIndeces) => {
+        onSelect(table, rowIndeces).then(result => {
+            if (!result) {
+                container.clearSelection();
+            }
+        });
+    });
     container.addContextMenuListener(onContextMenu);
 
     return container.reactMount(width, height);
