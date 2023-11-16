@@ -56,4 +56,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: visual
-          path: visual/dist/charticulatorVisualCommunity487D3ADCA7E14F729E78065092536DBD_[VIEW|EDITOR].*.pbiviz
+          path: visual/dist/charticulatorVisualCommunity487D3ADCA7E14F729E78065092536DBD*.pbiviz
