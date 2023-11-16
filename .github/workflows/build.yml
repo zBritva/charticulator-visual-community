@@ -40,7 +40,13 @@ jobs:
       #   working-directory: ./visual
       #   run: yarn build
 
-      - name: Build charticulator and visual
+      - name: Build Charticulator
+        env:
+          NODE_OPTIONS: "--max-old-space-size=8192"
+        working-directory: ./
+        run: build:visuals
+
+      - name: Build visuals
         env:
           NODE_OPTIONS: "--max-old-space-size=8192"
         working-directory: ./
