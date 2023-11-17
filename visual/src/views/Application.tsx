@@ -25,7 +25,7 @@ import { FluentProvider, teamsLightTheme } from "@fluentui/react-components";
 // tslint:disable-next-line
 export const Application: React.FC = () => {
 
-    console.log('Application');
+    // console.log('Application');
     const dataView = useAppSelector((store) => store.visual.dataview);
     const dataset = useAppSelector((store) => store.visual.dataset);
     const selections = useAppSelector((store) => store.visual.selections);

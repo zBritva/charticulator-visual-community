@@ -57,10 +57,10 @@ export const Editor: React.FC<EditorProps> = ({
     onExport,
     onImport
 }) => {
-    console.log('Editor');
+    // console.log('Editor');
     const settings = useAppSelector((store) => store.visual.settings);
     const template = useAppSelector((store) => store.visual.template);
-    console.log('editor template', template);
+    // console.log('editor template', template);
     const dataset = useAppSelector((store) => store.visual.dataset);
     // const { height, width } = useAppSelector((store) => store.visual.viewport);
     // const mapping = useAppSelector((store) => store.visual.mapping);
@@ -177,7 +177,7 @@ export const Editor: React.FC<EditorProps> = ({
                         onImportTemplateClick: async () => {
                             // TODO refactor
                             const specification = await onImport();
-                            console.log(specification);
+                            // console.log(specification);
                             appStore.dispatcher.dispatch(
                                 new Actions.ImportChartAndDataset(
                                     specification,

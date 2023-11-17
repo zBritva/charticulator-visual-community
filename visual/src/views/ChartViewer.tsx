@@ -33,7 +33,7 @@ export const ChartViewer: React.FC<ViewerProps> = ({
     onSelect,
     onContextMenu
 }) => {
-    console.log('ChartViewer');
+    // console.log('ChartViewer');
 
     const container = React.useMemo(() => {
         const container = new ChartContainer({ chart, defaultAttributes }, dataset, undefined, localizaiton, utcTimeZone);

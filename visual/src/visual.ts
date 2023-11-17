@@ -51,7 +51,7 @@ export class Visual implements IVisual {
     private settings: VisualSettings;
 
     constructor(options?: VisualConstructorOptions) {
-        console.log('Visual constructor', options);
+        // console.log('Visual constructor', options);
         if (!options) {
             return;
         }
@@ -75,7 +75,7 @@ export class Visual implements IVisual {
     }
 
     public update(options: VisualUpdateOptions) {
-        console.log('update');
+        // console.log('update');
         const dispatch = store.dispatch;
         this.settings = Visual.parseSettings(options && options.dataViews && options.dataViews[0]);
         dispatch(setViewport(deepClone(options.viewport)));
@@ -83,7 +83,7 @@ export class Visual implements IVisual {
         dispatch(setMode(options.editMode));
         dispatch(setViewMode(options.viewMode));
         dispatch(setSettings(deepClone(this.settings)));
-        console.log('end');
+        // console.log('end');
     }
 
     private static parseSettings(dataView: DataView): VisualSettings {
