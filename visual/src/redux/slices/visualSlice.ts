@@ -112,7 +112,16 @@ export const visualSlice = createSlice({
         setSettings: (state, action: PayloadAction<IVisualSettings>) => {
             state.settings = action.payload
 
-            state.mapping = JSON.parse(state.settings.chart.columnMappings)
+            if (state.settings.chart.columnMappings == '{}') {
+                state.mapping = []
+            } else {
+                const mapping = JSON.parse(state.settings.chart.columnMappings)
+                if (mapping instanceof Array) {
+                    state.mapping = mapping
+                } else {
+                    //convert old Charticulator mapping to new
+                }
+            }
             loadTemplateToState(action.payload.chart.template, state)
             const templateJSON: Specification.Template.ChartTemplate = JSON.parse(action.payload.chart.template);
             if (templateJSON.default) {
