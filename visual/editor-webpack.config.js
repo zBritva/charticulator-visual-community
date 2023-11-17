@@ -4,7 +4,7 @@ const webpack = require("webpack");
 const Visualizer = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 // werbpack plugin
-const { PowerBICustomVisualsWebpackPlugin } = require('powerbi-visuals-webpack-plugin');
+const PowerBICustomVisualsWebpackPlugin = require('powerbi-visuals-webpack-plugin');
 
 // api configuration
 const powerbiApi = require("powerbi-visuals-api");
