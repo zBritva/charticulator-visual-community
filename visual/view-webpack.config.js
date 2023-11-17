@@ -22,9 +22,9 @@ const localizationFolders = fs.existsSync(resourcesFolder) && fs.readdirSync(res
 const { merge } = require('webpack-merge');
 const base = require('./base-webpack.config.js');
 
-const GUID = 'charticulatorVisualCommunity487D3ADCA7E14F729E78065092536DBD_VIEW' || pbivizFile.visual.guid;
-const NAME = 'Charticulator Community Version (View)' || pbivizFile.visual.name;
-const DISPLAY_NAME = 'CharticulatorCommunityVersionView' || pbivizFile.visual.displayName;
+const GUID = 'charticulatorVisualCommunity_VIEW' || pbivizFile.visual.guid;
+const NAME = 'CharticulatorCommunityVersionView' || pbivizFile.visual.name;
+const DISPLAY_NAME = 'Charticulator Community Version (View)' || pbivizFile.visual.displayName;
 
 const pluginLocation = './src/visualPluginView.ts';
 const statsLocation = "../../view.webpack.statistics.html";
@@ -88,7 +88,7 @@ module.exports = merge(base, {
             dependenciesSchema: powerbiApi.schemas.dependencies,
             devMode: false,
             generatePbiviz: true,
-            generateResources: true,
+            generateResources: false,
             modules: true,
             visualSourceLocation: "../src/visual",
             pluginLocation: pluginLocation,

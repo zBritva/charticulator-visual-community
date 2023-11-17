@@ -5,9 +5,9 @@ import VisualConstructorOptions = powerbiVisualsApi.extensibility.visual.VisualC
 import DialogConstructorOptions = powerbiVisualsApi.extensibility.visual.DialogConstructorOptions;
 var powerbiKey: any = "powerbi";
 var powerbi: any = window[powerbiKey];
-var charticulatorVisualCommunity487D3ADCA7E14F729E78065092536DBD_EDITOR: IVisualPlugin = {
-    name: 'charticulatorVisualCommunity487D3ADCA7E14F729E78065092536DBD_EDITOR',
-    displayName: 'CharticulatorCommunityVersionEditor',
+var charticulatorVisualCommunity_EDITOR: IVisualPlugin = {
+    name: 'charticulatorVisualCommunity_EDITOR',
+    displayName: 'Charticulator Community Version (Editor)',
     class: 'Visual',
     apiVersion: '4.7.0',
     create: (options: VisualConstructorOptions) => {
@@ -27,6 +27,6 @@ var charticulatorVisualCommunity487D3ADCA7E14F729E78065092536DBD_EDITOR: IVisual
 if (typeof powerbi !== "undefined") {
     powerbi.visuals = powerbi.visuals || {};
     powerbi.visuals.plugins = powerbi.visuals.plugins || {};
-    powerbi.visuals.plugins["charticulatorVisualCommunity487D3ADCA7E14F729E78065092536DBD_EDITOR"] = charticulatorVisualCommunity487D3ADCA7E14F729E78065092536DBD_EDITOR;
+    powerbi.visuals.plugins["charticulatorVisualCommunity_EDITOR"] = charticulatorVisualCommunity_EDITOR;
 }
-export default charticulatorVisualCommunity487D3ADCA7E14F729E78065092536DBD_EDITOR;
+export default charticulatorVisualCommunity_EDITOR;

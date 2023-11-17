@@ -150,6 +150,9 @@ const performance = {
 };
 
 const plugins = [
+    new webpack.SourceMapDevToolPlugin({
+        filename: '[name].js.map',
+      }),
     new webpack.DefinePlugin({
         CHARTICULATOR_PACKAGE: JSON.stringify({
           version,

@@ -6686,7 +6686,7 @@ jsprim@^1.2.2:
     json-schema "0.4.0"
     verror "1.10.0"
 
-jszip@^3.7.0:
+jszip@^3.10.1:
   version "3.10.1"
   resolved "https://registry.yarnpkg.com/jszip/-/jszip-3.10.1.tgz#34aee70eb18ea1faec2f589208a157d1feb091c2"
   integrity sha512-xXDvecyTpGLrqFrvkrUSoxxfJI5AH7U8zxxtVclpsUtMCq4JQ290LY8AW5c7Ggnr/Y/oK+bQMbqK2qmtk3pN4g==
@@ -8121,18 +8121,18 @@ powerbi-visuals-utils-dataviewutils@2.4.1:
   resolved "https://registry.yarnpkg.com/powerbi-visuals-utils-dataviewutils/-/powerbi-visuals-utils-dataviewutils-2.4.1.tgz#8657a24d773ac9e471b621195f04e9a24ccd8138"
   integrity sha512-xgI4ru1KWcYFTbftLsR7Pzg14cslVPajUZUyRk6nzCEQvUMN/kVtPpVT5+s8UuhDZe7zpqSDAhSGS5yAcn9GcA==
 
-powerbi-visuals-webpack-plugin@3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/powerbi-visuals-webpack-plugin/-/powerbi-visuals-webpack-plugin-3.1.0.tgz#b2794435c788fd0c28e73f7963a59947f8b288d2"
-  integrity sha512-020pnxD800IPr8ZvQ7eJDZpK3HaJ6Qf7/MA0n+jipH7dpcoHdY/AHYkQQQJzrlB23XxkdmnP15pYXFQufwi7EA==
+powerbi-visuals-webpack-plugin@3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/powerbi-visuals-webpack-plugin/-/powerbi-visuals-webpack-plugin-3.2.1.tgz#636d9129e53baef9a71ae7cc13fa6164835cfc35"
+  integrity sha512-Mb0j3EzInvNcVlYf8EzgmzKl8XMSEvOA+3MQuSYA4/CFtILilqUz5PFXNBqgcyEC0gJ5nZouhXWXujsLvsep6g==
   dependencies:
     ajv "6.12.3"
     chalk "^4.1.1"
     compare-versions "^3.6.0"
     fs-extra "9.0.1"
-    jszip "^3.7.0"
+    jszip "^3.10.1"
     lodash.clonedeep "4.5.0"
-    webpack-sources "^3.2.1"
+    webpack-sources "^3.2.3"
 
 preact-compat@^3.18.3:
   version "3.19.0"
@@ -10238,7 +10238,7 @@ webpack-merge@^5.10.0, webpack-merge@^5.7.3:
     flat "^5.0.2"
     wildcard "^2.0.0"
 
-webpack-sources@^3.2.1, webpack-sources@^3.2.3:
+webpack-sources@^3.2.3:
   version "3.2.3"
   resolved "https://registry.yarnpkg.com/webpack-sources/-/webpack-sources-3.2.3.tgz#2d4daab8451fd4b240cc27055ff6a0c2ccea0cde"
   integrity sha512-/DyMEOrDgLKKIG0fmvtz+4dUX/3Ghozwgm6iPp8KRhvn+eQf9+Q7GWxVNMk3+uCPWfdXYC4ExGBckIXdFEfH1w==

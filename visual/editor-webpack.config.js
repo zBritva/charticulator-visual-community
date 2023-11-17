@@ -4,7 +4,7 @@ const webpack = require("webpack");
 const Visualizer = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 // werbpack plugin
-const PowerBICustomVisualsWebpackPlugin = require('powerbi-visuals-webpack-plugin');
+const { PowerBICustomVisualsWebpackPlugin } = require('powerbi-visuals-webpack-plugin');
 
 // api configuration
 const powerbiApi = require("powerbi-visuals-api");
@@ -22,9 +22,9 @@ const localizationFolders = fs.existsSync(resourcesFolder) && fs.readdirSync(res
 const { merge } = require('webpack-merge');
 const base = require('./base-webpack.config.js');
 
-const GUID = 'charticulatorVisualCommunity487D3ADCA7E14F729E78065092536DBD_EDITOR' || pbivizFile.visual.guid;
-const NAME = 'Charticulator Community Version (Editor)' || pbivizFile.visual.name;
-const DISPLAY_NAME = 'CharticulatorCommunityVersionEditor' || pbivizFile.visual.displayName;
+const GUID = 'charticulatorVisualCommunity_EDITOR' || pbivizFile.visual.guid;
+const NAME = 'CharticulatorCommunityVersionEditor' || pbivizFile.visual.name;
+const DISPLAY_NAME = 'Charticulator Community Version (Editor)' || pbivizFile.visual.displayName;
 
 const pluginLocation = './src/visualPluginEditor.ts';
 const statsLocation = "../../editor.webpack.statistics.html";
@@ -83,7 +83,7 @@ module.exports = merge(base, {
             dependenciesSchema: powerbiApi.schemas.dependencies,
             devMode: false,
             generatePbiviz: true,
-            generateResources: true,
+            generateResources: false,
             modules: true,
             visualSourceLocation: "../src/visual",
             pluginLocation: pluginLocation,
