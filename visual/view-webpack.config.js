@@ -38,14 +38,21 @@ module.exports = merge(base, {
     mode: 'development',
     devtool: 'inline-source-map',
     devServer: {
-        static: './dist',
+        static: {
+            directory: path.join(__dirname, '.tmp', 'drop'),
+            publicPath: '/assets'
+        },
+        devMiddleware: {
+            writeToDisk: true
+        },
+        hot: false
     },
     entry: {
         "visual": pluginLocation
     },
     output: {
         publicPath: '/assets',
-        path: path.join(__dirname, "/.tmp", "drop_view"),
+        path: path.join(__dirname, "/.tmp", "drop"),
         library: GUID,
         libraryTarget: 'var',
     },
@@ -92,7 +99,8 @@ module.exports = merge(base, {
             modules: true,
             visualSourceLocation: "../src/visual",
             pluginLocation: pluginLocation,
-            packageOutPath: path.join(__dirname, "dist")
+            packageOutPath: path.join(__dirname, "dist"),
+            dropPath: path.join(__dirname, "/.tmp", "drop")
         })
     ]
 });
