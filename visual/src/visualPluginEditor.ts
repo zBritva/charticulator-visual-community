@@ -10,14 +10,14 @@ var charticulatorVisualCommunity_EDITOR: IVisualPlugin = {
     displayName: 'Charticulator Community Version (Editor)',
     class: 'Visual',
     apiVersion: '4.7.0',
-    create: (options: VisualConstructorOptions) => {
+    create: (options?: VisualConstructorOptions) => {
         if (Visual) {
             return new Visual(options);
         }
         throw 'Visual instance not found';
     },
     createModalDialog: (dialogId: string, options: DialogConstructorOptions, initialState: object) => {
-        const dialogRegistry = globalThis.dialogRegistry;
+        const dialogRegistry = (<any>globalThis).dialogRegistry;
         if (dialogId in dialogRegistry) {
             new dialogRegistry[dialogId](options, initialState);
         }
