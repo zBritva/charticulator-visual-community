@@ -57,6 +57,7 @@ export function convertData(dataView: DataView, createSelectionBuilder: () => IS
     if (!dataView || !dataView.categorical) {
         return [null, null];
     }
+    debugger;
 
     const categories = dataView.categorical.categories;
     const values = dataView.categorical.values;
@@ -108,27 +109,6 @@ export function convertData(dataView: DataView, createSelectionBuilder: () => IS
             }
         });
 
-        mainTable.rows = allColumns[0].values.map<Dataset.Row>((_cat, index) => {
-            const builder = createSelectionBuilder();
-            
-            const selectionID = builder
-                .withCategory(categories[0], index)
-                .createSelectionId();
-            mainTableSelectionIds.set(index, selectionID);
-
-            const row: Dataset.Row = {
-                _id: `${index}`,
-            }
-
-            mainTable.columns.forEach(column => {
-                const categoryColumn = allColumns.find(category => category.source.displayName === column.displayName);
-
-                row[column.displayName] = categoryColumn.values[index] as any; 
-            });
-            
-            return row;
-        });
-
         linksTable.rows = allColumns[0].values.map<Dataset.Row>((_cat, index) => {
             const row: Dataset.Row = {
                 _id: `${index}`
@@ -141,6 +121,38 @@ export function convertData(dataView: DataView, createSelectionBuilder: () => IS
             })
             
             return row;
+        });
+
+        const uniqueIndex = new Set();
+        mainTable.rows = [];
+        allColumns[0].values.forEach((_cat, index) => {
+            const builder = createSelectionBuilder();
+            
+            const selectionID = builder
+                .withCategory(categories[0], index)
+                .createSelectionId();
+            mainTableSelectionIds.set(index, selectionID);
+
+            const row: Dataset.Row = {
+                _id: `${index}_`,
+            }
+            let rowID = `u_`;
+
+            mainTable.columns.forEach(column => {
+                const categoryColumn = allColumns.find(category => category.source.displayName === column.displayName);
+
+                row[column.displayName] = categoryColumn.values[index] as any;
+                rowID += String(categoryColumn.values[index])
+                    .toLocaleLowerCase()
+                    .replace(/\s/, '_')
+                    .concat('_')
+            });
+
+            // if no links data, add all data
+            if (!uniqueIndex.has(rowID) || linksTable.rows.length == 0) {
+                mainTable.rows.push(row);
+                uniqueIndex.add(rowID);
+            }
         });
     }
 
