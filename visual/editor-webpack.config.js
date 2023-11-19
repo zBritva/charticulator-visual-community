@@ -36,11 +36,7 @@ module.exports = merge(base, {
         static: {
             directory: path.join(__dirname, '.tmp', 'drop'),
             publicPath: '/assets'
-        },
-        devMiddleware: {
-            writeToDisk: true
-        },
-        hot: false
+        }
     },
     entry: {
         "visual": pluginLocation

@@ -178,17 +178,21 @@ const devServer = {
     port: 8080, // dev server port
     hot: false,
     liveReload: false,
+    webSocketServer: false,
     https: {
     },
     headers: {
         "access-control-allow-origin": "*",
         "cache-control": "public, max-age=0"
     },
+    devMiddleware: {
+        writeToDisk: true
+    },
 };
 
 const optimization = {
     concatenateModules: true,
-    minimize: true // enable minimization for create *.pbiviz file less than 2 Mb, can be disabled for dev mode
+    minimize: false // enable minimization for create *.pbiviz file less than 2 Mb, can be disabled for dev mode
 };
 
 module.exports = {
