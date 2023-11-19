@@ -84,7 +84,6 @@ export const Application: React.FC = () => {
     const unmappedColumns = useAppSelector((state) => state.visual.unmappedColumns);
 
     const onSelect = React.useCallback(async (table: string, rowIndices: number[], modifiers?: IModifiers): Promise<boolean> => {
-        debugger;
         if (!rowIndices) {
             return;
         }

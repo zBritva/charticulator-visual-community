@@ -57,7 +57,6 @@ export function convertData(dataView: DataView, createSelectionBuilder: () => IS
     if (!dataView || !dataView.categorical) {
         return [null, null];
     }
-    debugger;
 
     const categories = dataView.categorical.categories;
     const values = dataView.categorical.values;
