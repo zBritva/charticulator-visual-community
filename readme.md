@@ -1,5 +1,5 @@
 
-Deployed `beta` branch of Charticulator App is available on [https://zbritva.github.io/charticulator/](https://zbritva.github.io/charticulator/)
+Deployed `beta` branch of Charticulator App is available on [https://ilfat-galiev.im/charticulator/](https://ilfat-galiev.im/charticulator/)
 
 [![Deploy Charticulator to Pages](https://github.com/zBritva/charticulator/actions/workflows/static.yml/badge.svg)](https://github.com/zBritva/charticulator/actions/workflows/static.yml)
 
