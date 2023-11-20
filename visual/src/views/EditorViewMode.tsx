@@ -10,6 +10,8 @@ import { Dataset } from "charticulator/src/core";
 
 import { MainViewConfig } from "./IEditor"
 import { useAppSelector } from '../redux/hooks'
+import { Button, FluentProvider, teamsLightTheme } from "@fluentui/react-components";
+import { string } from "charticulator/src/core/expression";
 
 export interface EditorProps {
     width: number;
@@ -29,7 +31,7 @@ export interface EditorProps {
     onImport: () => Promise<Specification.Chart>;
 }
 
-export const Editor: React.FC<EditorProps> = () => {
+export const Editor: React.FC<EditorProps> = ({ onImport }) => {
 
     const host = useAppSelector((store) => store.visual.host);
 
@@ -38,14 +40,23 @@ export const Editor: React.FC<EditorProps> = () => {
     }, [host]);
 
     return (<>
-        <div className='warning-container'>
-            <div className="editor-warning">
-                <h4>This version of the visual doesn't support editing chart.</h4>
-                <p>To edit the chart switch visual to editor version</p>
-                <p>Read more about Charticulator visual (community) in official documentation:</p>
-                <a onClick={onUrl('https://zbritva.github.io/charticulator-doc/')}>https://zbritva.github.io/charticulator-doc/</a>
+        <FluentProvider theme={teamsLightTheme}>
+            <div className='warning-container'>
+                <div className="editor-warning">
+                    <h4>This version of the visual doesn't support editing chart.</h4>
+                    <p>To edit the chart switch visual to editor version</p>
+                    <p>Read more about Charticulator visual (community) in official documentation:</p>
+                    <a onClick={onUrl('https://zbritva.github.io/charticulator-doc/')}>https://zbritva.github.io/charticulator-doc/</a>
+                    <p>Or import template created on <a onClick={onUrl('https://ilfat-galiev.im/charticulator')}>https://ilfat-galiev.im/charticulator</a></p>
+                    <Button
+                        appearance="primary"
+                        onClick={onImport}
+                    >
+                        Import template
+                    </Button>
+                </div>
             </div>
-        </div>
+        </FluentProvider>
     </>);
 };
 

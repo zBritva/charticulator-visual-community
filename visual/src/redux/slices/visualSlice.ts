@@ -72,7 +72,11 @@ const initialState: VisualState = {
 
 function rebuildTemplate(templateString: string, dataset: Dataset.Dataset, mapping: IColumnsMapping[]) {
     const { chart, unmappedColumns } = createChartFromTemplate(templateString, dataset, mapping)
-            
+    
+    if (!chart) {
+        return { template: null, unmappedColumns, chart: null }
+    }
+
     const chartManager = new Prototypes.ChartStateManager(
         chart,
         dataset,

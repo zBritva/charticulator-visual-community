@@ -118,7 +118,13 @@ export const Application: React.FC = () => {
     // TODO refactor
     const onImportTempalte = React.useCallback(async () => {
         const template = await importTempalte();
-        dispatch(setTemplate(template));
+        // dispatch(setTemplate(template));
+
+        dispatch(setProperty({
+            objectName: 'chart',
+            objectProperty: 'template',
+            value: template
+        }));
 
         const { chart } = createChartFromTemplate(template, dataset, mapping);
 
@@ -179,10 +185,6 @@ export const Application: React.FC = () => {
                     />
                 </>
             );
-        } else {
-            return (<>
-                <p>Chart is not loaded to editor...</p>
-            </>);
         }
     }
 
@@ -210,7 +212,7 @@ export const Application: React.FC = () => {
                     <h4>Default template</h4>
                     <p>Default template without chart is loaded into the visual container</p>
                     {isEditor() ? 
-                    <p>Switch to editor to start creating charts by using Charticulator</p> :
+                    <p>Switch to editor to start creating or loading charts by using Charticulator</p> :
                     <p>Switch to editor version of the visual to start creating charts by using Charticulator</p>}
                     <p>Read more about Charticulator visual (community) in official documentation:</p>
                     <a onClick={onUrl('https://zbritva.github.io/charticulator-doc/')}>https://zbritva.github.io/charticulator-doc/</a>
