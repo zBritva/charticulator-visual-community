@@ -6,8 +6,7 @@ import VisualUpdateOptions = powerbi.extensibility.visual.VisualUpdateOptions;
 import { Editor } from './Editor';
 import { Mapping, UnmappedColumnName } from './Mapping';
 import { ChartViewer, IModifiers } from './ChartViewer';
-import { Tutorial } from "./Tutorial";
-import { ColorUtils, Specification, defaultDigitsGroup } from 'charticulator/src/container';
+import { ColorUtils, defaultDigitsGroup } from 'charticulator/src/container';
 import { initialize } from "charticulator/src/core/index";
 import charticulatorConfig from "./../../../charticulator/dist/scripts/config.json";
 

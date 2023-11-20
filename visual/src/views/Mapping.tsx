@@ -1,6 +1,8 @@
 import React from 'react';
 
-import { Button, Dropdown, Option } from "@fluentui/react-components";
+import { Button } from '@fluentui/react-button';
+import { Dropdown, Option } from "@fluentui/react-combobox";
+
 import { Dataset } from 'charticulator/src/core';
 import { IColumnsMapping } from 'src/redux/slices/visualSlice';
 
