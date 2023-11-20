@@ -11,17 +11,17 @@ export function createChartFromTemplate(template: string, dataset: Dataset.Datas
     const chartTables = chartJSON.tables;
     const newUnmappedColumns: IColumnsMapping[] = [];
     // tweak tables for old templates
-    if (chartTables[0] != undefined && chartTables[0]?.type === undefined) {
-        chartTables[0].type = Dataset.TableType.Main;
+    if (chartTables[0] != undefined) {
+        chartTables[0].type = Dataset.TableType.Main
     }
-    if (chartTables[1] != undefined && chartTables[1].type === undefined) {
+    if (chartTables[1] != undefined) {
         chartTables[1].type = Dataset.TableType.Links;
     }
 
     chartTables.forEach((table: any) => {
         chartTemplate.assignTable(
             table.name,
-            table.name
+            table.type === Dataset.TableType.Main ? 'main' : 'links'
         );
 
         const datasetTable = dataset.tables.find(t => table.type == t.type);

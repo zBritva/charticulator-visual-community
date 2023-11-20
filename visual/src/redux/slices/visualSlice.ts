@@ -170,12 +170,12 @@ export const visualSlice = createSlice({
         },
         setProperty: (state, action: PayloadAction<Property>) => {
             const property = action.payload
-            persistProperty(state.host, property.objectName, property.objectProperty, property.value);
+            persistProperty(state.host, property.objectName, property.objectProperty, property.value)
         },
         setMapping: (state, action: PayloadAction<IColumnsMapping[]>) => {
             state.mapping = action.payload
 
-            const templateString = JSON.stringify(state.template); 
+            const templateString = JSON.stringify(state.template || JSON.parse(state.settings.chart.template))
             // TODO remove deep clone
             const { template, unmappedColumns, chart } = rebuildTemplate(templateString, deepClone(state.dataset), state.mapping)
 
@@ -185,7 +185,22 @@ export const visualSlice = createSlice({
 
             // save the chart with new mapping;
             persistProperty(state.host, 'chart', 'template', JSON.stringify(template));
-            persistProperty(state.host, 'chart', 'columnMappings', JSON.stringify(state.mapping));
+            persistProperty(state.host, 'chart', 'columnMappings', JSON.stringify(state.mapping))
+        },
+        importTemplate: (state, action: PayloadAction<string>) => {
+            const template = action.payload
+            const parsed = JSON.parse(template)
+            const { chart, unmappedColumns } = createChartFromTemplate(template, state.dataset, state.mapping)
+
+            if (chart && unmappedColumns.length === 0) {
+                persistProperty(state.host, 'chart', 'template', JSON.stringify(parsed))
+                state.chart = chart
+                state.unmappedColumns = unmappedColumns
+            } else {
+                state.unmappedColumns = unmappedColumns
+                state.template = parsed
+                state.chart = null
+            }
         }
     },
 })
@@ -201,7 +216,8 @@ export const {
     setHost,
     setProperty,
     setMapping,
-    setTemplate
+    setTemplate,
+    importTemplate
 } = visualSlice.actions
 
 export default visualSlice.reducer

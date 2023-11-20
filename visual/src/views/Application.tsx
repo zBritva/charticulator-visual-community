@@ -7,7 +7,7 @@ import { Editor } from './Editor';
 import { Mapping, UnmappedColumnName } from './Mapping';
 import { ChartViewer, IModifiers } from './ChartViewer';
 import { Tutorial } from "./Tutorial";
-import { ColorUtils, defaultDigitsGroup } from 'charticulator/src/container';
+import { ColorUtils, Specification, defaultDigitsGroup } from 'charticulator/src/container';
 import { initialize } from "charticulator/src/core/index";
 import charticulatorConfig from "./../../../charticulator/dist/scripts/config.json";
 
@@ -16,7 +16,7 @@ import {
 } from "charticulator/src/core/index";
 
 import { useAppSelector, useAppDispatch } from '../redux/hooks'
-import { setSolverInitialized, setProperty, setMapping, IColumnsMapping, setTemplate } from '../redux/slices/visualSlice';
+import { setSolverInitialized, setProperty, setMapping, IColumnsMapping, setTemplate, importTemplate } from '../redux/slices/visualSlice';
 import { deepClone, isEditor } from '../utils/main';
 import { createChartFromTemplate } from '../utils/template';
 import { importTempalte } from '../utils/importTemplate';
@@ -118,17 +118,9 @@ export const Application: React.FC = () => {
     // TODO refactor
     const onImportTempalte = React.useCallback(async () => {
         const template = await importTempalte();
-        // dispatch(setTemplate(template));
+        dispatch(importTemplate(template));
 
-        dispatch(setProperty({
-            objectName: 'chart',
-            objectProperty: 'template',
-            value: template
-        }));
-
-        const { chart } = createChartFromTemplate(template, dataset, mapping);
-
-        return chart;
+        return null;
     }, [setProperty]);
 
     if (!dataset || !solverInitialized) {
@@ -137,7 +129,6 @@ export const Application: React.FC = () => {
 
     if (dataset && mode === powerbi.EditMode.Advanced) {
         host.tooltipService.hide({ immediately: true, isTouchEvent: false });
-        // const chart = createChartFromTemplate(template, dataset);
         if (chart) {
             return (
                 <>
@@ -147,19 +138,8 @@ export const Application: React.FC = () => {
                         chart={chart}
                         columnMappings={settings.chart.columnMappings as any}
                         dataset={dataset}
-                        // onSave={onSave}
                         localizaiton={localizaiton}
                         utcTimeZone={settings.localization.utcTimeZone}
-                        // mainView={{
-                        //     ColumnsPosition: settings.panels.defaultDatasetPanelPosition as PositionsLeftRight,
-                        //     EditorPanelsPosition: settings.panels.defaultPanelsPosition as PositionsLeftRight,
-                        //     ToolbarPosition: PositionsLeftRightTop.Top,
-                        //     ToolbarLabels: true,
-                        //     Name: "Charticulator (Community version)",
-                        //     MenuBarButtons: PositionsLeftRight.Right,
-                        //     MenuBarSaveButtons: PositionsLeftRight.Left,
-                        //     UndoRedoLocation: UndoRedoLocation.ToolBar
-                        // }}
                         onClose={() => {
 
                         }}
@@ -211,9 +191,9 @@ export const Application: React.FC = () => {
                 <div className='view-warning'>
                     <h4>Default template</h4>
                     <p>Default template without chart is loaded into the visual container</p>
-                    {isEditor() ? 
-                    <p>Switch to editor to start creating or loading charts by using Charticulator</p> :
-                    <p>Switch to editor version of the visual to start creating charts by using Charticulator</p>}
+                    {isEditor() ?
+                        <p>Switch to editor to start creating or loading charts by using Charticulator</p> :
+                        <p>Switch to editor version of the visual to start creating charts by using Charticulator</p>}
                     <p>Read more about Charticulator visual (community) in official documentation:</p>
                     <a onClick={onUrl('https://zbritva.github.io/charticulator-doc/')}>https://zbritva.github.io/charticulator-doc/</a>
                 </div>
@@ -239,7 +219,7 @@ export const Application: React.FC = () => {
             </>
         );
     }
-    
+
     if (view === powerbi.ViewMode.View && isEditor()) {
         return (<>
             <div className='warning-container'>
