@@ -15,7 +15,7 @@ export interface ViewerProps {
     chart: Specification.Chart;
     dataset: Dataset.Dataset;
     defaultAttributes: any;
-    localizaiton?: LocalizationConfig,
+    localization?: LocalizationConfig,
     utcTimeZone: boolean,
     onSelect?: (table: string, rowIndices: number[], modifiers?: IModifiers) => Promise<boolean>;
     onContextMenu?: (table: string, rowIndices: number[], modifiers: IModifiers) => void; 
@@ -28,15 +28,16 @@ export const ChartViewer: React.FC<ViewerProps> = ({
     chart,
     dataset,
     defaultAttributes,
-    localizaiton,
+    localization,
     utcTimeZone,
     onSelect,
     onContextMenu
 }) => {
     // console.log('ChartViewer');
+    debugger;
 
     const container = React.useMemo(() => {
-        const container = new ChartContainer({ chart, defaultAttributes }, dataset, undefined, localizaiton, utcTimeZone);
+        const container = new ChartContainer({ chart, defaultAttributes }, dataset, undefined, localization, utcTimeZone);
 
         return container;
     }, [chart, defaultAttributes, dataset, width, height]);
@@ -45,8 +46,8 @@ export const ChartViewer: React.FC<ViewerProps> = ({
         container.resize(width, height);    
     }, [container, width, height]);
 
-    container.addSelectionListener((table, rowIndeces) => {
-        onSelect(table, rowIndeces).then(result => {
+    container.addSelectionListener((table, rowIndexes) => {
+        onSelect(table, rowIndexes).then(result => {
             if (!result) {
                 container.clearSelection();
             }

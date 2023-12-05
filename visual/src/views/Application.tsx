@@ -194,7 +194,7 @@ export const Application: React.FC = () => {
                         <p>Switch to editor to start creating or loading charts by using Charticulator</p> :
                         <p>Switch to editor version of the visual to start creating charts by using Charticulator</p>}
                     <p>Read more about Charticulator visual (community) in official documentation:</p>
-                    <a onClick={onUrl('https://zbritva.github.io/charticulator-doc/')}>https://zbritva.github.io/charticulator-doc/</a>
+                    <a onClick={onUrl('https://ilfat-galiev.im/docs/charticulator/')}>https://ilfat-galiev.im/docs/charticulator/</a>
                 </div>
             </div>
         </>);
@@ -212,7 +212,7 @@ export const Application: React.FC = () => {
                     dataset={dataset}
                     onSelect={onSelect}
                     onContextMenu={onContextMenu}
-                    localizaiton={localizaiton}
+                    localization={localizaiton}
                     utcTimeZone={settings.localization.utcTimeZone}
                 />
             </>
@@ -226,7 +226,7 @@ export const Application: React.FC = () => {
                     <h4>This version of the visual doesn't support view mode</h4>
                     <p>Please switch the visual to view version before save the report</p>
                     <p>Read more about Charticulator visual (community) in official documentation:</p>
-                    <a onClick={onUrl('https://zbritva.github.io/charticulator-doc/')}>https://zbritva.github.io/charticulator-doc/</a>
+                    <a onClick={onUrl('https://ilfat-galiev.im/docs/charticulator/')}>https://ilfat-galiev.im/docs/charticulator/</a>
                 </div>
             </div>
         </>);
