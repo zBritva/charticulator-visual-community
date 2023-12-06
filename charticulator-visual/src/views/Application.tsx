@@ -101,9 +101,15 @@ export const Application: React.FC = () => {
     }, [dataView, selections]);
 
     const onContextMenu = React.useCallback((table: string, rowIndices: number[], modifiers: IModifiers) => {
-        // TODO handle selection
         if (!rowIndices) {
-            return;
+            selectionManager.showContextMenu(null, {
+                x: modifiers.clientX,
+                y: modifiers.clientY
+            });
+            if (modifiers.event) {
+                modifiers.event.preventDefault();
+            }
+            return true;
         }
         selectionManager.showContextMenu(
             rowIndices.map(index => selections.get(index)).filter(s => s),
@@ -112,6 +118,10 @@ export const Application: React.FC = () => {
                 y: modifiers.clientY
             }
         );
+        if (modifiers.event) {
+            modifiers.event.preventDefault();
+        }
+        return true;
     }, [dataView, selections]);
 
     // TODO refactor

@@ -8,7 +8,9 @@ export interface IModifiers {
     metaKey: boolean;
     clientX?: number;
     clientY?: number;
+    event?: PointerEvent;
 }
+
 export interface ViewerProps {
     width: number;
     height: number;
@@ -34,7 +36,6 @@ export const ChartViewer: React.FC<ViewerProps> = ({
     onContextMenu
 }) => {
     // console.log('ChartViewer');
-    debugger;
 
     const container = React.useMemo(() => {
         const container = new ChartContainer({ chart, defaultAttributes }, dataset, undefined, localization, utcTimeZone);
