@@ -1,0 +1,114 @@
+h1 {
+    font-size: 16px;
+}
+
+.tutorialView {
+    overflow-y: scroll;
+    height: 100%;
+}
+
+.tutorial, .linkedin, .twitter, .youtube, .templates {
+    h1 {
+        font-weight: bold;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    h2 {
+        margin-top: 5px;
+        margin-bottom: 5px;
+        font-size: 14px;
+    }
+
+    p {
+        font-size: 12px;
+    }
+}
+
+.youtube, .templates {
+    p {
+        margin-bottom: 5px;
+    }
+}
+
+.mapping {
+    margin: 30px;
+    padding: 2px;
+    overflow-y: auto;
+
+    p {
+        font-size: 14px;
+    }
+
+    table {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        tr {
+            text-align: left;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+
+            th,td {
+                height: 40px;
+                display: flex;
+                flex: 1;
+                align-items: center;
+            }
+
+            th {
+                color: #333333;
+            }
+
+            td.columns {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: stretch;
+                vertical-align: middle;
+
+                button {
+                    width: 100%;
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                }
+            }
+        }
+
+        width: 100%;
+        color: #666666;
+        font-size: 14px;
+    }
+}
+
+.mapping tr {     
+    border-bottom: 1px solid #d8d8d8;
+}
+
+.warning-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    height: 100%;
+
+    .view-warning, .editor-warning {
+        display: flex;
+        flex-direction: column;
+
+        h4 {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        p, a {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+    
+        a {
+            text-decoration: underline;
+        }
+    }
+}
