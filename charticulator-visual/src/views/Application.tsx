@@ -124,6 +124,17 @@ export const Application: React.FC = () => {
         return true;
     }, [dataView, selections]);
 
+    const onBackgroundContextMenu = React.useCallback((e: React.MouseEvent) => {
+        onContextMenu(null, [], {
+            ctrlKey: e.ctrlKey,
+            metaKey: e.metaKey,
+            shiftKey: e.shiftKey,
+            clientX: e.clientX,
+            clientY: e.clientY,
+            event: e as any
+        });
+    }, [onContextMenu])
+
     // TODO refactor
     const onImportTempalte = React.useCallback(async () => {
         const template = await importTempalte();
@@ -138,7 +149,7 @@ export const Application: React.FC = () => {
 
     if (dataset && mode === powerbi.EditMode.Advanced) {
         host.tooltipService.hide({ immediately: true, isTouchEvent: false });
-        if (chart) {
+        if (chart || !isEditor()) {
             return (
                 <>
                     <Editor
@@ -214,17 +225,19 @@ export const Application: React.FC = () => {
         return (
             <>
                 {isEditor() ? <h4>Editor preview:</h4> : null}
-                <ChartViewer
-                    width={viewport.width}
-                    height={viewport.height}
-                    chart={chart}
-                    defaultAttributes={{}}
-                    dataset={dataset}
-                    onSelect={onSelect}
-                    onContextMenu={onContextMenu}
-                    localization={localizaiton}
-                    utcTimeZone={settings.localization.utcTimeZone}
-                />
+                <div onContextMenu={onBackgroundContextMenu}>
+                    <ChartViewer
+                        width={viewport.width}
+                        height={viewport.height}
+                        chart={chart}
+                        defaultAttributes={{}}
+                        dataset={dataset}
+                        onSelect={onSelect}
+                        onContextMenu={onContextMenu}
+                        localization={localizaiton}
+                        utcTimeZone={settings.localization.utcTimeZone}
+                    />
+                </div>
             </>
         );
     }
