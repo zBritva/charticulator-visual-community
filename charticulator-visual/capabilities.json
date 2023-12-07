@@ -52,8 +52,13 @@
         },
         "currency": {
           "displayName": "Currency",
-          "displayNameKey": "Charticulator_Cyrrency",
+          "displayNameKey": "Charticulator_Currency",
           "type": { "text": true }
+        },
+        "utcTimeZone": {
+          "displayName": "UTC time zone",
+          "displayNameKey": "Charticulator_UTC",
+          "type": { "bool": true }
         }
       }
     },

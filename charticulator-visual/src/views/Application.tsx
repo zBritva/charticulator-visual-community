@@ -6,7 +6,7 @@ import VisualUpdateOptions = powerbi.extensibility.visual.VisualUpdateOptions;
 import { Editor } from './Editor';
 import { Mapping, UnmappedColumnName } from './Mapping';
 import { ChartViewer, IModifiers } from './ChartViewer';
-import { ColorUtils, defaultDigitsGroup } from 'charticulator/src/container';
+import { ColorUtils, defaultDigitsGroup, setTimeZone } from 'charticulator/src/container';
 import { initialize } from "charticulator/src/core/index";
 import charticulatorConfig from "./../../../charticulator/dist/scripts/config.json";
 
@@ -61,6 +61,7 @@ export const Application: React.FC = () => {
                 thousands:
                     localizaiton?.thousandsDelimiter,
             });
+            setTimeZone(settings.localization.utcTimeZone);
 
             ColorUtils.setDefaultColorPaletteGenerator(key => ColorUtils.colorFromHTMLColor(host.colorPalette.getColor(key).value));
             ColorUtils.setDefaultColorGeneratorResetFunction(() => host.colorPalette.reset());
@@ -122,7 +123,7 @@ export const Application: React.FC = () => {
             modifiers.event.preventDefault();
         }
         return true;
-    }, [dataView, selections]);
+    }, [dataView, selections, selectionManager]);
 
     const onBackgroundContextMenu = React.useCallback((e: React.MouseEvent) => {
         onContextMenu(null, [], {
@@ -134,6 +135,10 @@ export const Application: React.FC = () => {
             event: e as any
         });
     }, [onContextMenu])
+
+    const onBackgroundClick = React.useCallback((e: React.MouseEvent) => {
+        selectionManager.clear();
+    }, [selectionManager])
 
     // TODO refactor
     const onImportTempalte = React.useCallback(async () => {
@@ -225,7 +230,7 @@ export const Application: React.FC = () => {
         return (
             <>
                 {isEditor() ? <h4>Editor preview:</h4> : null}
-                <div onContextMenu={onBackgroundContextMenu}>
+                <div onContextMenu={onBackgroundContextMenu} onClick={onBackgroundClick}>
                     <ChartViewer
                         width={viewport.width}
                         height={viewport.height}

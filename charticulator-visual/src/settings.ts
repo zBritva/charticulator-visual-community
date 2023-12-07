@@ -65,7 +65,7 @@ export class Localization {
     public decemalDelimiter: string = ".";
     public thousandsDelimiter: string = ",";
     public currency: string = "$";
-    public utcTimeZone: boolean = false;
+    public utcTimeZone: boolean = true;
 }
 
 export class Defaults {

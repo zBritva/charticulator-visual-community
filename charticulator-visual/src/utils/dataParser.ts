@@ -5,7 +5,12 @@ import ValueTypeDescriptor = powerbi.ValueTypeDescriptor;
 import ISelectionIdBuilder = powerbi.extensibility.ISelectionIdBuilder;
 import ISelectionId = powerbi.extensibility.ISelectionId;
 
+import { utcParse, timeParse } from "d3-time-format";
+
 import { Dataset } from "charticulator/src/container";
+
+//2014-12-31T20:00:00.000Z
+const timeFormat = '%Y-%m-%dT%H:%M:%S.000Z'
 
 export function mapColumnType(pbiType: ValueTypeDescriptor): Dataset.DataType {
     if (pbiType.bool) {
@@ -53,10 +58,15 @@ export function mapColumnKind(pbiType: ValueTypeDescriptor): Dataset.DataKind {
     return Dataset.DataKind.Categorical;
 }
 
-export function convertData(dataView: DataView, createSelectionBuilder: () => ISelectionIdBuilder): [Dataset.Dataset | null, Map<number, ISelectionId> | null] {
+export function convertData(
+    dataView: DataView,
+    createSelectionBuilder: () => ISelectionIdBuilder,
+    utcTimeZone: boolean): [Dataset.Dataset | null, Map<number, ISelectionId> | null] {
     if (!dataView || !dataView.categorical) {
         return [null, null];
     }
+
+    const dateParse = true ? utcParse(timeFormat) : timeParse(timeFormat);
 
     const categories = dataView.categorical.categories;
     const values = dataView.categorical.values;
@@ -137,10 +147,18 @@ export function convertData(dataView: DataView, createSelectionBuilder: () => IS
             }
             let rowID = `u_`;
 
+            debugger;
             mainTable.columns.forEach(column => {
                 const categoryColumn = allColumns.find(category => category.source.displayName === column.displayName);
 
-                row[column.displayName] = categoryColumn.values[index] as any;
+                if (column.type === Dataset.DataType.Date) {
+                    if (typeof categoryColumn.values[index] === 'string') {
+                        row[column.displayName] = dateParse(categoryColumn.values[index] as any).getTime() as any;
+                    }
+                } else {
+                    row[column.displayName] = categoryColumn.values[index] as any;
+                }
+
                 rowID += String(categoryColumn.values[index])
                     .toLocaleLowerCase()
                     .replace(/\s/, '_')

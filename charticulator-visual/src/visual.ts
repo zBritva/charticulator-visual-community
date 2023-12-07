@@ -96,6 +96,15 @@ export class Visual implements IVisual {
      *
      */
     public enumerateObjectInstances(options: EnumerateVisualObjectInstancesOptions): VisualObjectInstance[] | VisualObjectInstanceEnumerationObject {
+        if (options.objectName === 'localization') {
+            const settings = VisualSettings.enumerateObjectInstances(this.settings || VisualSettings.getDefault(), options) as VisualObjectInstanceEnumerationObject;
+            
+            // hide for beta
+            delete settings.instances[0].properties['utcTimeZone'];
+
+            return settings;
+        }
+
         return VisualSettings.enumerateObjectInstances(this.settings || VisualSettings.getDefault(), options);
     }
 }
