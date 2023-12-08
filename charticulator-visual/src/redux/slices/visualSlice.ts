@@ -192,9 +192,10 @@ export const visualSlice = createSlice({
             const parsed = JSON.parse(template)
             const { chart, unmappedColumns } = createChartFromTemplate(template, state.dataset, state.mapping)
 
+            persistProperty(state.host, 'chart', 'template', JSON.stringify(parsed))
             if (chart && unmappedColumns.length === 0) {
-                persistProperty(state.host, 'chart', 'template', JSON.stringify(parsed))
                 state.chart = chart
+                state.template = parsed
                 state.unmappedColumns = unmappedColumns
             } else {
                 state.unmappedColumns = unmappedColumns

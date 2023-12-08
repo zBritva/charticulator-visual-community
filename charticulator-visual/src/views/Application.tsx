@@ -51,7 +51,7 @@ export const Application: React.FC = () => {
     const solverInitialized = useAppSelector((store) => store.visual.solverInitialized);
     const chart = useAppSelector((store) => store.visual.chart);
     const template = useAppSelector((store) => store.visual.template);
-    const mapping = useAppSelector((store) => store.visual.mapping);
+    const unmappedColumns = useAppSelector((state) => state.visual.unmappedColumns);
     const dispatch = useAppDispatch();
 
     const styles = useStyles();
@@ -98,7 +98,6 @@ export const Application: React.FC = () => {
         thousandsDelimiter: settings?.localization.thousandsDelimiter
     }), [settings]);
 
-    const unmappedColumns = useAppSelector((state) => state.visual.unmappedColumns);
 
     const onSelect = React.useCallback(async (table: string, rowIndices: number[], modifiers?: IModifiers): Promise<boolean> => {
         if (!rowIndices) {
