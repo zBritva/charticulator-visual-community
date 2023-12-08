@@ -15,7 +15,7 @@
         "noImplicitAny": false,
         "sourceMap": true,
         "resolveJsonModule": true,
-        "lib": [ "es2019", "dom", "esnext.array", "ES2015.Generator"],
+        "lib": ["es2020", "dom", "esnext.array", "ES2015.Generator"],
         "jsx": "react",
         "baseUrl": "./",
         "paths": {
