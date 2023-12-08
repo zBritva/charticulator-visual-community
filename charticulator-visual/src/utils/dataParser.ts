@@ -147,7 +147,6 @@ export function convertData(
             }
             let rowID = `u_`;
 
-            debugger;
             mainTable.columns.forEach(column => {
                 const categoryColumn = allColumns.find(category => category.source.displayName === column.displayName);
 
