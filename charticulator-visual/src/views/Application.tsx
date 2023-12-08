@@ -17,9 +17,24 @@ import {
 import { useAppSelector, useAppDispatch } from '../redux/hooks'
 import { setSolverInitialized, setProperty, setMapping, IColumnsMapping, setTemplate, importTemplate } from '../redux/slices/visualSlice';
 import { deepClone, isEditor } from '../utils/main';
-import { createChartFromTemplate } from '../utils/template';
 import { importTempalte } from '../utils/importTemplate';
-import { FluentProvider, teamsLightTheme } from "@fluentui/react-components";
+import { FluentProvider, Label, Tooltip, makeStyles, shorthands, teamsLightTheme } from "@fluentui/react-components";
+
+import switchVisual from "./../../assets/label_tip.png"
+
+const useStyles = makeStyles({
+    tooltipWidthClass: {
+        maxWidth: '480px',
+    },
+    label: {
+        marginBottom: '8px'
+    },
+    imageBorder: {
+        ...shorthands.borderWidth('2px'),
+        ...shorthands.borderColor('black'),
+        ...shorthands.borderStyle('solid'),
+    }
+});
 
 // tslint:disable-next-line
 export const Application: React.FC = () => {
@@ -38,6 +53,8 @@ export const Application: React.FC = () => {
     const template = useAppSelector((store) => store.visual.template);
     const mapping = useAppSelector((store) => store.visual.mapping);
     const dispatch = useAppDispatch();
+
+    const styles = useStyles();
 
     if (dataView) {
         host.eventService.renderingStarted({});
@@ -229,7 +246,22 @@ export const Application: React.FC = () => {
     if (chart && !template.default && unmappedColumns.filter(c => c.powerbiColumn === UnmappedColumnName).length === 0) {
         return (
             <>
-                {isEditor() ? <h4>Editor preview:</h4> : null}
+                {isEditor() ? (
+                    <>
+                        <Tooltip
+                            content={{
+                                className: styles.tooltipWidthClass,
+                                children: (<>
+                                    <p className={styles.label}>Switch the visual to view version to hide this label</p>
+                                    <img className={styles.imageBorder} src={switchVisual}></img>
+                                </>),
+                            }}
+                            relationship="label"
+                        >
+                            <Label>Editor preview:</Label>
+                        </Tooltip>
+                    </>
+                ) : null}
                 <div onContextMenu={onBackgroundContextMenu} onClick={onBackgroundClick}>
                     <ChartViewer
                         width={viewport.width}
