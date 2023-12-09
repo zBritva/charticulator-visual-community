@@ -11,6 +11,7 @@ import { Dataset } from "charticulator/src/container";
 
 //2014-12-31T20:00:00.000Z
 const timeFormat = '%Y-%m-%dT%H:%M:%S.000Z'
+export const tooltipsTablename = "powerBITooltips"
 
 export function mapColumnType(pbiType: ValueTypeDescriptor): Dataset.DataType {
     if (pbiType.bool) {
@@ -79,6 +80,14 @@ export function convertData(
         type: Dataset.TableType.Main
     }
 
+    const tooltipsTable: Dataset.Table = {
+        displayName: "Tooltips",
+        name: tooltipsTablename,
+        columns: [],
+        rows: [],
+        type: Dataset.TableType.Main
+    }
+
     const mainTableSelectionIds = new Map<number, ISelectionId>();
 
     const linksTable: Dataset.Table = {
@@ -89,13 +98,14 @@ export function convertData(
         type: Dataset.TableType.Links
     }
 
+    
     if (categories?.length || values?.length) {
         const allColumns = [...(categories ?? []), ...(values ?? [])];
         allColumns.forEach(category => {
             const source = category.source;
             const displayName = source.displayName;
 
-            if (source.roles['primarykey']) {
+            if (source.roles['primarykey'] && !mainTable.columns.find(c => c.displayName === displayName)) {
                 mainTable.columns.push({
                     displayName,
                     name: displayName,
@@ -106,7 +116,18 @@ export function convertData(
                 });
             }
 
-            if (source.roles['links']) {
+            if (source.roles['powerBITooltips'] && !tooltipsTable.columns.find(c => c.displayName === displayName)) {
+                tooltipsTable.columns.push({
+                    displayName,
+                    name: displayName,
+                    type: mapColumnType(source.type),
+                    metadata: {
+                        kind: mapColumnKind(source.type),
+                    }
+                });
+            }
+
+            if (source.roles['links'] && !linksTable.columns.find(c => c.displayName === displayName)) {
                 linksTable.columns.push({
                     displayName,
                     name: displayName,
@@ -124,6 +145,20 @@ export function convertData(
             }
 
             linksTable.columns.forEach(column => {
+                const categoryColumn = allColumns.find(category => category.source.displayName === column.displayName);
+
+                row[column.displayName] = categoryColumn.values[index] as any; 
+            })
+            
+            return row;
+        });
+
+        tooltipsTable.rows = allColumns[0].values.map<Dataset.Row>((_cat, index) => {
+            const row: Dataset.Row = {
+                _id: `${index}`
+            }
+
+            tooltipsTable.columns.forEach(column => {
                 const categoryColumn = allColumns.find(category => category.source.displayName === column.displayName);
 
                 row[column.displayName] = categoryColumn.values[index] as any; 
@@ -177,7 +212,8 @@ export function convertData(
             name: "main",
             tables: [
                 mainTable,
-                linksTable
+                linksTable,
+                tooltipsTable
             ].filter(table => table.columns.length)
         },
         mainTableSelectionIds

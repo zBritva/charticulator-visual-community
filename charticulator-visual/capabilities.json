@@ -11,6 +11,12 @@
       "displayNameKey": "Charticulator_Links",
       "name": "links",
       "kind": "GroupingOrMeasure"
+    },
+    {
+      "displayName": "Tooltips",
+      "displayNameKey": "Charticulator_Tooltips",
+      "name": "powerBITooltips",
+      "kind": "GroupingOrMeasure"
     }
   ],
   "privileges": [
@@ -171,15 +177,36 @@
       "categorical": {
         "categories": {
           "select": [
-            { "bind": { "to": "primarykey" } },
-            { "bind": { "to": "links" } }
+            {
+              "bind": {
+                "to": "primarykey"
+              }
+            },
+            {
+              "bind": {
+                "to": "links"
+              }
+            },
+            {
+              "bind": {
+                "to": "powerBITooltips"
+              }
+            }
           ],
           "dataReductionAlgorithm": { "top": { "count": 30000 } }
         },
         "values": {
           "select": [
-            { "bind": { "to": "primarykey" } },
-            { "bind": { "to": "links" } }
+            {
+              "bind": {
+                "to": "primarykey"
+              }
+            },
+            {
+              "bind": {
+                "to": "links"
+              }
+            }
           ]
         }
       }
@@ -196,7 +223,7 @@
       "canvas": true,
       "default": true
     },
-    "roles": ["data"],
+    "roles": ["tooltips"],
     "supportEnhancedTooltips": true
   }
 }

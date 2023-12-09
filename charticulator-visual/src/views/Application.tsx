@@ -1,7 +1,7 @@
 import React from 'react';
 
 import powerbi from "powerbi-visuals-api";
-import VisualUpdateOptions = powerbi.extensibility.visual.VisualUpdateOptions;
+import VisualTooltipDataItem = powerbi.extensibility.VisualTooltipDataItem;
 
 import { Editor } from './Editor';
 import { Mapping, UnmappedColumnName } from './Mapping';
@@ -21,6 +21,7 @@ import { importTempalte } from '../utils/importTemplate';
 import { FluentProvider, Label, Tooltip, makeStyles, shorthands, teamsLightTheme } from "@fluentui/react-components";
 
 import switchVisual from "./../../assets/label_tip.png"
+import { tooltipsTablename } from '../utils/dataParser';
 
 const useStyles = makeStyles({
     tooltipWidthClass: {
@@ -139,7 +140,54 @@ export const Application: React.FC = () => {
             modifiers.event.preventDefault();
         }
         return true;
-    }, [dataView, selections, selectionManager]);
+    }, [dataset, selections, selectionManager]);
+
+    const onMouseEnter = React.useCallback((table: string, rowIndices?: number[], modifiers?: IModifiers) => {
+        host.tooltipService.hide({
+            immediately: true,
+            isTouchEvent: false
+        });
+        if (!rowIndices) {
+            return;
+        }
+        
+        const identities = rowIndices
+            .map(index => selections.get(index))
+            .filter(s => s)
+
+        const tooltipsTable = dataset.tables.find(t => t.name === tooltipsTablename);
+
+        if (!tooltipsTable) {
+            return;
+        }
+
+        const dataRows = rowIndices
+            .map(index => tooltipsTable.rows[index])
+            .filter(s => s)
+
+        const dataItems = dataRows.flatMap(row => {
+            return tooltipsTable.columns.map(column => {
+                return {
+                    displayName: column.displayName,
+                    value : `${row[column.displayName]}`
+                }
+            })
+        })
+
+        host.tooltipService.show({
+            coordinates: [modifiers.clientX, modifiers.clientY],
+            dataItems,
+            identities,
+            isTouchEvent: false
+        })
+    }, [dataset]);
+
+    const onMouseLeave = React.useCallback((table: string, rowIndices: number[], modifiers?: IModifiers) => {
+        host.tooltipService.hide({
+            immediately: true,
+            isTouchEvent: false
+        });
+    }, [dataset]);
 
     const onBackgroundContextMenu = React.useCallback((e: React.MouseEvent) => {
         onContextMenu(null, [], {
@@ -270,6 +318,8 @@ export const Application: React.FC = () => {
                         dataset={dataset}
                         onSelect={onSelect}
                         onContextMenu={onContextMenu}
+                        onMouseEnter={onMouseEnter}
+                        onMouseLeave={onMouseLeave}
                         localization={localizaiton}
                         utcTimeZone={settings.localization.utcTimeZone}
                     />

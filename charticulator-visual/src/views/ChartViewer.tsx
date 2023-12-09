@@ -20,9 +20,10 @@ export interface ViewerProps {
     localization?: LocalizationConfig,
     utcTimeZone: boolean,
     onSelect?: (table: string, rowIndices: number[], modifiers?: IModifiers) => Promise<boolean>;
-    onContextMenu?: (table: string, rowIndices: number[], modifiers: IModifiers) => void; 
+    onContextMenu?: (table: string, rowIndices: number[], modifiers?: IModifiers) => void;
+    onMouseEnter?: (table: string, rowIndices: number[], modifiers?: IModifiers) => void;
+    onMouseLeave?: (table: string, rowIndices: number[], modifiers?: IModifiers) => void;
 }
-
 
 export const ChartViewer: React.FC<ViewerProps> = ({
     width,
@@ -33,7 +34,9 @@ export const ChartViewer: React.FC<ViewerProps> = ({
     localization,
     utcTimeZone,
     onSelect,
-    onContextMenu
+    onContextMenu,
+    onMouseEnter,
+    onMouseLeave
 }) => {
     // console.log('ChartViewer');
 
@@ -55,6 +58,8 @@ export const ChartViewer: React.FC<ViewerProps> = ({
         });
     });
     container.addContextMenuListener(onContextMenu);
+    container.addMouseEnterListener(onMouseEnter);
+    container.addMouseLeaveListener(onMouseLeave);
 
     return container.reactMount(width, height);
 }
