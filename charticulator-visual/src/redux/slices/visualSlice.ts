@@ -140,7 +140,7 @@ export const visualSlice = createSlice({
         },
         setDataView: (state, action: PayloadAction<DataView>) => {
             state.dataview = action.payload
-            const [dataset, selections] = convertData(state.dataview, state.host.createSelectionIdBuilder, state.settings.localization.utcTimeZone);
+            const [dataset, selections] = convertData(state.dataview, state.host.createSelectionIdBuilder, state.settings.localization.utcTimeZone, state.settings.highlight.addHighlightColumns);
             state.dataset = dataset
             state.selections = selections
 

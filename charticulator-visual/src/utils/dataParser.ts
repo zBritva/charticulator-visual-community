@@ -62,7 +62,8 @@ export function mapColumnKind(pbiType: ValueTypeDescriptor): Dataset.DataKind {
 export function convertData(
     dataView: DataView,
     createSelectionBuilder: () => ISelectionIdBuilder,
-    utcTimeZone: boolean): [Dataset.Dataset | null, Map<number, ISelectionId> | null] {
+    utcTimeZone: boolean,
+    supportsHighlight: boolean): [Dataset.Dataset | null, Map<number, ISelectionId> | null] {
     if (!dataView || !dataView.categorical) {
         return [null, null];
     }
