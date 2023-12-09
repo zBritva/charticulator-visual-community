@@ -4,14 +4,17 @@ import DataView = powerbi.DataView;
 import ValueTypeDescriptor = powerbi.ValueTypeDescriptor;
 import ISelectionIdBuilder = powerbi.extensibility.ISelectionIdBuilder;
 import ISelectionId = powerbi.extensibility.ISelectionId;
+import DataViewValueColumn = powerbi.DataViewValueColumn;
 
 import { utcParse, timeParse } from "d3-time-format";
-
 import { Dataset } from "charticulator/src/container";
+
+export type DataViewColumn = powerbi.DataViewValueColumn | powerbi.DataViewCategoryColumn
 
 //2014-12-31T20:00:00.000Z
 const timeFormat = '%Y-%m-%dT%H:%M:%S.000Z'
 export const tooltipsTablename = "powerBITooltips"
+export const highlightsColumnSuffix = " (highlights)"
 
 export function mapColumnType(pbiType: ValueTypeDescriptor): Dataset.DataType {
     if (pbiType.bool) {
@@ -62,7 +65,8 @@ export function mapColumnKind(pbiType: ValueTypeDescriptor): Dataset.DataKind {
 export function convertData(
     dataView: DataView,
     createSelectionBuilder: () => ISelectionIdBuilder,
-    utcTimeZone: boolean): [Dataset.Dataset | null, Map<number, ISelectionId> | null] {
+    utcTimeZone: boolean,
+    supportsHighlight: boolean): [Dataset.Dataset | null, Map<number, ISelectionId> | null] {
     if (!dataView || !dataView.categorical) {
         return [null, null];
     }
@@ -98,9 +102,10 @@ export function convertData(
         type: Dataset.TableType.Links
     }
 
+    const hasHighlights = values.find(v => v.highlights) !== undefined
     
     if (categories?.length || values?.length) {
-        const allColumns = [...(categories ?? []), ...(values ?? [])];
+        const allColumns: DataViewColumn[] = [...(categories ?? []), ...(values ?? [])];
         allColumns.forEach(category => {
             const source = category.source;
             const displayName = source.displayName;
@@ -111,9 +116,20 @@ export function convertData(
                     name: displayName,
                     type: mapColumnType(source.type),
                     metadata: {
-                        kind: mapColumnKind(source.type),
+                        kind: mapColumnKind(source.type)
                     }
                 });
+
+                if (supportsHighlight) {
+                    mainTable.columns.push({
+                        displayName: displayName + highlightsColumnSuffix,
+                        name: displayName + highlightsColumnSuffix,
+                        type: mapColumnType(source.type),
+                        metadata: {
+                            kind: mapColumnKind(source.type),
+                        }
+                    });
+                }
             }
 
             if (source.roles['powerBITooltips'] && !tooltipsTable.columns.find(c => c.displayName === displayName)) {
@@ -183,20 +199,31 @@ export function convertData(
             let rowID = `u_`;
 
             mainTable.columns.forEach(column => {
-                const categoryColumn = allColumns.find(category => category.source.displayName === column.displayName);
-
-                if (column.type === Dataset.DataType.Date) {
-                    if (typeof categoryColumn.values[index] === 'string') {
-                        row[column.displayName] = dateParse(categoryColumn.values[index] as any).getTime() as any;
-                    }
-                } else {
-                    row[column.displayName] = categoryColumn.values[index] as any;
+                const categoryColumn: DataViewColumn = allColumns.find(category => category.source.displayName === column.displayName);
+                // highlights columns already added
+                if (!categoryColumn) {
+                    return;
                 }
-
-                rowID += String(categoryColumn.values[index])
-                    .toLocaleLowerCase()
-                    .replace(/\s/, '_')
-                    .concat('_')
+                let values = categoryColumn.values
+                let highlights = null
+                
+                if (categoryColumn satisfies powerbi.DataViewValueColumn) {
+                    const dataViewValueColumn: powerbi.DataViewValueColumn = categoryColumn
+                    if (dataViewValueColumn.highlights) {
+                        highlights = dataViewValueColumn.highlights
+                    }
+                }
+                
+                if (supportsHighlight) {
+                    rowID = addColumnToRow(column.displayName, column, values, index, row, rowID)
+                    rowID = addColumnToRow(column.displayName + highlightsColumnSuffix, column, highlights ?? values, index, row, rowID)
+                } else {
+                    if (highlights) {
+                        rowID = addColumnToRow(column.displayName + highlightsColumnSuffix, column, highlights, index, row, rowID)
+                    } else {
+                        rowID = addColumnToRow(column.displayName ,column, values, index, row, rowID)
+                    }
+                }
             });
 
             // if no links data, add all data
@@ -218,4 +245,25 @@ export function convertData(
         },
         mainTableSelectionIds
     ];
+
+    function addColumnToRow(displayName: string, column: Dataset.Column, values: powerbi.PrimitiveValue[], index: number, row: Dataset.Row, rowID: string) {
+        if (column.type === Dataset.DataType.Date) {
+            if (typeof values[index] === 'string') {
+                row[displayName] = dateParse(values[index] as any).getTime() as any;
+            }
+        } else {
+            // charticulator doesn't support null values, replace null by 0
+            if (values[index] === null) {
+                row[displayName] = 0;
+            } else {
+                row[displayName] = values[index] as any;
+            }
+        }
+
+        rowID += String(values[index])
+            .toLocaleLowerCase()
+            .replace(/\s/, '_')
+            .concat('_');
+        return rowID;
+    }
 }
