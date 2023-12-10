@@ -66,7 +66,7 @@ export function convertData(
     dataView: DataView,
     createSelectionBuilder: () => ISelectionIdBuilder,
     utcTimeZone: boolean,
-    supportsHighlight: boolean): [Dataset.Dataset | null, Map<number, ISelectionId> | null] {
+    supportsHighlight: boolean = false): [Dataset.Dataset | null, Map<number, ISelectionId> | null] {
     if (!dataView || !dataView.categorical) {
         return [null, null];
     }
@@ -102,7 +102,7 @@ export function convertData(
         type: Dataset.TableType.Links
     }
 
-    const hasHighlights = values.find(v => v.highlights) !== undefined
+    // const hasHighlights = values && values.find(v => v.highlights) !== undefined
     
     if (categories?.length || values?.length) {
         const allColumns: DataViewColumn[] = [...(categories ?? []), ...(values ?? [])];
@@ -207,7 +207,8 @@ export function convertData(
                 let values = categoryColumn.values
                 let highlights = null
                 
-                if (categoryColumn satisfies powerbi.DataViewValueColumn) {
+                // disabled
+                if (false && categoryColumn satisfies powerbi.DataViewValueColumn) {
                     const dataViewValueColumn: powerbi.DataViewValueColumn = categoryColumn
                     if (dataViewValueColumn.highlights) {
                         highlights = dataViewValueColumn.highlights

@@ -6,7 +6,7 @@ import VisualTooltipDataItem = powerbi.extensibility.VisualTooltipDataItem;
 import { Editor } from './Editor';
 import { Mapping, UnmappedColumnName } from './Mapping';
 import { ChartViewer, IModifiers } from './ChartViewer';
-import { ColorUtils, defaultDigitsGroup, setTimeZone } from 'charticulator/src/container';
+import { BillionsFormat, ColorUtils, defaultDigitsGroup, setTimeZone } from 'charticulator/src/container';
 import { initialize } from "charticulator/src/core/index";
 import charticulatorConfig from "./../../../charticulator/dist/scripts/config.json";
 
@@ -22,6 +22,7 @@ import { FluentProvider, Label, Tooltip, makeStyles, shorthands, teamsLightTheme
 
 import switchVisual from "./../../assets/label_tip.png"
 import { tooltipsTablename } from '../utils/dataParser';
+import { LocalizationConfig } from 'charticulator/src/container/container';
 
 const useStyles = makeStyles({
     tooltipWidthClass: {
@@ -71,7 +72,10 @@ export const Application: React.FC = () => {
 
     React.useEffect(() => {
         (async () => {
-            await initialize(charticulatorConfig as unknown);
+            await initialize({
+                ...charticulatorConfig as any,
+                localization: localizaiton
+            });
             setFormatOptions({
                 currency: [localizaiton?.currency, ""],
                 grouping: defaultDigitsGroup,
@@ -93,10 +97,11 @@ export const Application: React.FC = () => {
 
     // conver data from Power BI to internal structure
     // const storedMappedColumns = (settings?.chart && JSON.parse(settings.chart.columnMappings)) ?? [];
-    const localizaiton = React.useMemo(() => ({
+    const localizaiton: LocalizationConfig = React.useMemo(() => ({
         currency: settings?.localization.currency,
         decemalDelimiter: settings?.localization.decemalDelimiter,
-        thousandsDelimiter: settings?.localization.thousandsDelimiter
+        thousandsDelimiter: settings?.localization.thousandsDelimiter,
+        billionsFormat: settings.localization.billionsFormat as BillionsFormat
     }), [settings]);
 
 

@@ -66,6 +66,7 @@ export class Localization {
     public thousandsDelimiter: string = ",";
     public currency: string = "$";
     public utcTimeZone: boolean = true;
+    public billionsFormat: string = "giga";
 }
 
 export class Defaults {

@@ -88,13 +88,16 @@ export const Editor: React.FC<EditorProps> = ({
 
     React.useEffect(() => {
         let EVENT_NESTED_EDITOR_EDIT_SUBSCRIPTION = null;
-        let appStore = null;
+        let appStore: AppStore = null;
         (async () => {
             const worker: CharticulatorWorkerInterface = new CharticulatorWorker(
                 workerScript
             );
             // worker should be initialized before creating appstore
-            await worker.initialize(config);
+            await worker.initialize({
+                ...config,
+                localization: localizaiton
+            });
             appStore = new AppStore(worker, dataset || defaultDataset);
             appStore.editorType = EditorType.Embedded;
 
@@ -109,6 +112,7 @@ export const Editor: React.FC<EditorProps> = ({
                         remove: localizaiton.thousandsDelimiter,
                     },
                     utcTimeZone: utcTimeZone,
+                    billionsFormat: localizaiton.billionsFormat
                 });
                 if (template && dataset) {
                     // TODO fix loading chart with mapped columns
