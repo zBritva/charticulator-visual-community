@@ -72,7 +72,10 @@ export const Application: React.FC = () => {
 
     React.useEffect(() => {
         (async () => {
-            await initialize(charticulatorConfig as any);
+            await initialize({
+                ...charticulatorConfig as any,
+                localization: localizaiton
+            });
             setFormatOptions({
                 currency: [localizaiton?.currency, ""],
                 grouping: defaultDigitsGroup,

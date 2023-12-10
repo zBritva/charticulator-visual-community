@@ -94,7 +94,10 @@ export const Editor: React.FC<EditorProps> = ({
                 workerScript
             );
             // worker should be initialized before creating appstore
-            await worker.initialize(config);
+            await worker.initialize({
+                ...config,
+                localization: localizaiton
+            });
             appStore = new AppStore(worker, dataset || defaultDataset);
             appStore.editorType = EditorType.Embedded;
 
