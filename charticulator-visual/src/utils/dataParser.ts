@@ -102,7 +102,7 @@ export function convertData(
         type: Dataset.TableType.Links
     }
 
-    const hasHighlights = values.find(v => v.highlights) !== undefined
+    const hasHighlights = values && values.find(v => v.highlights) !== undefined
     
     if (categories?.length || values?.length) {
         const allColumns: DataViewColumn[] = [...(categories ?? []), ...(values ?? [])];

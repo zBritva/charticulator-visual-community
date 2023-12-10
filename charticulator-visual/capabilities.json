@@ -65,6 +65,24 @@
           "displayName": "UTC time zone",
           "displayNameKey": "Charticulator_UTC",
           "type": { "bool": true }
+        },
+        "billionsFormat": {
+          "displayName": "Billions format",
+          "displayNameKey": "Charticulator_billionsFormat",
+          "type": {
+            "enumeration": [
+              {
+                "displayName": "Giga (G)",
+                "value": "giga",
+                "displayNameKey": "Charticulator_Giga"
+              },
+              {
+                "displayName": "Billions (B)",
+                "value": "billions",
+                "displayNameKey": "Charticulator_Billions"
+              }
+            ]
+          }
         }
       }
     },
