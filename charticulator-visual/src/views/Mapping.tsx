@@ -15,6 +15,7 @@ export interface MappingProps {
     onConfirmMapping: (newMapping: any[]) => void;
 }
 
+// eslint-disable-next-line max-lines-per-function
 export const Mapping: React.FC<MappingProps> = ({
     // mapping,
     unmappedColumns,
@@ -27,7 +28,7 @@ export const Mapping: React.FC<MappingProps> = ({
         if (unmappedColumns != mappingState) {
             setMapping(unmappedColumns);
         }
-    }, [unmappedColumns]);
+    }, [unmappedColumns, mappingState]);
 
     const buttonDisabled = mappingState.filter(item => item.powerbiColumn === UnmappedColumnName).length > 0;
     const onConfirm = React.useCallback(() => {

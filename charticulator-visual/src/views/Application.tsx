@@ -1,7 +1,6 @@
 import React from 'react';
 
 import powerbi from "powerbi-visuals-api";
-import VisualTooltipDataItem = powerbi.extensibility.VisualTooltipDataItem;
 
 import { Editor } from './Editor';
 import { Mapping, UnmappedColumnName } from './Mapping';
@@ -15,9 +14,9 @@ import {
 } from "charticulator/src/core/index";
 
 import { useAppSelector, useAppDispatch } from '../redux/hooks'
-import { setSolverInitialized, setProperty, setMapping, IColumnsMapping, setTemplate, importTemplate } from '../redux/slices/visualSlice';
+import { setSolverInitialized, setMapping, IColumnsMapping, importTemplate } from '../redux/slices/visualSlice';
 import { deepClone, isEditor } from '../utils/main';
-import { importTempalte } from '../utils/importTemplate';
+import { importTemplateFromFile } from '../utils/importTemplate';
 import { FluentProvider, Label, Tooltip, makeStyles, shorthands, teamsLightTheme } from "@fluentui/react-components";
 
 import switchVisual from "./../../assets/label_tip.png"
@@ -38,7 +37,7 @@ const useStyles = makeStyles({
     }
 });
 
-// tslint:disable-next-line
+// eslint-disable-next-line max-lines-per-function
 export const Application: React.FC = () => {
 
     // console.log('Application');
@@ -147,7 +146,8 @@ export const Application: React.FC = () => {
         return true;
     }, [dataset, selections, selectionManager]);
 
-    const onMouseEnter = React.useCallback((table: string, rowIndices?: number[], modifiers?: IModifiers) => {
+    // eslint-disable-next-line
+    const onMouseEnter = React.useCallback((_table: string, rowIndices?: number[], modifiers?: IModifiers) => {
         host.tooltipService.hide({
             immediately: true,
             isTouchEvent: false
@@ -187,7 +187,8 @@ export const Application: React.FC = () => {
         })
     }, [dataset]);
 
-    const onMouseLeave = React.useCallback((table: string, rowIndices: number[], modifiers?: IModifiers) => {
+    // eslint-disable-next-line
+    const onMouseLeave = React.useCallback((_table: string, _rowIndices: number[], _modifiers?: IModifiers) => {
         host.tooltipService.hide({
             immediately: true,
             isTouchEvent: false
@@ -205,17 +206,18 @@ export const Application: React.FC = () => {
         });
     }, [onContextMenu])
 
-    const onBackgroundClick = React.useCallback((e: React.MouseEvent) => {
+    // eslint-disable-next-line
+    const onBackgroundClick = React.useCallback((_e: React.MouseEvent) => {
         selectionManager.clear();
     }, [selectionManager])
 
     // TODO refactor
     const onImportTempalte = React.useCallback(async () => {
-        const template = await importTempalte();
+        const template = await importTemplateFromFile();
         dispatch(importTemplate(template));
 
         return null;
-    }, [setProperty]);
+    }, [dispatch]);
 
     if (!dataset || !solverInitialized) {
         return (<p>Loading...</p>)
@@ -232,7 +234,7 @@ export const Application: React.FC = () => {
                         chart={chart}
                         columnMappings={settings.chart.columnMappings as any}
                         dataset={dataset}
-                        localizaiton={localizaiton}
+                        localization={localizaiton}
                         utcTimeZone={settings.localization.utcTimeZone}
                         onClose={() => {
 

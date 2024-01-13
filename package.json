@@ -17,11 +17,13 @@
     "build:editor": "yarn workspace charticulator-visual build:editor",
     "start:editor": "yarn workspace charticulator-visual start:editor",
     "start:view": "yarn workspace charticulator-visual start:view",
-    "build:visuals": "yarn workspace charticulator-visual build:view & yarn workspace charticulator-visual build:editor"
+    "build:visuals": "yarn workspace charticulator-visual build:view & yarn workspace charticulator-visual build:editor",
+    "package": "yarn workspace charticulator-visual build:view & yarn workspace charticulator-visual build:editor",
+    "eslint": "yarn workspace charticulator eslint & yarn workspace charticulator-visual eslint"
   },
   "dependencies": {
-    "copyfiles": "^2.4.1",
-    "ts-node": "^10.9.1"
+    "copyfiles": "2.4.1",
+    "ts-node": "10.9.1"
   },
   "resolutions": {
     "@types/express-serve-static-core": "4.17.39",

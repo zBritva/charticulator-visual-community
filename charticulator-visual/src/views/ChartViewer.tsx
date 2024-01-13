@@ -1,4 +1,4 @@
-import { ChartContainer, Dataset, isUtcTimeZone, Specification } from "charticulator/src/container";
+import { ChartContainer, Dataset, Specification } from "charticulator/src/container";
 import { LocalizationConfig } from "charticulator/src/container/container";
 import React from "react";
 

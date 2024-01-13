@@ -1,6 +1,6 @@
 import { readFileAsString } from "charticulator/src/app/utils";
 
-export function importTempalte() {
+export function importTemplateFromFile() {
     return new Promise<string>((resolve, reject) => {
         const inputElement = document.createElement("input");
         inputElement.type = "file";

@@ -1,4 +1,4 @@
-import { ChartTemplate, Dataset, Specification } from "charticulator/src/container";
+import { ChartTemplate, Dataset } from "charticulator/src/container";
 import { IColumnsMapping } from "../redux/slices/visualSlice";
 import { UnmappedColumnName } from "../views/Mapping";
 

@@ -25,7 +25,6 @@ import { PositionsLeftRight, PositionsLeftRightTop, UndoRedoLocation } from 'cha
 import { LocalizationConfig } from "charticulator/src/container/container";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { setProperty, setTemplate } from "../redux/slices/visualSlice";
-import { defaultVersionOfTemplate } from "charticulator/src/app/stores/defaults";
 import { FluentProvider, teamsLightTheme } from "@fluentui/react-components";
 
 const script = require("raw-loader!charticulator/dist/scripts/worker.bundle.js");
@@ -42,18 +41,17 @@ export interface EditorProps {
     //     chart: Specification.Chart,
     //     template: Specification.Template.ChartTemplate
     // }) => void;
-    localizaiton?: LocalizationConfig,
+    localization?: LocalizationConfig,
     utcTimeZone: boolean,
     onClose: () => void;
     onExport?: (template: Specification.Template.ChartTemplate, clipboard: boolean) => void;
     onImport?: () => Promise<Specification.Chart>;
 }
 
+// eslint-disable-next-line max-lines-per-function
 export const Editor: React.FC<EditorProps> = ({
-    localizaiton,
+    localization,
     utcTimeZone,
-    // onSave,
-    onClose,
     onExport,
     onImport
 }) => {
@@ -70,7 +68,7 @@ export const Editor: React.FC<EditorProps> = ({
     const [appStore, setAppStore] = React.useState<AppStore | null>(null);
     const config: CharticulatorAppConfig = React.useMemo(
         () => charticulatorConfig,
-        [charticulatorConfig]
+        []
     );
     const workerScript = React.useMemo(() => {
         const blob = new Blob([script.default], { type: "application/javascript" });
@@ -78,7 +76,7 @@ export const Editor: React.FC<EditorProps> = ({
         const workerScript = URL.createObjectURL(blob);
 
         return workerScript;
-    }, [script]);
+    }, [script.default]);
 
     const defaultDataset = React.useMemo(() => {
         const defaultDataset = makeDefaultDataset();
@@ -96,7 +94,7 @@ export const Editor: React.FC<EditorProps> = ({
             // worker should be initialized before creating appstore
             await worker.initialize({
                 ...config,
-                localization: localizaiton
+                localization: localization
             });
             appStore = new AppStore(worker, dataset || defaultDataset);
             appStore.editorType = EditorType.Embedded;
@@ -104,15 +102,15 @@ export const Editor: React.FC<EditorProps> = ({
             if (appStore) {
                 setAppStore(appStore);
                 appStore.setLocaleFileFormat({
-                    currency: localizaiton.currency,
-                    delimiter: localizaiton.decemalDelimiter,
+                    currency: localization.currency,
+                    delimiter: localization.decemalDelimiter,
                     group: `[${defaultDigitsGroup}, 0]`,
                     numberFormat: {
-                        decimal: localizaiton.decemalDelimiter,
-                        remove: localizaiton.thousandsDelimiter,
+                        decimal: localization.decemalDelimiter,
+                        remove: localization.thousandsDelimiter,
                     },
                     utcTimeZone: utcTimeZone,
-                    billionsFormat: localizaiton.billionsFormat
+                    billionsFormat: localization.billionsFormat
                 });
                 if (template && dataset) {
                     // TODO fix loading chart with mapped columns
