@@ -13,14 +13,9 @@ The visual under development and some features is not developed yet.
 
 ## Roadmap for public *.pbiviz
 
-* ~~Mapping columns~~
-* ~~Supporting Power BI color palette~~
-* ~~Support selections~~
-* ~~Import template file~~
-* ~~Export template to file~~
-* Update scales and axes
-* ~~Fix selection
-* Fix highlights
+[Power BI visual (view) on AppSource page](https://appsource.microsoft.com/en-US/product/power-bi-visuals/ilfatgaliev1696579877540.charticulator_visual_community_view?tab=DetailsAndSupport)
+
+[Charticulator App](https://ilfat-galiev.im/charticulator/)
 
 ## Build $ run
 
@@ -29,4 +24,6 @@ The visual under development and some features is not developed yet.
 `yarn run start:view` - start dev server for viewer container, without editor
 
 `yarn run start:editor` - start dev server for editor 
+
+`yarn run package` - for full build (app, view and editor) 
  
