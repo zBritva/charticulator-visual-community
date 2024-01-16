@@ -19,7 +19,8 @@
     "start:view": "yarn workspace charticulator-visual start:view",
     "build:visuals": "yarn workspace charticulator-visual build:view & yarn workspace charticulator-visual build:editor",
     "package": "yarn workspace charticulator-visual build:view & yarn workspace charticulator-visual build:editor",
-    "eslint": "yarn workspace charticulator eslint & yarn workspace charticulator-visual eslint"
+    "eslint": "yarn workspace charticulator eslint & yarn workspace charticulator-visual eslint",
+    "audit": "yarn audit"
   },
   "dependencies": {
     "copyfiles": "2.4.1",
