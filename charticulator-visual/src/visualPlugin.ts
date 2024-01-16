@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Visual } from "../src/visual";
 import powerbiVisualsApi from "powerbi-visuals-api";
 import IVisualPlugin = powerbiVisualsApi.visuals.plugins.IVisualPlugin;

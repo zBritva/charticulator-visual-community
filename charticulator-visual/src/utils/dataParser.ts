@@ -1,12 +1,10 @@
-
 import powerbi from "powerbi-visuals-api";
 import DataView = powerbi.DataView;
 import ValueTypeDescriptor = powerbi.ValueTypeDescriptor;
 import ISelectionIdBuilder = powerbi.extensibility.ISelectionIdBuilder;
 import ISelectionId = powerbi.extensibility.ISelectionId;
-import DataViewValueColumn = powerbi.DataViewValueColumn;
 
-import { utcParse, timeParse } from "d3-time-format";
+import { utcParse } from "d3-time-format";
 import { Dataset } from "charticulator/src/container";
 
 export type DataViewColumn = powerbi.DataViewValueColumn | powerbi.DataViewCategoryColumn
@@ -62,17 +60,18 @@ export function mapColumnKind(pbiType: ValueTypeDescriptor): Dataset.DataKind {
     return Dataset.DataKind.Categorical;
 }
 
+// eslint-disable-next-line max-lines-per-function
 export function convertData(
     dataView: DataView,
     createSelectionBuilder: () => ISelectionIdBuilder,
-    utcTimeZone: boolean,
     supportsHighlight: boolean = false): [Dataset.Dataset | null, Map<number, ISelectionId> | null] {
     if (!dataView || !dataView.categorical) {
         return [null, null];
     }
 
-    const dateParse = true ? utcParse(timeFormat) : timeParse(timeFormat);
-
+    // const dateParse = true ? utcParse(timeFormat) : timeParse(timeFormat);
+    const dateParse = utcParse(timeFormat);
+    
     const categories = dataView.categorical.categories;
     const values = dataView.categorical.values;
 
@@ -204,16 +203,16 @@ export function convertData(
                 if (!categoryColumn) {
                     return;
                 }
-                let values = categoryColumn.values
-                let highlights = null
+                const values = categoryColumn.values
+                const highlights = null
                 
                 // disabled
-                if (false && categoryColumn satisfies powerbi.DataViewValueColumn) {
-                    const dataViewValueColumn: powerbi.DataViewValueColumn = categoryColumn
-                    if (dataViewValueColumn.highlights) {
-                        highlights = dataViewValueColumn.highlights
-                    }
-                }
+                // if (false && categoryColumn satisfies powerbi.DataViewValueColumn) {
+                //     const dataViewValueColumn: powerbi.DataViewValueColumn = categoryColumn
+                //     if (dataViewValueColumn.highlights) {
+                //         highlights = dataViewValueColumn.highlights
+                //     }
+                // }
                 
                 if (supportsHighlight) {
                     rowID = addColumnToRow(column.displayName, column, values, index, row, rowID)

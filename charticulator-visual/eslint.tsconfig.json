@@ -1,0 +1,11 @@
+{
+    "extends": "./tsconfig",
+    "include": [
+        "../charticulator/src/package.d.ts",
+        "./src/types.d.ts",
+        "./src/visualPlugin.ts",
+        "./src/views/IEditor.ts",
+        "./src/views/EditorViewMode.tsx",
+        "./src/views/Editor.tsx"
+    ]
+}

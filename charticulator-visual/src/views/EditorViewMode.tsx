@@ -11,7 +11,6 @@ import { Dataset } from "charticulator/src/core";
 import { MainViewConfig } from "./IEditor"
 import { useAppSelector } from '../redux/hooks'
 import { Button, FluentProvider, teamsLightTheme } from "@fluentui/react-components";
-import { string } from "charticulator/src/core/expression";
 
 export interface EditorProps {
     width: number;

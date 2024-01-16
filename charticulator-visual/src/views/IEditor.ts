@@ -1,3 +1,4 @@
+/* eslint-disable */
 export interface Dataset {}
 
 export interface MainViewConfig {};

@@ -1,0 +1,14 @@
+node_modules
+dist
+coverage
+test
+.eslintrc.js
+karma.conf.ts
+test.webpack.config.js
+base-webpack.config.js
+editor-webpack.config.js
+view-webpack.config.js
+src/index.ts
+src/visualPlugin.ts
+src/visualPluginEditor.ts
+src/visualPluginView.ts

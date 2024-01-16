@@ -58,17 +58,16 @@ export class DataViewObjectsParser {
     }
 
     public static parse<T extends DataViewObjectsParser>(dataView: DataView): T {
-        let dataViewObjectParser: T = <T>this.getDefault(),
-            properties: DataViewProperties;
+        const dataViewObjectParser: T = <T>this.getDefault();
 
         if (!dataView || !dataView.metadata || !dataView.metadata.objects) {
             return dataViewObjectParser;
         }
 
-        properties = dataViewObjectParser.getProperties();
+        const properties = dataViewObjectParser.getProperties();
 
-        for (let objectName in properties) {
-            for (let propertyName in properties[objectName]) {
+        for (const objectName in properties) {
+            for (const propertyName in properties[objectName]) {
                 const defaultValue: any = (<any>dataViewObjectParser)[objectName][propertyName];
 
                (<any>dataViewObjectParser)[objectName][propertyName] = DataViewObjects.getCommonValue(
@@ -89,19 +88,20 @@ export class DataViewObjectsParser {
         dataViewObjectParser: DataViewObjectsParser,
         options: EnumerateVisualObjectInstancesOptions): VisualObjectInstanceEnumeration {
 
-        let dataViewProperties: DataViewProperties = dataViewObjectParser && (<any>dataViewObjectParser)[options.objectName];
+        const dataViewProperties: DataViewProperties = dataViewObjectParser && (<any>dataViewObjectParser)[options.objectName];
 
         if (!dataViewProperties) {
             return [];
         }
 
-        let instance: VisualObjectInstance = {
+        const instance: VisualObjectInstance = {
             objectName: options.objectName,
             selector: {},
             properties: {}
         };
 
-        for (let key in dataViewProperties) {
+        for (const key in dataViewProperties) {
+            // eslint-disable-next-line no-prototype-builtins
             if (dataViewProperties.hasOwnProperty(key)) {
                 instance.properties[key] = dataViewProperties[key];
             }
@@ -113,12 +113,12 @@ export class DataViewObjectsParser {
     }
 
     public getProperties(): DataViewProperties {
-        let properties: DataViewProperties = {},
-            objectNames: string[] = Object.keys(this);
+        const properties: DataViewProperties = {};
+        const objectNames: string[] = Object.keys(this);
 
         objectNames.forEach((objectName: string) => {
             if (DataViewObjectsParser.isPropertyEnumerable(objectName)) {
-                let propertyNames: string[] = Object.keys((<any>this)[objectName]);
+                const propertyNames: string[] = Object.keys((<any>this)[objectName]);
 
                 properties[objectName] = {};
 
