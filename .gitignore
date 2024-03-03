@@ -9,5 +9,5 @@ key.pem
 .tmp/
 .env
 .idea/
-charticulator-visual/editor.webpack.statistics.html
-charticulator-visual/view.webpack.statistics.html
+editor.webpack.statistics.html
+view.webpack.statistics.html
