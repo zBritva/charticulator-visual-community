@@ -8,7 +8,7 @@ test.webpack.config.js
 base-webpack.config.js
 editor-webpack.config.js
 view-webpack.config.js
-charticulator-visual/src/index.ts
-charticulator-visual/src/visualPlugin.ts
-charticulator-visual/src/visualPluginEditor.ts
-charticulator-visual/src/visualPluginView.ts
+src/index.ts
+src/visualPlugin.ts
+src/visualPluginEditor.ts
+src/visualPluginView.ts
