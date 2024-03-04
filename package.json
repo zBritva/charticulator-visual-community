@@ -5,26 +5,26 @@
   "repository": "https://github.com/zBritva/charticulator-visual-community",
   "author": "Ilfat Galiev",
   "license": "MIT",
-  "private": true,
-  "workspaces": [
-    "charticulator-visual",
-    "charticulator"
-  ],
   "scripts": {
-    "postinstall": "yarn copyfiles .\\config.yml .\\charticulator\\",
-    "build:charticulator": "yarn workspace charticulator build",
-    "build:view": "yarn workspace charticulator-visual build:view",
-    "build:editor": "yarn workspace charticulator-visual build:editor",
-    "start:editor": "yarn workspace charticulator-visual start:editor",
-    "start:view": "yarn workspace charticulator-visual start:view",
-    "build:visuals": "yarn workspace charticulator-visual build:view & yarn workspace charticulator-visual build:editor",
-    "package": "yarn workspace charticulator build & yarn workspace charticulator-visual build:view & yarn workspace charticulator-visual build:editor",
-    "eslint": "yarn workspace charticulator eslint & yarn workspace charticulator-visual eslint",
-    "audit": "yarn audit"
+    "preinstall": "git submodule update --init --recursive",
+    "postinstall": "npm run copyfiles && npm run install:charticulator",
+    "install:charticulator": "cd charticulator && npm install --force",
+    "build:charticulator": "npm run --prefix charticulator build",
+    "build:editor": "webpack --config editor-webpack.config",
+    "start:editor": "webpack-dev-server --config editor-webpack.config",
+    "build:view": "webpack --config view-webpack.config",
+    "start:view": "webpack-dev-server --config view-webpack.config",
+    "package": "yarn build:editor & yarn build:view",
+    "build:visuals": "build:view & build:editor",
+    "eslint:visual": "npx eslint ./src --ext .js,.jsx,.ts,.tsx",
+    "eslint:charticulator": "npm run --prefix charticulator eslint",
+    "eslint": "eslint:charticulator & eslint:visual",
+    "audit": "npm audit",
+    "copyfiles": "copyfiles .\\config.yml .\\charticulator\\"
   },
   "dependencies": {
     "copyfiles": "2.4.1",
-    "ts-node": "10.9.1"
+    "ts-node": "10.9.2"     
   },
   "resolutions": {
     "@types/express-serve-static-core": "4.17.39",
