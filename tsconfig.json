@@ -26,7 +26,7 @@
         }
     },
     "files": [
-        "../charticulator/src/package.d.ts",
+        "./charticulator/src/package.d.ts",
         "./src/types.d.ts",
         "./src/visualPlugin.ts"
     ],
