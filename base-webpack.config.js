@@ -12,7 +12,7 @@ const pbivizFile = require(path.join(__dirname, pbivizPath));
 // the visual capabilities content
 const capabilitiesPath = "./capabilities.json";
 
-const { version } = require("../charticulator/package.json");
+const { version } = require("./charticulator/package.json");
 
 // babel options to support IE11
 let babelOptions = {
