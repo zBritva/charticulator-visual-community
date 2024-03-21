@@ -28,7 +28,7 @@ import { setProperty, setTemplate } from "../redux/slices/visualSlice";
 import { FluentProvider, teamsLightTheme } from "@fluentui/react-components";
 
 const script = require("raw-loader!charticulator/dist/scripts/worker.bundle.js");
-const charticulatorConfig = require("json-loader!./../../charticulator/dist/scripts/config.json");
+const charticulatorConfig = require("json-loader!../../charticulator/dist/scripts/config.json");
 
 export interface EditorProps {
     width: number;

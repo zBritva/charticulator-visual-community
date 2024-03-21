@@ -19,7 +19,6 @@
         "jsx": "react",
         "baseUrl": "./",
         "paths": {
-            "charticulator": ["./charticulator/src/*"],
             "src": ["./visual/src/*"],
             "resources": ["./charticulator/resources/*"],
             "assets": ["./visual/assets/*"]

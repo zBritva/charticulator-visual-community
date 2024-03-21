@@ -44,11 +44,11 @@ let babelOptions = {
 const resolve = {
     extensions: ['.tsx', '.ts', '.jsx', '.js', '.css','.json'],
     alias: {
-        charticulator: path.resolve(__dirname, "./../charticulator/"),
+        charticulator: path.resolve(__dirname, "./charticulator/"),
         visual: path.resolve(__dirname, './src'),
-        src: path.resolve(__dirname, "../charticulator/src"),
+        src: path.resolve(__dirname, "./charticulator/src"),
         assets: path.resolve(__dirname, './assets'),
-        resources: path.resolve(__dirname, "../charticulator/resources"),
+        resources: path.resolve(__dirname, "./charticulator/resources"),
     },
 };
 

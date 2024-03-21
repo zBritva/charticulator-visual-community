@@ -63,7 +63,7 @@ MainView:
   EditorPanelsPosition: right
   ToolbarPosition: top
   ToolbarLabels: true
-  Name: Microsoft Charticulator
+  Name: Microsoft Charticulator (Community Edition)
   MenuBarButtons: right
   MenuBarSaveButtons: left
   UndoRedoLocation: toolbar
