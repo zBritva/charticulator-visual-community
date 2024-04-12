@@ -9,14 +9,14 @@ import EditMode = powerbi.EditMode
 import ViewMode = powerbi.ViewMode
 import IVisualHost = powerbi.extensibility.visual.IVisualHost
 
-import { Dataset, Prototypes, Specification } from 'charticulator/src/core';
+import { Dataset, Prototypes, Specification } from './../../../charticulator/src/core';
 
 import { persistProperty } from './persistProperty'
 import { createChartFromTemplate } from '../../utils/template'
 import { convertData } from '../../utils/dataParser'
 import { deepClone } from '../../utils/main'
-import { ChartTemplateBuilder } from 'charticulator/src/app/template'
-import { defaultVersionOfTemplate } from 'charticulator/src/app/stores/defaults'
+import { ChartTemplateBuilder } from './../../../charticulator/src/app/template'
+import { defaultVersionOfTemplate } from './../../../charticulator/src/app/stores/defaults'
 
 export interface IColumnsMapping {
     table: string,

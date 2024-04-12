@@ -5,8 +5,8 @@ import powerbi from "powerbi-visuals-api";
 import { Editor } from './Editor';
 import { Mapping, UnmappedColumnName } from './Mapping';
 import { ChartViewer, IModifiers } from './ChartViewer';
-import { BillionsFormat, ColorUtils, defaultDigitsGroup, setTimeZone } from 'charticulator/src/container';
-import { initialize } from "charticulator/src/core/index";
+import { BillionsFormat, ColorUtils, defaultDigitsGroup, setTimeZone } from './../../charticulator/src/container';
+import { initialize } from "./../../charticulator/src/core/index";
 import charticulatorConfig from "./../../config.json";
 
 import {
@@ -21,7 +21,7 @@ import { FluentProvider, Label, Tooltip, makeStyles, shorthands, teamsLightTheme
 
 import switchVisual from "./../../assets/label_tip.png"
 import { tooltipsTablename } from '../utils/dataParser';
-import { LocalizationConfig } from 'charticulator/src/container/container';
+import { LocalizationConfig } from './../../charticulator/src/container/container';
 
 const useStyles = makeStyles({
     tooltipWidthClass: {

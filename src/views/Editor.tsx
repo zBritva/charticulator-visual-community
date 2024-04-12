@@ -20,7 +20,7 @@ import { Dataset } from "charticulator/src/core";
 // import { defaultVersionOfTemplate } from "charticulator/src/app/stores/defaults";
 import { EditorType } from "charticulator/src/app/stores/app_store";
 
-import { PositionsLeftRight, PositionsLeftRightTop, UndoRedoLocation } from 'charticulator/src/app/main_view';
+import { PositionsLeftRight, PositionsLeftRightTop, UndoRedoLocation } from './../../charticulator/src/app/main_view';
 
 import { LocalizationConfig } from "charticulator/src/container/container";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";

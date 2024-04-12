@@ -20,6 +20,7 @@
     "build:visuals": "npm run build:view & npm run build:editor",
     "eslint:visual": "npx eslint ./src --ext .js,.jsx,.ts,.tsx",
     "eslint:charticulator": "npm run --prefix charticulator eslint",
+    "start:charticulator": "npm run --prefix charticulator start",
     "eslint": "eslint:charticulator & eslint:visual",
     "audit": "npm audit",
     "copyfiles": "copyfiles .\\config.yml .\\charticulator\\"

@@ -3,7 +3,7 @@ import React from 'react';
 import { Button } from '@fluentui/react-button';
 import { Dropdown, Option } from "@fluentui/react-combobox";
 
-import { Dataset } from 'charticulator/src/core';
+import { Dataset } from './../../charticulator/src/core';
 import { IColumnsMapping } from 'src/redux/slices/visualSlice';
 
 export const UnmappedColumnName = 'unmapped';
