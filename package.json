@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "preinstall": "git submodule update --init --recursive",
-    "postinstall": "npm run copyfiles && link:react && npm run install:charticulator",
+    "postinstall": "npm run copyfiles && npm run install:charticulator && link:react",
     "link:react": "npx link ./charticulator/node_modules/react",
     "config": "npx js-yaml config.yml > config.json",
     "install:charticulator": "cd charticulator && npm install --force",
