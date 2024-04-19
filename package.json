@@ -7,8 +7,10 @@
   "license": "MIT",
   "scripts": {
     "preinstall": "git submodule update --init --recursive",
-    "postinstall": "npm run install:charticulator && npm run copyfiles && link:react",
+    "postinstall": "npm run install:charticulator && npm run copyfiles && link:react-dom && link:react && link:icons",
     "link:react": "npx link ./charticulator/node_modules/react",
+    "link:react-dom": "npx link ./charticulator/node_modules/react-dom",
+    "link:icons": "npx link ./charticulator/node_modules/@fluentui/react-icons",
     "config": "npx js-yaml config.yml > config.json",
     "install:charticulator": "cd charticulator && npm install --force",
     "build:charticulator": "npm run --prefix charticulator build",
