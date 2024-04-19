@@ -151,51 +151,53 @@ export const Editor: React.FC<EditorProps> = ({
     }
     return (
         <>
-            <MainView
-                store={appStore}
-                viewConfiguration={
-                    {
-                        ColumnsPosition: settings.panels.defaultDatasetPanelPosition as PositionsLeftRight,
-                        EditorPanelsPosition: settings.panels.defaultPanelsPosition as PositionsLeftRight,
-                        ToolbarPosition: PositionsLeftRightTop.Top,
-                        ToolbarLabels: true,
-                        Name: "Charticulator (Community version)",
-                        MenuBarButtons: PositionsLeftRight.Right,
-                        MenuBarSaveButtons: PositionsLeftRight.Left,
-                        UndoRedoLocation: UndoRedoLocation.ToolBar
+            <FluentProvider theme={teamsLightTheme}>
+                <MainView
+                    store={appStore}
+                    viewConfiguration={
+                        {
+                            ColumnsPosition: settings.panels.defaultDatasetPanelPosition as PositionsLeftRight,
+                            EditorPanelsPosition: settings.panels.defaultPanelsPosition as PositionsLeftRight,
+                            ToolbarPosition: PositionsLeftRightTop.Top,
+                            ToolbarLabels: true,
+                            Name: "Charticulator (Community version)",
+                            MenuBarButtons: PositionsLeftRight.Right,
+                            MenuBarSaveButtons: PositionsLeftRight.Left,
+                            UndoRedoLocation: UndoRedoLocation.ToolBar
+                        }
                     }
-                }
-                menuBarHandlers={{
-                    onContactUsLink: () => { },
-                    onCopyToClipboardClick: () => {
-                        const template = deepClone(appStore.buildChartTemplate());
-                        onExport(template, true);
-                    },
-                    onExportTemplateClick: () => {
-                        const template = deepClone(appStore.buildChartTemplate());
-                        onExport(template, false);
-                    },
-                    onImportTemplateClick: async () => {
-                        // TODO refactor
-                        const specification = await onImport();
-                        // console.log(specification);
-                        appStore.dispatcher.dispatch(
-                            new Actions.ImportChartAndDataset(
-                                specification,
-                                dataset,
-                                {
-                                    filterCondition: null,
-                                },
-                                specification
-                            )
-                        );
-                    }
-                }}
-                tabButtons={null}
-                telemetry={{
-                    record: () => { },
-                }}
-            />
+                    menuBarHandlers={{
+                        onContactUsLink: () => { },
+                        onCopyToClipboardClick: () => {
+                            const template = deepClone(appStore.buildChartTemplate());
+                            onExport(template, true);
+                        },
+                        onExportTemplateClick: () => {
+                            const template = deepClone(appStore.buildChartTemplate());
+                            onExport(template, false);
+                        },
+                        onImportTemplateClick: async () => {
+                            // TODO refactor
+                            const specification = await onImport();
+                            // console.log(specification);
+                            appStore.dispatcher.dispatch(
+                                new Actions.ImportChartAndDataset(
+                                    specification,
+                                    dataset,
+                                    {
+                                        filterCondition: null,
+                                    },
+                                    specification
+                                )
+                            );
+                        }
+                    }}
+                    tabButtons={null}
+                    telemetry={{
+                        record: () => { },
+                    }}
+                />
+            </FluentProvider>
         </>
     );
 };
