@@ -1,13 +1,13 @@
 {
   "name": "charticulator-visual-community",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Community version of Charticulator visual",
   "repository": "https://github.com/zBritva/charticulator-visual-community",
   "author": "Ilfat Galiev",
   "license": "MIT",
   "scripts": {
     "preinstall": "git submodule update --init --recursive",
-    "postinstall": "npm run copyfiles && npm run install:charticulator && link:react",
+    "postinstall": "npm run install:charticulator && npm run copyfiles && link:react",
     "link:react": "npx link ./charticulator/node_modules/react",
     "config": "npx js-yaml config.yml > config.json",
     "install:charticulator": "cd charticulator && npm install --force",
