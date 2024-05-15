@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "preinstall": "git submodule update --init --recursive",
-    "postinstall": "npm run install:charticulator && npm run copyfiles && link:react-dom && link:react && link:icons",
+    "postinstall": "npm run install:charticulator && npm run copyfiles && npm run link:react-dom && npm run link:react && npm run link:icons",
     "link:react": "npx link ./charticulator/node_modules/react",
     "link:react-dom": "npx link ./charticulator/node_modules/react-dom",
     "link:icons": "npx link ./charticulator/node_modules/@fluentui/react-icons",
