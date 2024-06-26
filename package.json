@@ -1,6 +1,6 @@
 {
   "name": "charticulator-visual-community",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "Community version of Charticulator visual",
   "repository": "https://github.com/zBritva/charticulator-visual-community",
   "author": "Ilfat Galiev",
@@ -23,7 +23,7 @@
     "eslint:visual": "npx eslint ./src --ext .js,.jsx,.ts,.tsx",
     "eslint:charticulator": "npm run --prefix charticulator eslint",
     "start:charticulator": "npm run --prefix charticulator start",
-    "eslint": "eslint:charticulator & eslint:visual",
+    "eslint": "npm run eslint:charticulator & npm run eslint:visual",
     "audit": "npm audit",
     "copyfiles": "copyfiles .\\config.yml .\\charticulator\\"
   },
