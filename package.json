@@ -5,6 +5,9 @@
   "repository": "https://github.com/zBritva/charticulator-visual-community",
   "author": "Ilfat Galiev",
   "license": "MIT",
+  "engines": {
+    "node": ">=20.1.0"
+  },
   "scripts": {
     "preinstall": "git submodule update --init --recursive",
     "postinstall": "npm run install:charticulator && npm run copyfiles && npm run link:react-dom && npm run link:react && npm run link:icons",
@@ -33,7 +36,8 @@
     "@babel/core": "7.15.5",
     "@babel/preset-env": "7.15.6",
     "@babel/preset-react": "7.18.6",
-    "@fluentui/react-components": "9.43.0",
+    "@fluentui/react-components": "9.54.2",
+    "@fluentui/react-icons": "2.0.245",
     "@reduxjs/toolkit": "1.9.7",
     "d3-color": "3.1.0",
     "d3-dsv": "3.0.1",
