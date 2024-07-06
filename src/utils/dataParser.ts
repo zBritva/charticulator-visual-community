@@ -119,7 +119,7 @@ export function convertData(
                     }
                 });
 
-                if (supportsHighlight) {
+                if (supportsHighlight && category.source.isMeasure) {
                     mainTable.columns.push({
                         displayName: displayName + highlightsColumnSuffix,
                         name: displayName + highlightsColumnSuffix,

@@ -231,7 +231,7 @@
     }
   ],
   "advancedEditModeSupport": 2,
-  "supportsHighlight": false,
+  "supportsHighlight": true,
   "supportsLandingPage": false,
   "sorting": {
     "default": {}
