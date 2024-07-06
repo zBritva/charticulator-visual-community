@@ -17,6 +17,7 @@
     "config": "npx js-yaml config.yml > config.json",
     "install:charticulator": "cd charticulator && npm install --force",
     "build:charticulator": "npm run --prefix charticulator build",
+    "start:app": "npm run --prefix charticulator start",
     "build:editor": "webpack --config editor-webpack.config",
     "start:editor": "webpack-dev-server --config editor-webpack.config",
     "build:view": "webpack --config view-webpack.config",
