@@ -13,10 +13,11 @@ import { Dataset, Prototypes, Specification } from './../../../charticulator/src
 
 import { persistProperty } from './persistProperty'
 import { createChartFromTemplate } from '../../utils/template'
-import { convertData } from '../../utils/dataParser'
+import { convertData, highlightsColumnSuffix } from '../../utils/dataParser'
 import { deepClone } from '../../utils/main'
 import { ChartTemplateBuilder } from './../../../charticulator/src/app/template'
 import { defaultVersionOfTemplate } from './../../../charticulator/src/app/stores/defaults'
+import { TableType } from 'charticulator/src/core/dataset'
 
 export interface IColumnsMapping {
     table: string,
@@ -30,6 +31,7 @@ export interface VisualState {
     settings: IVisualSettings
     template: Specification.Template.ChartTemplate
     chart: Specification.Chart
+    supportsHighlight?: boolean
     dataset: Dataset.Dataset
     selections: Map<number, powerbi.extensibility.ISelectionId>
     viewport: IViewport
@@ -57,6 +59,7 @@ const initialState: VisualState = {
     mode: EditMode.Default,
     settings: VisualSettings.getDefault() as VisualSettings,
     chart: null,
+    supportsHighlight: undefined,
     dataset: {
         name: "main",
         tables: []
@@ -138,11 +141,18 @@ export const visualSlice = createSlice({
         setViewport: (state, action: PayloadAction<IViewport>) => {
             state.viewport = action.payload
         },
+        checkSupportsHighlight: (state, action: PayloadAction<string>) => {
+            const template = action.payload;
+            const parsedTemplate = JSON.parse(template)
+            const mainTable = parsedTemplate.tables.find(table => table.type == TableType.Main);
+
+            if (mainTable) {
+                const hasHighlightsColumn = mainTable.columns.find(column => column.name.endsWith(highlightsColumnSuffix)) != undefined
+                state.supportsHighlight = hasHighlightsColumn ? true : undefined;
+            }
+        },
         setDataView: (state, action: PayloadAction<DataView>) => {
             state.dataview = action.payload
-            const [dataset, selections] = convertData(state.dataview, state.host.createSelectionIdBuilder, state.settings.localization.utcTimeZone);
-            state.dataset = dataset
-            state.selections = selections
 
             // TODO reset chart on template reset
             const template = state.settings.chart.template
@@ -153,6 +163,11 @@ export const visualSlice = createSlice({
             if (state.template && state.template.version == undefined) {
                 state.template.version = defaultVersionOfTemplate
             }
+
+            const [dataset, selections] = convertData(state.dataview, state.host.createSelectionIdBuilder, (state.supportsHighlight ?? false) || state.settings.highlight.addHighlightColumns);
+            state.dataset = dataset
+            state.selections = selections
+
             const { chart, unmappedColumns } = createChartFromTemplate(state.settings.chart.template, dataset, mapping)
 
             state.unmappedColumns = unmappedColumns;
@@ -218,7 +233,8 @@ export const {
     setProperty,
     setMapping,
     setTemplate,
-    importTemplate
+    importTemplate,
+    checkSupportsHighlight
 } = visualSlice.actions
 
 export default visualSlice.reducer

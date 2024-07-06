@@ -33,12 +33,16 @@
         "template": {
           "displayName": "Template",
           "displayNameKey": "Charticulator_Template",
-          "type": { "text": true }
+          "type": {
+            "text": true
+          }
         },
         "columnMappings": {
           "displayName": "Column mappings",
           "displayNameKey": "Charticulator_ColumnMappings",
-          "type": { "text": true }
+          "type": {
+            "text": true
+          }
         }
       }
     },
@@ -49,22 +53,30 @@
         "decemalDelimiter": {
           "displayName": "Decimal Delimiter",
           "displayNameKey": "Charticulator_DecimalDelimiter",
-          "type": { "text": true }
+          "type": {
+            "text": true
+          }
         },
         "thousandsDelimiter": {
           "displayName": "Thousands Delimiter",
           "displayNameKey": "Charticulator_ThousandsDelimiter",
-          "type": { "text": true }
+          "type": {
+            "text": true
+          }
         },
         "currency": {
           "displayName": "Currency",
           "displayNameKey": "Charticulator_Currency",
-          "type": { "text": true }
+          "type": {
+            "text": true
+          }
         },
         "utcTimeZone": {
           "displayName": "UTC time zone",
           "displayNameKey": "Charticulator_UTC",
-          "type": { "bool": true }
+          "type": {
+            "bool": true
+          }
         },
         "billionsFormat": {
           "displayName": "Billions format",
@@ -93,32 +105,44 @@
         "left": {
           "displayName": "Left",
           "displayNameKey": "Charticulator_MarginLeft",
-          "type": { "numeric": true }
+          "type": {
+            "numeric": true
+          }
         },
         "right": {
           "displayName": "Right",
           "displayNameKey": "Charticulator_MarginRight",
-          "type": { "numeric": true }
+          "type": {
+            "numeric": true
+          }
         },
         "top": {
           "displayName": "Top",
           "displayNameKey": "Charticulator_MarginTop",
-          "type": { "numeric": true }
+          "type": {
+            "numeric": true
+          }
         },
         "bottom": {
           "displayName": "Bottom",
           "displayNameKey": "Charticulator_MarginBottom",
-          "type": { "numeric": true }
+          "type": {
+            "numeric": true
+          }
         },
         "width": {
           "displayName": "Width",
           "displayNameKey": "Charticulator_ChartWidth",
-          "type": { "numeric": true }
+          "type": {
+            "numeric": true
+          }
         },
         "height": {
           "displayName": "Height",
           "displayNameKey": "Charticulator_ChartHeight",
-          "type": { "numeric": true }
+          "type": {
+            "numeric": true
+          }
         }
       }
     },
@@ -162,7 +186,11 @@
             ]
           }
         },
-        "mainViewConfiguration": { "type": { "text": true } }
+        "mainViewConfiguration": {
+          "type": {
+            "text": true
+          }
+        }
       }
     },
     "colors": {
@@ -173,7 +201,9 @@
           "displayName": "Update colors",
           "description": "Allow to update colors of scale on changing the theme of report",
           "displayNameKey": "Charticulator_ColorSettings_UpdateColors",
-          "type": { "bool": true }
+          "type": {
+            "bool": true
+          }
         }
       }
     },
@@ -185,7 +215,9 @@
           "displayName": "Add highlight columns",
           "description": "Allow to add additional highlight columns",
           "displayNameKey": "Charticulator_HighlightSettings_AddHighlightColumns",
-          "type": { "bool": true }
+          "type": {
+            "bool": true
+          }
         }
       }
     }
@@ -211,7 +243,11 @@
               }
             }
           ],
-          "dataReductionAlgorithm": { "top": { "count": 30000 } }
+          "dataReductionAlgorithm": {
+            "top": {
+              "count": 30000
+            }
+          }
         },
         "values": {
           "select": [
@@ -241,7 +277,9 @@
       "canvas": true,
       "default": true
     },
-    "roles": ["tooltips"],
+    "roles": [
+      "tooltips"
+    ],
     "supportEnhancedTooltips": true
   }
 }

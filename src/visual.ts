@@ -44,7 +44,7 @@ import VisualObjectInstanceEnumerationObject = powerbi.VisualObjectInstanceEnume
 
 import { VisualSettings } from "./settings";
 import { deepClone } from "./utils/main";
-import { setDataView, setHost, setMode, setSettings, setViewMode, setViewport } from './redux/slices/visualSlice';
+import { checkSupportsHighlight, setDataView, setHost, setMode, setSettings, setViewMode, setViewport } from './redux/slices/visualSlice';
 
 export class Visual implements IVisual {
     private target: HTMLElement;
@@ -75,15 +75,14 @@ export class Visual implements IVisual {
     }
 
     public update(options: VisualUpdateOptions) {
-        // console.log('update');
         const dispatch = store.dispatch;
         this.settings = Visual.parseSettings(options && options.dataViews && options.dataViews[0]);
+        dispatch(checkSupportsHighlight(this.settings.chart.template));
         dispatch(setViewport(deepClone(options.viewport)));
         dispatch(setDataView(deepClone(options.dataViews[0])));
         dispatch(setMode(options.editMode));
         dispatch(setViewMode(options.viewMode));
         dispatch(setSettings(deepClone(this.settings)));
-        // console.log('end');
     }
 
     private static parseSettings(dataView: DataView): VisualSettings {
@@ -105,10 +104,10 @@ export class Visual implements IVisual {
             return settings;
         }
 
-        if (options.objectName === 'highlight') {
-            settings.instances.pop();
-            return settings;
-        }
+        // if (options.objectName === 'highlight') {
+        //     settings.instances.pop();
+        //     return settings;
+        // }
 
         return VisualSettings.enumerateObjectInstances(this.settings || VisualSettings.getDefault(), options);
     }

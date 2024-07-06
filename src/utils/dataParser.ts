@@ -68,7 +68,6 @@ export function convertData(
     if (!dataView || !dataView.categorical) {
         return [null, null];
     }
-
     // const dateParse = true ? utcParse(timeFormat) : timeParse(timeFormat);
     const dateParse = utcParse(timeFormat);
     
@@ -204,24 +203,24 @@ export function convertData(
                     return;
                 }
                 const values = categoryColumn.values
-                const highlights = null
+                let highlights = null
                 
                 // disabled
-                // if (false && categoryColumn satisfies powerbi.DataViewValueColumn) {
-                //     const dataViewValueColumn: powerbi.DataViewValueColumn = categoryColumn
-                //     if (dataViewValueColumn.highlights) {
-                //         highlights = dataViewValueColumn.highlights
-                //     }
-                // }
+                if (categoryColumn satisfies powerbi.DataViewValueColumn) {
+                    const dataViewValueColumn: powerbi.DataViewValueColumn = categoryColumn
+                    if (dataViewValueColumn.highlights) {
+                        highlights = dataViewValueColumn.highlights
+                    }
+                }
                 
                 if (supportsHighlight) {
                     rowID = addColumnToRow(column.displayName, column, values, index, row, rowID)
                     rowID = addColumnToRow(column.displayName + highlightsColumnSuffix, column, highlights ?? values, index, row, rowID)
                 } else {
                     if (highlights) {
-                        rowID = addColumnToRow(column.displayName + highlightsColumnSuffix, column, highlights, index, row, rowID)
+                        rowID = addColumnToRow(column.displayName, column, highlights, index, row, rowID)
                     } else {
-                        rowID = addColumnToRow(column.displayName ,column, values, index, row, rowID)
+                        rowID = addColumnToRow(column.displayName, column, values, index, row, rowID)
                     }
                 }
             });
