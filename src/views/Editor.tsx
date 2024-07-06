@@ -25,7 +25,11 @@ import { PositionsLeftRight, PositionsLeftRightTop, UndoRedoLocation } from './.
 import { LocalizationConfig } from "charticulator/src/container/container";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { setProperty, setTemplate } from "../redux/slices/visualSlice";
-import { FluentProvider, teamsLightTheme } from "@fluentui/react-components";
+import { FluentProvider, Toaster, teamsLightTheme, useId, useToastController } from "@fluentui/react-components";
+
+import {
+    ToastLayout
+} from "./ToastLayout";
 
 const script = require("raw-loader!charticulator/dist/scripts/worker.bundle.js");
 const charticulatorConfig = require("json-loader!../../charticulator/dist/scripts/config.json");
@@ -83,6 +87,9 @@ export const Editor: React.FC<EditorProps> = ({
         defaultDataset.tables[0].name = "main";
         return defaultDataset;
     }, []);
+    
+    const chartSavedToasterId = useId("chartSavedToaster");
+    const { dispatchToast, dismissToast } = useToastController(chartSavedToasterId);
 
     React.useEffect(() => {
         let EVENT_NESTED_EDITOR_EDIT_SUBSCRIPTION = null;
@@ -136,6 +143,15 @@ export const Editor: React.FC<EditorProps> = ({
                         objectProperty: 'template',
                         value: JSON.stringify(template)
                     }));
+                    dispatchToast(
+                        React.createElement(ToastLayout, {
+                            message: "Chart saved",
+                            title: "Success",
+                            subtitle: "Chart saved successfully",
+                            onDismiss: () => {
+                                dismissToast(chartSavedToasterId);
+                            }
+                        }), {intent: "success", timeout: 3000, toastId: chartSavedToasterId })
                 });
             }
         })();
@@ -152,6 +168,7 @@ export const Editor: React.FC<EditorProps> = ({
     return (
         <>
             <FluentProvider theme={teamsLightTheme}>
+                <Toaster toasterId={chartSavedToasterId} />
                 <MainView
                     store={appStore}
                     viewConfiguration={
