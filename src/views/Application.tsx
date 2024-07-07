@@ -22,6 +22,7 @@ import { FluentProvider, Label, Tooltip, makeStyles, shorthands, teamsLightTheme
 import switchVisual from "./../../assets/label_tip.png"
 import { tooltipsTablename } from '../utils/dataParser';
 import { LocalizationConfig } from './../../charticulator/src/container/container';
+import { copyToClipboard } from 'charticulator/src/app/utils';
 
 const useStyles = makeStyles({
     tooltipWidthClass: {
@@ -212,7 +213,7 @@ export const Application: React.FC = () => {
     }, [selectionManager])
 
     // TODO refactor
-    const onImportTempalte = React.useCallback(async () => {
+    const onImportTemplate = React.useCallback(async () => {
         const template = await importTemplateFromFile();
         dispatch(importTemplate(template));
 
@@ -239,25 +240,25 @@ export const Application: React.FC = () => {
                         onClose={() => {
 
                         }}
-                        // onExport={async (template, clipboard) => {
-                        //     const json = JSON.stringify(template);
-                        //     if (clipboard) {
-                        //         try {
-                        //             const clipboardPermissions = await navigator.permissions.query({ name: 'clipboard-write' as any });
-                        //             if (clipboardPermissions.state === 'granted') {
-                        //                 window.focus();
-                        //                 await navigator.clipboard.writeText(json);
-                        //             } else {
-                        //                 copyToClipboard(json);
-                        //             }
-                        //         } catch (e) {
-                        //             console.error(e);
-                        //         }
-                        //     } else {
-                        //         await host.downloadService.exportVisualsContent(json, `${template.specification._id}.json`, 'json', 'template');
-                        //     }
-                        // }}
-                        onImport={onImportTempalte}
+                        onExport={async (template, clipboard) => {
+                            const json = JSON.stringify(template);
+                            if (clipboard) {
+                                try {
+                                    const clipboardPermissions = await navigator.permissions.query({ name: 'clipboard-write' as any });
+                                    if (clipboardPermissions.state === 'granted') {
+                                        window.focus();
+                                        await navigator.clipboard.writeText(json);
+                                    } else {
+                                        copyToClipboard(json);
+                                    }
+                                } catch (e) {
+                                    console.error(e);
+                                }
+                            } else {
+                                await host.downloadService.exportVisualsContent(json, `${template.specification._id}.json`, 'json', 'template');
+                            }
+                        }}
+                        onImport={onImportTemplate}
                     />
                 </>
             );
