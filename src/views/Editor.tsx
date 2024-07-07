@@ -49,7 +49,7 @@ export interface EditorProps {
     utcTimeZone: boolean,
     onClose: () => void;
     onExport?: (template: Specification.Template.ChartTemplate, clipboard: boolean) => void;
-    onImport?: () => Promise<Specification.Chart>;
+    onImport?: () => Promise<string>;
 }
 
 // eslint-disable-next-line max-lines-per-function
@@ -196,15 +196,16 @@ export const Editor: React.FC<EditorProps> = ({
                         onImportTemplateClick: async () => {
                             // TODO refactor
                             const specification = await onImport();
+                            const parsed = JSON.parse(specification);
                             // console.log(specification);
                             appStore.dispatcher.dispatch(
                                 new Actions.ImportChartAndDataset(
-                                    specification,
+                                    parsed.specification,
                                     dataset,
                                     {
                                         filterCondition: null,
                                     },
-                                    specification
+                                    parsed.specification
                                 )
                             );
                         }

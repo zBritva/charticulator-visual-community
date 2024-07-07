@@ -213,12 +213,12 @@ export const Application: React.FC = () => {
     }, [selectionManager])
 
     // TODO refactor
-    const onImportTemplate = React.useCallback(async () => {
+    const onImportTemplate = async () => {
         const template = await importTemplateFromFile();
         dispatch(importTemplate(template));
 
-        return null;
-    }, [dispatch]);
+        return template;
+    };
 
     if (!dataset || !solverInitialized) {
         return (<p>Loading...</p>)
