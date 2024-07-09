@@ -49,15 +49,27 @@ export interface EditorProps {
     utcTimeZone: boolean,
     onClose: () => void;
     onExport?: (template: Specification.Template.ChartTemplate, clipboard: boolean) => void;
+    onSupportDev?: () => void;
     onImport?: () => Promise<string>;
+    onContactUsLink?: () => void;
+    onGettingStartedClick?: () => void;
+    onGalleryClick?: () => void;
+    onIssuesClick?: () => void;
+    onHomeClick?: () => void;
 }
 
 // eslint-disable-next-line max-lines-per-function
 export const Editor: React.FC<EditorProps> = ({
     localization,
     utcTimeZone,
+    onContactUsLink,
     onExport,
-    onImport
+    onImport,
+    onSupportDev,
+    onGalleryClick,
+    onHomeClick,
+    onIssuesClick,
+    onGettingStartedClick,
 }) => {
     // console.log('Editor');
     const settings = useAppSelector((store) => store.visual.settings);
@@ -184,7 +196,7 @@ export const Editor: React.FC<EditorProps> = ({
                         }
                     }
                     menuBarHandlers={{
-                        onContactUsLink: () => { },
+                        onContactUsLink: onContactUsLink,
                         onCopyToClipboardClick: () => {
                             const template = deepClone(appStore.buildChartTemplate());
                             onExport(template, true);
@@ -193,6 +205,11 @@ export const Editor: React.FC<EditorProps> = ({
                             const template = deepClone(appStore.buildChartTemplate());
                             onExport(template, false);
                         },
+                        onSupportDevClick: onSupportDev,
+                        onGalleryClick: onGalleryClick,
+                        onHomeClick: onHomeClick,
+                        onIssuesClick: onIssuesClick,
+                        onGettingStartedClick: onGettingStartedClick,
                         onImportTemplateClick: async () => {
                             // TODO refactor
                             const specification = await onImport();
