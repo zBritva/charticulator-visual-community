@@ -57,5 +57,5 @@ jobs:
         with:
           name: visual
           path: |
-            visual/dist/charticulatorVisualCommunity_EDITOR.*.pbiviz
-            visual/dist/charticulatorVisualCommunity_VIEW.*.pbiviz
+            /dist/charticulatorVisualCommunity_EDITOR.*.pbiviz
+            /dist/charticulatorVisualCommunity_VIEW.*.pbiviz
