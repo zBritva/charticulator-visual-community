@@ -5,7 +5,7 @@ import powerbi from "powerbi-visuals-api";
 import { Editor } from './Editor';
 import { Mapping, UnmappedColumnName } from './Mapping';
 import { ChartViewer, IModifiers } from './ChartViewer';
-import { BillionsFormat, ColorUtils, defaultDigitsGroup, setTimeZone } from './../../charticulator/src/container';
+import { BillionsFormat, ColorUtils, defaultDigitsGroup, setTimeZone, uuid } from './../../charticulator/src/container';
 import { initialize } from "./../../charticulator/src/core/index";
 import charticulatorConfig from "./../../config.json";
 
@@ -14,7 +14,7 @@ import {
 } from "charticulator/src/core/index";
 
 import { useAppSelector, useAppDispatch } from '../redux/hooks'
-import { setSolverInitialized, setMapping, IColumnsMapping, importTemplate } from '../redux/slices/visualSlice';
+import { setSolverInitialized, setMapping, IColumnsMapping, importTemplate, setProperty, setTemplate } from '../redux/slices/visualSlice';
 import { deepClone, isEditor } from '../utils/main';
 import { importTemplateFromFile } from '../utils/importTemplate';
 import { FluentProvider, Label, Tooltip, makeStyles, shorthands, teamsLightTheme } from "@fluentui/react-components";
@@ -55,6 +55,8 @@ export const Application: React.FC = () => {
     const template = useAppSelector((store) => store.visual.template);
     const unmappedColumns = useAppSelector((state) => state.visual.unmappedColumns);
     const dispatch = useAppDispatch();
+
+    const editorInstanceID = React.useMemo(() => uuid(), []);
 
     const styles = useStyles();
 
@@ -230,11 +232,23 @@ export const Application: React.FC = () => {
             return (
                 <>
                     <Editor
-                        width={viewport.width}
-                        height={viewport.height}
-                        chart={chart}
-                        columnMappings={settings.chart.columnMappings as any}
+                        instanceID={editorInstanceID}
+                        setTemplate={(template) => {
+                            if (typeof template === 'string') {
+                                dispatch(setTemplate(template));
+                            }
+                            if (typeof template === 'object') {
+                                dispatch(setTemplate(JSON.stringify(template)));
+                            }
+                        }}
+                        setProperty={(property) => {dispatch(setProperty(property))}}
+                        settings={settings}
+                        template={template}
                         dataset={dataset}
+                        // width={viewport.width}
+                        // height={viewport.height}
+                        // chart={chart}
+                        columnMappings={settings.chart.columnMappings as any}
                         localization={localizaiton}
                         utcTimeZone={settings.localization.utcTimeZone}
                         onClose={() => {
