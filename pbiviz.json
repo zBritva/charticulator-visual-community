@@ -4,7 +4,7 @@
     "displayName": "Charticulator (Community version)",
     "guid": "charticulatorCommunityVersion",
     "visualClassName": "Visual",
-    "version": "1.0.15.0",
+    "version": "1.1.0.0",
     "description": "The community version of the charticulator visual. The visual in development mode doesn't include all functionalities implemented in the original version. But the visual uses the latest version of the Charticulator with new features and bug fixes",
     "supportUrl": "https://github.com/zBritva/charticulator-visual-community/issues",
     "gitHubUrl": "https://github.com/zBritva/charticulator-visual-community"
