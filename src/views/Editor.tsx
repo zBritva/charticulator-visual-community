@@ -106,8 +106,6 @@ export const Editor: React.FC<EditorProps> = ({
     template,
     name
 }) => {
-    console.log(instanceID);
-
     const nestedChartStack = React.useRef<NestedChartStack>(null);
 
     const [nestedEditorId, setNestedEditorId] = React.useState<string>(null);

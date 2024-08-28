@@ -58,6 +58,8 @@ export const Application: React.FC = () => {
 
     const editorInstanceID = React.useMemo(() => uuid(), []);
 
+    const previewLabel = React.useRef<HTMLLabelElement>();
+
     const styles = useStyles();
 
     if (dataView) {
@@ -96,6 +98,21 @@ export const Application: React.FC = () => {
             dispatch(setSolverInitialized());
         })();
     }, [setSolverInitialized, setFormatOptions, initialize, host]);
+
+    React.useEffect(() => {
+        if (viewport.height < 200 || viewport.width < 200) {
+            if (previewLabel.current) {
+                previewLabel.current.style.display = "none";
+            }
+
+        } else {
+            setTimeout(() => {
+                if (previewLabel.current) {
+                    previewLabel.current.style.display = "none";
+                }
+            }, 2000);
+        }
+    }, [previewLabel.current]);
 
     // conver data from Power BI to internal structure
     // const storedMappedColumns = (settings?.chart && JSON.parse(settings.chart.columnMappings)) ?? [];
@@ -333,7 +350,7 @@ export const Application: React.FC = () => {
                             }}
                             relationship="label"
                         >
-                            <Label>Editor preview:</Label>
+                            <Label ref={previewLabel} className='preview-label'>Editor preview:</Label>
                         </Tooltip>
                     </>
                 ) : null}
