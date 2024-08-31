@@ -45,7 +45,7 @@ export const Editor: React.FC<EditorProps> = ({ onImport }) => {
                     <h4>This version of the visual doesn't support editing chart.</h4>
                     <p>To edit the chart switch visual to editor version</p>
                     <p>Read more about Charticulator visual (community) in documentation:</p>
-                    <a onClick={onUrl('https://ilfat-galiev.im/docs/charticulator/')}>https://ilfat-galiev.im/docs/charticulator/</a>
+                    <a onClick={onUrl('https://ilfat-galiev.im/docs/charticulator/intro/')}>https://ilfat-galiev.im/docs/charticulator/</a>
                     <p>Or import template created on:</p>
                     <a onClick={onUrl('https://ilfat-galiev.im/charticulator')}>https://ilfat-galiev.im/charticulator</a>
                     <Button
