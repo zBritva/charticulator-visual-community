@@ -56,6 +56,13 @@ CorsPolicy:
   Embedded: true
 
 #------------------------------------------------
+# Backend configuration
+#------------------------------------------------
+Backend: "hybrid"
+CDNBackend:
+  resourcesDescriptionUrl: https://ilfat-galiev.im/charts.json
+
+#------------------------------------------------
 # Configure panels layout
 #------------------------------------------------
 MainView:

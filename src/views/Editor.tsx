@@ -27,7 +27,7 @@ import { EditorType } from "charticulator/src/app/stores/app_store";
 import { PositionsLeftRight, PositionsLeftRightTop, UndoRedoLocation } from './../../charticulator/src/app/main_view';
 
 import { LocalizationConfig } from "charticulator/src/container/container";
-import { FluentProvider, Theme, Toaster, teamsLightTheme, useId, useToastController } from "@fluentui/react-components";
+import { FluentProvider, Toaster, teamsLightTheme, useId, useToastController } from "@fluentui/react-components";
 
 import {
     ToastLayout
@@ -36,7 +36,6 @@ import { NestedChartEditorOptions } from "charticulator/src/core/prototypes/cont
 import { AttributeMap } from "charticulator/src/core/specification";
 import { IVisualSettings } from "src/settings";
 import { ChartTemplateBuilder } from "charticulator/src/app/template";
-import { MenuBarHandlers } from "charticulator/src/app/views/menubar";
 
 const script = require("raw-loader!charticulator/dist/scripts/worker.bundle.js");
 const charticulatorConfig = require("json-loader!../../charticulator/dist/scripts/config.json");
@@ -147,7 +146,7 @@ export const Editor: React.FC<EditorProps> = ({
                 ...config,
                 localization: localization
             });
-            appStore = new AppStore(worker, dataset || defaultDataset);
+            appStore = new AppStore(worker, dataset || defaultDataset, null);
             if (isNestedEditor) {
                 appStore.editorType = EditorType.NestedEmbedded;
             } else {
