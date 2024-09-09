@@ -83,7 +83,7 @@ export const Application: React.FC = () => {
             setFormatOptions({
                 currency: [localizaiton?.currency, ""],
                 grouping: defaultDigitsGroup,
-                decimal: localizaiton?.decemalDelimiter,
+                decimal: localizaiton?.decimalDelimiter,
                 thousands:
                     localizaiton?.thousandsDelimiter,
             });
@@ -118,7 +118,7 @@ export const Application: React.FC = () => {
     // const storedMappedColumns = (settings?.chart && JSON.parse(settings.chart.columnMappings)) ?? [];
     const localizaiton: LocalizationConfig = React.useMemo(() => ({
         currency: settings?.localization.currency,
-        decemalDelimiter: settings?.localization.decemalDelimiter,
+        decimalDelimiter: settings?.localization.decimalDelimiter,
         thousandsDelimiter: settings?.localization.thousandsDelimiter,
         billionsFormat: settings.localization.billionsFormat as BillionsFormat
     }), [settings]);

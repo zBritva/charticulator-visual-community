@@ -62,7 +62,7 @@ export class ChartSettings {
 }
 
 export class Localization {
-    public decemalDelimiter: string = ".";
+    public decimalDelimiter: string = ".";
     public thousandsDelimiter: string = ",";
     public currency: string = "$";
     public utcTimeZone: boolean = true;

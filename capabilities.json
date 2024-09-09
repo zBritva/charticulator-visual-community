@@ -50,7 +50,7 @@
       "displayName": "Localization",
       "displayNameKey": "Charticulator_localization",
       "properties": {
-        "decemalDelimiter": {
+        "decimalDelimiter": {
           "displayName": "Decimal Delimiter",
           "displayNameKey": "Charticulator_DecimalDelimiter",
           "type": {

@@ -157,10 +157,10 @@ export const Editor: React.FC<EditorProps> = ({
                 setAppStore(appStore);
                 appStore.setLocaleFileFormat({
                     currency: localization.currency,
-                    delimiter: localization.decemalDelimiter,
+                    delimiter: localization.decimalDelimiter,
                     group: `[${defaultDigitsGroup}, 0]`,
                     numberFormat: {
-                        decimal: localization.decemalDelimiter,
+                        decimal: localization.decimalDelimiter,
                         remove: localization.thousandsDelimiter,
                     },
                     utcTimeZone: utcTimeZone,
