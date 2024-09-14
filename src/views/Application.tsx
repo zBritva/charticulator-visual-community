@@ -324,12 +324,14 @@ export const Application: React.FC = () => {
             <div className='warning-container'>
                 <div className='view-warning'>
                     <h4>Default template</h4>
-                    <p>Default template without chart is loaded into the visual container</p>
-                    {isEditor() ?
-                        <p>Switch to editor to start creating or loading charts by using Charticulator</p> :
-                        <p>Switch to editor version of the visual to start creating charts by using Charticulator</p>}
-                    <p>Read more about Charticulator visual (community) in official documentation:</p>
-                    <a onClick={onUrl('https://ilfat-galiev.im/docs/charticulator/intro/')}>https://ilfat-galiev.im/docs/charticulator/intro/</a>
+                    <div className='content'>
+                        <p>Default template without chart is loaded into the visual container</p>
+                        {isEditor() ?
+                            <p>Switch to editor to start creating or loading charts by using Charticulator</p> :
+                            <p>Switch to editor version of the visual to start creating charts by using Charticulator</p>}
+                    </div>
+                    <a className='intro' onClick={onUrl('https://ilfat-galiev.im/docs/charticulator/intro/')}>Read more about Charticulator visual (community) in official documentation</a>
+                    <a className='changelog' onClick={onUrl('https://ilfat-galiev.im/docs/charticulator/changelog/')}>Visual changelog</a>
                 </div>
             </div>
         </>);
