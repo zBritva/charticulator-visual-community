@@ -23,6 +23,14 @@
     {
       "essential": true,
       "name": "ExportContent"
+    },
+    {
+      "essential": false,
+      "name": "WebAccess",
+      "parameters": [
+        "https://ilfat-galiev.im",
+        "https://raw.githubusercontent.com"
+      ]
     }
   ],
   "objects": {

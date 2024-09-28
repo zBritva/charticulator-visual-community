@@ -36,6 +36,7 @@ import { NestedChartEditorOptions } from "charticulator/src/core/prototypes/cont
 import { AttributeMap } from "charticulator/src/core/specification";
 import { IVisualSettings } from "src/settings";
 import { ChartTemplateBuilder } from "charticulator/src/app/template";
+import { CDNBackend } from "charticulator/src/app/backend/cdn";
 
 const script = require("raw-loader!charticulator/dist/scripts/worker.bundle.js");
 const charticulatorConfig = require("json-loader!../../charticulator/dist/scripts/config.json");
@@ -74,6 +75,7 @@ export interface EditorProps {
 
     setTemplate?: (template: string | Specification.Template.ChartTemplate, specification: Specification.Chart) => void;
     setProperty?: (property: { objectName: string, objectProperty: string, value: any }) => void;
+    onWebAccessStatus?: () => Promise<boolean>;
 }
 
 interface NestedChartStack {
@@ -100,6 +102,7 @@ export const Editor: React.FC<EditorProps> = ({
     onClose,
     setTemplate,
     setProperty,
+    onWebAccessStatus,
     dataset,
     settings,
     template,
@@ -146,7 +149,18 @@ export const Editor: React.FC<EditorProps> = ({
                 ...config,
                 localization: localization
             });
-            appStore = new AppStore(worker, dataset || defaultDataset, null);
+
+            let backend = null;
+            if (await onWebAccessStatus()) {
+                backend = new CDNBackend({
+                    resourcesDescriptionUrl: "https://ilfat-galiev.im/charts.json",
+                    createUrl: null,
+                    deleteUrl: null,
+                    updateUrl: null
+                })
+            }
+
+            appStore = new AppStore(worker, dataset || defaultDataset, backend);
             if (isNestedEditor) {
                 appStore.editorType = EditorType.NestedEmbedded;
             } else {

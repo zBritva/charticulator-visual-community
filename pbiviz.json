@@ -9,7 +9,7 @@
     "supportUrl": "https://github.com/zBritva/charticulator-visual-community/issues",
     "gitHubUrl": "https://github.com/zBritva/charticulator-visual-community"
   },
-  "apiVersion": "4.7.0",
+  "apiVersion": "5.11.0",
   "author": { "name": "Ilfat Galiev", "email": "powerbi@ilfat-galiev.com" },
   "assets": { "icon": "assets/icon.png" },
   "externalJS": [],

@@ -289,6 +289,10 @@ export const Application: React.FC = () => {
                                 await host.downloadService.exportVisualsContent(json, `${template.specification._id}.json`, 'json', 'template');
                             }
                         }}
+                        onWebAccessStatus={async () => {
+                            const access = await host.webAccessService.webAccessStatus('https://ilfat-galiev.im/');
+                            return access == powerbi.PrivilegeStatus.Allowed;
+                        }}
                         onImport={onImportTemplate}
                         onSupportDev={onUrl('https://github.com/sponsors/zBritva')}
                         onContactUsLink={onUrl('https://github.com/zBritva/charticulator-visual-community/discussions')}

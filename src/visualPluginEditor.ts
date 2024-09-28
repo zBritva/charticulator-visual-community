@@ -9,7 +9,7 @@ var charticulatorVisualCommunity_EDITOR: IVisualPlugin = {
     name: 'charticulatorVisualCommunity_EDITOR',
     displayName: 'Charticulator Community Version (Editor)',
     class: 'Visual',
-    apiVersion: '4.7.0',
+    apiVersion: '5.11.0',
     create: (options?: VisualConstructorOptions) => {
         if (Visual) {
             return new Visual(options);
