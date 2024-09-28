@@ -10,7 +10,7 @@
     "gitHubUrl": "https://github.com/zBritva/charticulator-visual-community"
   },
   "apiVersion": "5.11.0",
-  "author": { "name": "Ilfat Galiev", "email": "powerbi@ilfat-galiev.com" },
+  "author": { "name": "Ilfat Galiev", "email": "admin@ilfat-galiev.com" },
   "assets": { "icon": "assets/icon.png" },
   "externalJS": [],
   "style": "style/visual.less",
