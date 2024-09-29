@@ -110,7 +110,7 @@ export const Application: React.FC = () => {
                 if (previewLabel.current) {
                     previewLabel.current.style.display = "none";
                 }
-            }, 2000);
+            }, 30000);
         }
     }, [previewLabel.current]);
 
@@ -322,8 +322,7 @@ export const Application: React.FC = () => {
         );
     }
 
-    // TODO rework to state pattern
-    if (template.default && mode === powerbi.EditMode.Default) {
+    if (template.default && mode === powerbi.EditMode.Default && !(settings.view.hideDefaultTemplateMessage || !isEditor())) {
         return (<>
             <div className='warning-container'>
                 <div className='view-warning'>
@@ -344,7 +343,7 @@ export const Application: React.FC = () => {
     if (chart && !template.default && unmappedColumns.filter(c => c.powerbiColumn === UnmappedColumnName).length === 0) {
         return (
             <>
-                {isEditor() ? (
+                {isEditor() && !settings.editor.hideLabel ? (
                     <>
                         <Tooltip
                             content={{
