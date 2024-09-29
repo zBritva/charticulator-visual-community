@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit'
-import visualSlice from './slices/visualSlice'
+import { visualSlice } from './slices/visualSlice'
 
 export const store = configureStore({
     reducer: {
-        visual: visualSlice,
+        visual: visualSlice.reducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: false

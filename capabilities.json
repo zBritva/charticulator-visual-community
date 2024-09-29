@@ -228,6 +228,34 @@
           }
         }
       }
+    },
+    "editor": {
+      "displayName": "Editor settings",
+      "descriptionKey": "Charticulator_Editor",
+      "properties": {
+        "hideLabel": {
+          "displayName": "Hide editor preview label",
+          "description": "Hides editor preview label and doesn't block using Editor version of the visual in final reports. It's highly recommend to use View version in final reports.",
+          "displayNameKey": "Charticulator_HideEditorLabel",
+          "type": {
+            "bool": true
+          }
+        }
+      }
+    },
+    "view": {
+      "displayName": "View settings",
+      "descriptionKey": "Charticulator_View",
+      "properties": {
+        "hideDefaultTemplateMessage": {
+          "displayName": "Hide default template message",
+          "description": "Hides default template message on loading the visual",
+          "displayNameKey": "Charticulator_HideDefaultTemplateMessage",
+          "type": {
+            "bool": true
+          }
+        }
+      }
     }
   },
   "dataViewMappings": [

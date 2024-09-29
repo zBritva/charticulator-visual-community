@@ -40,6 +40,8 @@ export interface IVisualSettings {
     panels: Panels
     colors: Colors
     highlight: Highlight
+    editor: Editor;
+    view: View;
 }
 
 export class VisualSettings extends DataViewObjectsParser implements IVisualSettings {
@@ -49,6 +51,8 @@ export class VisualSettings extends DataViewObjectsParser implements IVisualSett
     public panels: Panels = new Panels();
     public colors: Colors = new Colors();
     public highlight: Highlight = new Highlight();
+    public editor: Editor = new Editor();
+    public view: View = new View();
 
     constructor() {
         super();
@@ -83,7 +87,6 @@ export class Panels {
     public defaultDatasetPanelPosition: string = "right";
 }
 
-
 export class Colors {
     public updateColors: boolean = true;
 }
@@ -92,3 +95,10 @@ export class Highlight {
     public addHighlightColumns: boolean = false;
 }
 
+export class Editor {
+    public hideLabel: boolean = false;
+}
+
+export class View {
+    public hideDefaultTemplateMessage: boolean = false;
+}
