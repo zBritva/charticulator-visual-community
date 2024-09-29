@@ -262,9 +262,6 @@ export const Application: React.FC = () => {
                         settings={settings}
                         template={template}
                         dataset={dataset}
-                        // width={viewport.width}
-                        // height={viewport.height}
-                        // chart={chart}
                         columnMappings={settings.chart.columnMappings as any}
                         localization={localizaiton}
                         utcTimeZone={settings.localization.utcTimeZone}
