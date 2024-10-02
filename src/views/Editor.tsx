@@ -72,6 +72,8 @@ export interface EditorProps {
     onGalleryClick?: () => void;
     onIssuesClick?: () => void;
     onHomeClick?: () => void;
+    onAboutClick?: () => void;
+
 
     setTemplate?: (template: string | Specification.Template.ChartTemplate, specification: Specification.Chart) => void;
     setProperty?: (property: { objectName: string, objectProperty: string, value: any }) => void;
@@ -98,6 +100,7 @@ export const Editor: React.FC<EditorProps> = ({
     onGalleryClick,
     onHomeClick,
     onIssuesClick,
+    onAboutClick,
     onGettingStartedClick,
     onClose,
     setTemplate,
@@ -297,6 +300,7 @@ export const Editor: React.FC<EditorProps> = ({
                     onGalleryClick={onGalleryClick}
                     onGettingStartedClick={onGettingStartedClick}
                     onHomeClick={onHomeClick}
+                    onAboutClick={onAboutClick}
                     onIssuesClick={onIssuesClick}
                     settings={settings}
                     setTemplate={(template, specification) => {

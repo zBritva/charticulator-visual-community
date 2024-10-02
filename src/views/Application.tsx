@@ -297,6 +297,7 @@ export const Application: React.FC = () => {
                         onGettingStartedClick={onUrl('https://ilfat-galiev.im/docs/category/charticulator')}
                         onHomeClick={onUrl('https://ilfat-galiev.im/')}
                         onIssuesClick={onUrl('https://github.com/zbritva/charticulator/issues/new')}
+                        onAboutClick={onUrl('https://ilfat-galiev.im/pages/about')}
                     />
                 </>
             );
