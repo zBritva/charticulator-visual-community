@@ -186,9 +186,13 @@ export function convertData(
         allColumns[0].values.forEach((_cat, index) => {
             const builder = createSelectionBuilder();
             
-            const selectionID = builder
-                .withCategory(categories[0], index)
-                .createSelectionId();
+            let selectionID = null; 
+            
+            if (categories && categories[0]) {
+                selectionID = builder
+                    .withCategory(categories[0], index)
+                    .createSelectionId();
+            }
             mainTableSelectionIds.set(index, selectionID);
 
             const row: Dataset.Row = {
