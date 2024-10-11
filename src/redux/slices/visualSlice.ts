@@ -8,6 +8,7 @@ import DataView = powerbi.DataView
 import EditMode = powerbi.EditMode
 import ViewMode = powerbi.ViewMode
 import IVisualHost = powerbi.extensibility.visual.IVisualHost
+import PrivilegeStatus = powerbi.PrivilegeStatus;
 
 import { Dataset, Prototypes, Specification } from './../../../charticulator/src/core';
 
@@ -39,6 +40,7 @@ export interface VisualState {
     mode: EditMode
     view: ViewMode
     solverInitialized: boolean
+    exportAllowed: boolean
     host: IVisualHost
     unmappedColumns: IColumnsMapping[]
     mapping: IColumnsMapping[]
@@ -70,7 +72,8 @@ const initialState: VisualState = {
     host: null,
     unmappedColumns: [],
     view: ViewMode.View,
-    mapping: []
+    mapping: [],
+    exportAllowed: false
 }
 
 function rebuildTemplate(templateString: string, dataset: Dataset.Dataset, mapping: IColumnsMapping[]) {
@@ -183,6 +186,9 @@ export const visualSlice = createSlice({
         setSolverInitialized: (state) => {
             state.solverInitialized = true;
         },
+        setExportStatus: (state, exp: PayloadAction<PrivilegeStatus>) => {
+            state.exportAllowed = exp.payload === PrivilegeStatus.Allowed;
+        },
         setProperty: (state, action: PayloadAction<Property>) => {
             const property = action.payload
             persistProperty(state.host, property.objectName, property.objectProperty, property.value)
@@ -234,7 +240,8 @@ export const {
     setMapping,
     setTemplate,
     importTemplate,
-    checkSupportsHighlight
+    checkSupportsHighlight,
+    setExportStatus
 } = visualSlice.actions
 
 export default visualSlice.reducer

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import powerbi from "powerbi-visuals-api";
-
+import PrivilegeStatus = powerbi.PrivilegeStatus;
 import { Editor } from './Editor';
 import { Mapping, UnmappedColumnName } from './Mapping';
 import { ChartViewer, IModifiers } from './ChartViewer';
@@ -14,7 +14,7 @@ import {
 } from "charticulator/src/core/index";
 
 import { useAppSelector, useAppDispatch } from '../redux/hooks'
-import { setSolverInitialized, setMapping, IColumnsMapping, importTemplate, setProperty, setTemplate } from '../redux/slices/visualSlice';
+import { setSolverInitialized, setMapping, IColumnsMapping, importTemplate, setProperty, setTemplate, setExportStatus } from '../redux/slices/visualSlice';
 import { deepClone, isEditor } from '../utils/main';
 import { importTemplateFromFile } from '../utils/importTemplate';
 import { FluentProvider, Label, Tooltip, makeStyles, shorthands, teamsLightTheme } from "@fluentui/react-components";
@@ -76,6 +76,10 @@ export const Application: React.FC = () => {
 
     React.useEffect(() => {
         (async () => {
+            host.downloadService.exportStatus().then((ex: PrivilegeStatus) => {
+                dispatch(setExportStatus(ex));
+            });
+
             await initialize({
                 ...charticulatorConfig as any,
                 localization: localizaiton
