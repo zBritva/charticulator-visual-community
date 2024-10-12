@@ -2,6 +2,8 @@ import React from "react";
 
 import { LocalizationConfig } from "charticulator/src/container/container";
 
+import "./../../style/container.less";
+
 import {
     Specification,
 } from "charticulator/src/core/index";
