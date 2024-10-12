@@ -34,11 +34,14 @@ import {
 } from "./ToastLayout";
 import { NestedChartEditorOptions } from "charticulator/src/core/prototypes/controls";
 import { AttributeMap } from "charticulator/src/core/specification";
-import { IVisualSettings } from "src/settings";
+import { IVisualSettings } from "../settings";
 import { ChartTemplateBuilder } from "charticulator/src/app/template";
 import { CDNBackend } from "charticulator/src/app/backend/cdn";
+import { useAppSelector } from "../redux/hooks";
 
 const script = require("raw-loader!charticulator/dist/scripts/worker.bundle.js");
+const containerScript = require("raw-loader!charticulator/dist/scripts/container.bundle.js");
+
 const charticulatorConfig = require("json-loader!../../charticulator/dist/scripts/config.json");
 
 export interface EditorProps {
@@ -64,7 +67,7 @@ export interface EditorProps {
     name?: string;
 
     onClose?: () => void;
-    onExport?: (template: Specification.Template.ChartTemplate, clipboard: boolean) => void;
+    onExport?: (name: string, template: string, clipboard: boolean, filetype: string) => void;
     onSupportDev?: () => void;
     onImport?: () => Promise<string>;
     onContactUsLink?: () => void;
@@ -112,6 +115,7 @@ export const Editor: React.FC<EditorProps> = ({
     name
 }) => {
     const nestedChartStack = React.useRef<NestedChartStack>(null);
+    const exportAllowed = useAppSelector((store) => store.visual.exportAllowed);
 
     const [nestedEditorId, setNestedEditorId] = React.useState<string>(null);
 
@@ -164,6 +168,7 @@ export const Editor: React.FC<EditorProps> = ({
             }
 
             appStore = new AppStore(worker, dataset || defaultDataset, backend);
+            appStore.ContainerScriptText = containerScript.default;
             if (isNestedEditor) {
                 appStore.editorType = EditorType.NestedEmbedded;
             } else {
@@ -262,6 +267,15 @@ export const Editor: React.FC<EditorProps> = ({
                     console.log('EVENT_NESTED_EDITOR_CLOSE', instanceID);
                     onClose();
                 });
+
+                // export on menu
+                appStore.onExportTemplate((type: string, content: Blob) => {
+                    content.text().then(text => {
+                        const name = template.specification.properties.name;
+                        onExport(name, text, !exportAllowed, type);
+                    })
+                    return true;
+                });
             }
         })();
         return () => {
@@ -345,12 +359,12 @@ export const Editor: React.FC<EditorProps> = ({
                             onContactUsLink: onContactUsLink,
                             onCopyToClipboardClick: () => {
                                 const template = deepClone(appStore.buildChartTemplate());
-                                onExport(template, true);
+                                onExport(template.specification.properties?.name || "template" , JSON.stringify(template, null, " "), true, "json");
                             },
-                            onExportTemplateClick: () => {
-                                const template = deepClone(appStore.buildChartTemplate());
-                                onExport(template, false);
-                            },
+                            // onExportTemplateClick: () => {
+                            //     const template = deepClone(appStore.buildChartTemplate());
+                            //     onExport(template, false);
+                            // },
                             onSupportDevClick: onSupportDev,
                             onGalleryClick: onGalleryClick,
                             onHomeClick: onHomeClick,

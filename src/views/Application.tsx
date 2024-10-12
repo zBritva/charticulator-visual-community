@@ -272,22 +272,24 @@ export const Application: React.FC = () => {
                         onClose={() => {
 
                         }}
-                        onExport={async (template, clipboard) => {
-                            const json = JSON.stringify(template);
+                        onExport={async (name, content, clipboard, filetype = "json") => {
                             if (clipboard) {
                                 try {
                                     const clipboardPermissions = await navigator.permissions.query({ name: 'clipboard-write' as any });
                                     if (clipboardPermissions.state === 'granted') {
                                         window.focus();
-                                        await navigator.clipboard.writeText(json);
+                                        await navigator.clipboard.writeText(content);
                                     } else {
-                                        copyToClipboard(json);
+                                        copyToClipboard(content);
                                     }
                                 } catch (e) {
                                     console.error(e);
                                 }
                             } else {
-                                await host.downloadService.exportVisualsContent(json, `${template.specification._id}.json`, 'json', 'template');
+                                if (filetype != "json") {
+                                    filetype = "txt";
+                                }
+                                await host.downloadService.exportVisualsContent(content, `${name}.${filetype}`, filetype, 'template');
                             }
                         }}
                         onWebAccessStatus={async () => {
