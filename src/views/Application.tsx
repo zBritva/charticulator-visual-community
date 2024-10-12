@@ -355,6 +355,7 @@ export const Application: React.FC = () => {
                                 children: (<>
                                     <p className={styles.label}>Switch the visual to view version to hide this label</p>
                                     <img className={styles.imageBorder} src={switchVisual}></img>
+                                    <p className={styles.label}>or disable the label in visual settings</p>
                                 </>),
                             }}
                             relationship="label"
