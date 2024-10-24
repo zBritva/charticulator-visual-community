@@ -2,6 +2,7 @@ const path = require('path');
 const fs = require("fs");
 const webpack = require("webpack");
 const Visualizer = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const ExtraWatchWebpackPlugin = require('extra-watch-webpack-plugin');
 
 // werbpack plugin
 const { PowerBICustomVisualsWebpackPlugin } = require('powerbi-visuals-webpack-plugin');
@@ -10,10 +11,12 @@ const { PowerBICustomVisualsWebpackPlugin } = require('powerbi-visuals-webpack-p
 const powerbiApi = require("powerbi-visuals-api");
 
 // visual configuration json path
+const pbivizPath = "./pbiviz.json";
 const pbivizFile = require(path.join(__dirname, "./pbiviz.json"));
 
 // the visual capabilities content
-const capabilitiesFile = require(path.join(__dirname, "./capabilities.json"));
+const capabilitiesPath = "./capabilities-editor.json";
+const capabilitiesFile = require(path.join(__dirname, capabilitiesPath));
 
 // string resources
 const resourcesFolder = path.join(".", "stringResources");
@@ -59,6 +62,12 @@ module.exports = merge(base, {
             reportFilename: statsLocation,
             openAnalyzer: false,
             analyzerMode: `static`
+        }),
+        new ExtraWatchWebpackPlugin({
+            files: [
+                pbivizPath,
+                capabilitiesPath
+            ]
         }),
         // custom visuals plugin instance with options
         new PowerBICustomVisualsWebpackPlugin({

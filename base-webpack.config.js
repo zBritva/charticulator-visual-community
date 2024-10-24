@@ -3,14 +3,10 @@ const path = require('path');
 // werbpack plugin
 const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const ExtraWatchWebpackPlugin = require('extra-watch-webpack-plugin');
 
 // visual configuration json path
 const pbivizPath = "./pbiviz.json";
 const pbivizFile = require(path.join(__dirname, pbivizPath));
-
-// the visual capabilities content
-const capabilitiesPath = "./capabilities.json";
 
 const { version } = require("./charticulator/package.json");
 
@@ -158,12 +154,6 @@ const plugins = [
           version,
           buildTimestamp: new Date().getTime()
         })
-    }),
-    new ExtraWatchWebpackPlugin({
-        files: [
-            pbivizPath,
-            capabilitiesPath
-        ]
     }),
     new webpack.ProvidePlugin({
         window: 'realWindow',
