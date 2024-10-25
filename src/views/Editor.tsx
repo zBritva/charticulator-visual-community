@@ -337,6 +337,7 @@ export const Editor: React.FC<EditorProps> = ({
                         nestedChartStack.current = null;
                         appStore.emit(AppStore.EVENT_GRAPHICS);
                     }}
+                    onWebAccessStatus={onWebAccessStatus}
                 />
             </>) :
             (<>
