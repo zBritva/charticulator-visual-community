@@ -176,6 +176,7 @@ export const visualSlice = createSlice({
             state.selections = selections
             if (state.appStore && state.settings.editor.applyDataUpdates) {
                 state.appStore.dispatcher.dispatch(new Actions.ImportChartAndDataset(state.appStore.chartManager.chart ,state.dataset, {}))
+                state.appStore.dispatcher.dispatch(new Actions.UpdatePlotSegments())
             }
 
             const { chart, unmappedColumns } = createChartFromTemplate(state.settings.chart.template, dataset, mapping)
