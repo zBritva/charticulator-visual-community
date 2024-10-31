@@ -19,6 +19,8 @@ import { deepClone } from '../../utils/main'
 import { ChartTemplateBuilder } from './../../../charticulator/src/app/template'
 import { defaultVersionOfTemplate } from './../../../charticulator/src/app/stores/defaults'
 import { TableType } from 'charticulator/src/core/dataset'
+import { AppStore } from 'charticulator/src/app/stores'
+import { Actions } from 'charticulator/src/app'
 
 export interface IColumnsMapping {
     table: string,
@@ -44,6 +46,7 @@ export interface VisualState {
     host: IVisualHost
     unmappedColumns: IColumnsMapping[]
     mapping: IColumnsMapping[]
+    appStore: AppStore
 }
 
 export interface Property {
@@ -72,6 +75,7 @@ const initialState: VisualState = {
     host: null,
     unmappedColumns: [],
     view: ViewMode.View,
+    appStore: null,
     mapping: [],
     exportAllowed: false
 }
@@ -170,6 +174,9 @@ export const visualSlice = createSlice({
             const [dataset, selections] = convertData(state.dataview, state.host.createSelectionIdBuilder, (state.supportsHighlight ?? false) || state.settings.highlight.addHighlightColumns);
             state.dataset = dataset
             state.selections = selections
+            if (state.appStore && state.settings.editor.applyDataUpdates) {
+                state.appStore.dispatcher.dispatch(new Actions.ImportChartAndDataset(state.appStore.chartManager.chart ,state.dataset, {}))
+            }
 
             const { chart, unmappedColumns } = createChartFromTemplate(state.settings.chart.template, dataset, mapping)
 
@@ -192,6 +199,9 @@ export const visualSlice = createSlice({
         setProperty: (state, action: PayloadAction<Property>) => {
             const property = action.payload
             persistProperty(state.host, property.objectName, property.objectProperty, property.value)
+        },
+        setEditorStore: (state, action: PayloadAction<AppStore>) => {
+            state.appStore = action.payload;
         },
         setMapping: (state, action: PayloadAction<IColumnsMapping[]>) => {
             state.mapping = action.payload
@@ -237,6 +247,7 @@ export const {
     setSolverInitialized,
     setHost,
     setProperty,
+    setEditorStore,
     setMapping,
     setTemplate,
     importTemplate,

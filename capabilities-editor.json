@@ -240,6 +240,14 @@
           "type": {
             "bool": true
           }
+        },
+        "applyDataUpdates": {
+          "displayName": "Update tables",
+          "description": "Update main and links tables when Power BI changes data of the visual.",
+          "displayNameKey": "Charticulator_applyDataUpdates",
+          "type": {
+            "bool": true
+          }
         }
       }
     },

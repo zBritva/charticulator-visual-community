@@ -97,6 +97,7 @@ export class Highlight {
 
 export class Editor {
     public hideLabel: boolean = false;
+    public applyDataUpdates: boolean = false;
 }
 
 export class View {

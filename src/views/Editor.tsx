@@ -37,7 +37,8 @@ import { AttributeMap } from "charticulator/src/core/specification";
 import { IVisualSettings } from "../settings";
 import { ChartTemplateBuilder } from "charticulator/src/app/template";
 import { CDNBackend } from "charticulator/src/app/backend/cdn";
-import { useAppSelector } from "../redux/hooks";
+import { useAppSelector, useAppDispatch } from "../redux/hooks";
+import { setEditorStore } from "../redux/slices/visualSlice";
 
 const script = require("raw-loader!charticulator/dist/scripts/worker.bundle.js");
 const containerScript = require("raw-loader!charticulator/dist/scripts/container.bundle.js");
@@ -117,6 +118,8 @@ export const Editor: React.FC<EditorProps> = ({
     const nestedChartStack = React.useRef<NestedChartStack>(null);
     const exportAllowed = useAppSelector((store) => store.visual.exportAllowed);
 
+    const dispatch = useAppDispatch();
+
     const [nestedEditorId, setNestedEditorId] = React.useState<string>(null);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -177,6 +180,7 @@ export const Editor: React.FC<EditorProps> = ({
 
             if (appStore) {
                 setAppStore(appStore);
+                dispatch(setEditorStore(appStore));
                 appStore.setLocaleFileFormat({
                     currency: localization.currency,
                     delimiter: localization.decimalDelimiter,
