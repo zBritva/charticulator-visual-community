@@ -54,6 +54,17 @@ export class VisualSettings extends DataViewObjectsParser implements IVisualSett
     public editor: Editor = new Editor();
     public view: View = new View();
 
+    public static Equal(_this, other: VisualSettings) {
+        return _this.chart.Equal(other.chart) &&
+            _this.localization.Equal(other.localization) &&
+            _this.defaults.Equal(other.defaults) &&
+            _this.panels.Equal(other.panels) &&
+            _this.colors.Equal(other.colors) &&
+            _this.highlight.Equal(other.highlight) &&
+            _this.editor.Equal(other.editor) &&
+            _this.view.Equal(other.view);
+    }
+
     constructor() {
         super();
     }
@@ -63,6 +74,10 @@ export class VisualSettings extends DataViewObjectsParser implements IVisualSett
 export class ChartSettings {
     public template: string = JSON.stringify(defaultTemplate);
     public columnMappings: string = "[]";
+
+    public static Equal(_this, other: ChartSettings) {
+        return _this.columnMappings == other.columnMappings && _this.template == other.template
+    }
 }
 
 export class Localization {
@@ -71,6 +86,14 @@ export class Localization {
     public currency: string = "$";
     public utcTimeZone: boolean = true;
     public billionsFormat: string = "giga";
+
+    public static Equal(_this, other: Localization) {
+        return _this.decimalDelimiter == other.decimalDelimiter &&
+            _this.thousandsDelimiter == other.thousandsDelimiter &&
+            _this.currency == other.currency &&
+            _this.utcTimeZone == other.utcTimeZone &&
+            _this.billionsFormat == other.billionsFormat
+    }
 }
 
 export class Defaults {
@@ -80,26 +103,55 @@ export class Defaults {
     public bottom: number = 20;
     public width: number = 600;
     public height: number = 400;
+
+    public static Equal(_this, other: Defaults) {
+        return _this.height == other.height &&
+            _this.width == other.width &&
+            _this.bottom == other.bottom &&
+            _this.top == other.top &&
+            _this.right == other.right &&
+            _this.left == other.left
+    }
 }
 
 export class Panels {
     public defaultPanelsPosition: string = "right";
     public defaultDatasetPanelPosition: string = "right";
+
+    public static Equal(_this, other: Panels) {
+        return _this.defaultPanelsPosition == other.defaultPanelsPosition && _this.defaultDatasetPanelPosition == other.defaultDatasetPanelPosition
+    }
 }
 
 export class Colors {
     public updateColors: boolean = true;
+
+    public static Equal(_this, other: Colors) {
+        return _this.updateColors == other.updateColors
+    }
 }
 
 export class Highlight {
     public addHighlightColumns: boolean = false;
+
+    public static Equal(_this, other: Highlight) {
+        return _this.addHighlightColumns == other.addHighlightColumns
+    }
 }
 
 export class Editor {
     public hideLabel: boolean = false;
     public applyDataUpdates: boolean = false;
+
+    public static Equal(_this, other: Editor) {
+        return _this.applyDataUpdates == other.applyDataUpdates && _this.hideLabel == other.hideLabel
+    }
 }
 
 export class View {
     public hideDefaultTemplateMessage: boolean = false;
+
+    public static Equal(_this: View, other: View) {
+        return _this.hideDefaultTemplateMessage == other.hideDefaultTemplateMessage
+    }
 }

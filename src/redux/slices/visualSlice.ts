@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { IVisualSettings, VisualSettings, defaultTemplate } from '../../settings'
+import { Editor, IVisualSettings, View, VisualSettings, defaultTemplate, Colors, ChartSettings, Defaults, Highlight, Localization, Panels } from '../../settings'
 
 import powerbi from "powerbi-visuals-api"
 import IViewport = powerbi.IViewport
@@ -116,6 +116,15 @@ function loadTemplateToState(templateString: string, state) {
     state.chart = chart
 }
 
+function writeObject(host: IVisualHost, name: string, object: any)
+{
+    const properties = Object.keys(object);
+
+    properties.forEach(property => {
+        persistProperty(host, name, property, object[property]);
+    })
+}
+
 export const visualSlice = createSlice({
     name: 'visual',
     initialState,
@@ -124,8 +133,32 @@ export const visualSlice = createSlice({
             state.host = action.payload
         },
         setSettings: (state, action: PayloadAction<IVisualSettings>) => {
-            state.settings = action.payload
+            const settings: IVisualSettings = action.payload;
 
+            debugger;
+            if (!Editor.Equal(settings.editor, state.settings.editor)) {
+                writeObject(state.host, "editor", settings.editor);
+            }
+            if (!View.Equal(settings.view, state.settings.view)) {
+                writeObject(state.host, "view", settings.view);
+            }
+            if (!Colors.Equal(settings.colors, state.settings.colors)) {
+                writeObject(state.host, "colors", settings.colors);
+            }
+            if (!Defaults.Equal(settings.defaults, state.settings.defaults)) {
+                writeObject(state.host, "defaults", settings.defaults);
+            }
+            if (!Highlight.Equal(settings.highlight, state.settings.highlight)) {
+                writeObject(state.host, "highlight", settings.highlight);
+            }
+            if (!Localization.Equal(settings.localization, state.settings.localization)) {
+                writeObject(state.host, "localization", settings.localization);
+            }
+            if (!Panels.Equal(settings.panels, state.settings.panels)) {
+                writeObject(state.host, "panels", settings.panels);
+            }
+
+            state.settings = settings
             if (state.settings.chart.columnMappings == '{}') {
                 state.mapping = []
             } else {
