@@ -135,7 +135,6 @@ export const visualSlice = createSlice({
         setSettings: (state, action: PayloadAction<IVisualSettings>) => {
             const settings: IVisualSettings = action.payload;
 
-            debugger;
             if (!Editor.Equal(settings.editor, state.settings.editor)) {
                 writeObject(state.host, "editor", settings.editor);
             }

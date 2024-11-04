@@ -109,6 +109,27 @@
             "jitter": {
               "vertical": true,
               "horizontal": true
+            },
+            "treemap": {
+              "paddingInner": 0,
+              "paddingOuter": 0,
+              "dataExpressions": [],
+              "measureExpression": null
+            },
+            "geo": {
+              "projection": "Equirectangular",
+              "latExpressions": null,
+              "lonExpressions": null,
+              "GeoJSON": null,
+              "scale": 100,
+              "rotateGamma": 0,
+              "rotateLambda": 0,
+              "rotatePhi": 0,
+              "translateX": 100,
+              "translateY": 100,
+              "centerLat": 0,
+              "centerLon": 0,
+              "fit": true
             }
           }
         }
