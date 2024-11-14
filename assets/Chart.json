@@ -108,7 +108,8 @@
             },
             "jitter": {
               "vertical": true,
-              "horizontal": true
+              "horizontal": true,
+              "prngSeed": ""
             },
             "treemap": {
               "paddingInner": 0,
