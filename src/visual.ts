@@ -41,10 +41,11 @@ import EnumerateVisualObjectInstancesOptions = powerbi.EnumerateVisualObjectInst
 import VisualObjectInstance = powerbi.VisualObjectInstance;
 import DataView = powerbi.DataView;
 import VisualObjectInstanceEnumerationObject = powerbi.VisualObjectInstanceEnumerationObject;
+import VisualUpdateType = powerbi.VisualUpdateType;
 
 import { VisualSettings } from "./settings";
 import { deepClone } from "./utils/main";
-import { checkSupportsHighlight, setDataView, setHost, setMode, setSettings, setViewMode, setViewport } from './redux/slices/visualSlice';
+import { checkSupportsHighlight, setDataView, setHost, setMode, setSettings, setViewMode, setViewport, updateScales } from './redux/slices/visualSlice';
 
 export class Visual implements IVisual {
     private target: HTMLElement;
@@ -83,6 +84,9 @@ export class Visual implements IVisual {
         dispatch(setMode(options.editMode));
         dispatch(setViewMode(options.viewMode));
         dispatch(setSettings(deepClone(this.settings)));
+        if (options.type & VisualUpdateType.Data) {
+            dispatch(updateScales());
+        }
     }
 
     private static parseSettings(dataView: DataView): VisualSettings {

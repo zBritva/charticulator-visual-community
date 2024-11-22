@@ -101,6 +101,9 @@ export const Application: React.FC = () => {
             }
             dispatch(setSolverInitialized());
         })();
+        return () => {
+            host.colorPalette.reset();
+        }
     }, [setSolverInitialized, setFormatOptions, initialize, host]);
 
     React.useEffect(() => {
@@ -219,6 +222,12 @@ export const Application: React.FC = () => {
         });
     }, [dataset]);
 
+    const onRender = React.useCallback(() => {
+        setTimeout(() => {
+            host.colorPalette.reset();
+        }, 1000)
+    }, [host]);
+
     const onBackgroundContextMenu = React.useCallback((e: React.MouseEvent) => {
         onContextMenu(null, [], {
             ctrlKey: e.ctrlKey,
@@ -326,7 +335,7 @@ export const Application: React.FC = () => {
         );
     }
 
-    if (template.default && mode === powerbi.EditMode.Default && !(settings.view.hideDefaultTemplateMessage || !isEditor())) {
+    if (template.default && mode === powerbi.EditMode.Default && !(settings.view.hideDefaultTemplateMessage)) {
         return (<>
             <div className='warning-container'>
                 <div className='view-warning'>
@@ -375,6 +384,7 @@ export const Application: React.FC = () => {
                         onContextMenu={onContextMenu}
                         onMouseEnter={onMouseEnter}
                         onMouseLeave={onMouseLeave}
+                        onRender={onRender}
                         localization={localizaiton}
                         utcTimeZone={settings.localization.utcTimeZone}
                     />

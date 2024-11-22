@@ -23,6 +23,7 @@ export interface ViewerProps {
     onContextMenu?: (table: string, rowIndices: number[], modifiers?: IModifiers) => void;
     onMouseEnter?: (table: string, rowIndices: number[], modifiers?: IModifiers) => void;
     onMouseLeave?: (table: string, rowIndices: number[], modifiers?: IModifiers) => void;
+    onRender?: () => void;
 }
 
 export const ChartViewer: React.FC<ViewerProps> = ({
@@ -36,7 +37,8 @@ export const ChartViewer: React.FC<ViewerProps> = ({
     onSelect,
     onContextMenu,
     onMouseEnter,
-    onMouseLeave
+    onMouseLeave,
+    onRender
 }) => {
     // console.log('ChartViewer');
 
@@ -47,8 +49,12 @@ export const ChartViewer: React.FC<ViewerProps> = ({
     }, [chart, defaultAttributes, dataset, width, height]);
 
     React.useEffect(() => {
-        container.resize(width, height);    
+        container.resize(width, height);
     }, [container, width, height]);
+
+    React.useEffect(() => {
+        onRender();
+    }, [onRender]);
 
     container.addSelectionListener((table, rowIndexes) => {
         onSelect(table, rowIndexes).then(result => {

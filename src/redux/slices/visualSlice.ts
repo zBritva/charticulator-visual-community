@@ -10,7 +10,7 @@ import ViewMode = powerbi.ViewMode
 import IVisualHost = powerbi.extensibility.visual.IVisualHost
 import PrivilegeStatus = powerbi.PrivilegeStatus;
 
-import { Dataset, Prototypes, Specification } from './../../../charticulator/src/core';
+import { ColorUtils, Dataset, Prototypes, Specification } from './../../../charticulator/src/core';
 
 import { persistProperty } from './persistProperty'
 import { createChartFromTemplate } from '../../utils/template'
@@ -169,10 +169,16 @@ export const visualSlice = createSlice({
                 }
             }
             loadTemplateToState(action.payload.chart.template, state)
+            if (settings.colors.updateColors) {
+                applyColors(state);
+            }
             const templateJSON: Specification.Template.ChartTemplate = JSON.parse(action.payload.chart.template);
             if (templateJSON.default) {
                 state.template.default = true;
             }
+        },
+        updateScales: (state) => {
+            applyColors(state)
         },
         setTemplate: (state, action: PayloadAction<string>) => {
             loadTemplateToState(action.payload, state)
@@ -209,6 +215,9 @@ export const visualSlice = createSlice({
             if (state.appStore && state.settings.editor.applyDataUpdates) {
                 state.appStore.dispatcher.dispatch(new Actions.ImportChartAndDataset(state.appStore.chartManager.chart ,state.dataset, {}))
                 state.appStore.dispatcher.dispatch(new Actions.UpdatePlotSegments())
+                state.appStore.updatePlotSegments();
+                // state.appStore.updateNestedCharts();
+                // state.appStore.updateScales();
             }
 
             const { chart, unmappedColumns } = createChartFromTemplate(state.settings.chart.template, dataset, mapping)
@@ -273,6 +282,7 @@ export const visualSlice = createSlice({
 // Action creators are generated for each case reducer function
 export const {
     setSettings,
+    updateScales,
     setViewport,
     setDataView,
     setMode,
@@ -289,4 +299,23 @@ export const {
 } = visualSlice.actions
 
 export default visualSlice.reducer
+
+function applyColors(state) {
+    state.host.colorPalette.reset()
+    const updateColors = (scale) => {
+        if (scale.classID === "scale.categorical<string,color>") {
+            if (scale.properties.mapping) {
+                for (const key of Object.keys(scale.properties.mapping)) {
+                    const color = state.host.colorPalette.getColor(key).value
+                    scale.properties.mapping[key] = ColorUtils.colorFromHTMLColor(color)
+                }
+            }
+        }
+
+        return scale
+    }
+
+    state.chart.scales.forEach(updateColors)
+    state.template.specification.scales.forEach(updateColors)
+}
 
