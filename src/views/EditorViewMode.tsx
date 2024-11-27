@@ -38,6 +38,8 @@ export const Editor: React.FC<EditorProps> = ({ onImport, onExport, settings }) 
 
     const host = useAppSelector((store) => store.visual.host);
     const exportAllowed = useAppSelector((store) => store.visual.exportAllowed);
+    const importError = useAppSelector((store) => store.visual.importResult);
+
 
     const onUrl = React.useCallback((url: string) => {
         return () => host.launchUrl(url);
@@ -62,6 +64,11 @@ export const Editor: React.FC<EditorProps> = ({ onImport, onExport, settings }) 
                         >
                             Import template
                         </Button>
+                        {
+                            importError ? 
+                            <pre>{importError}</pre>:
+                            null
+                        }
                     </div>
                     <div className="download">
                         {!exportAllowed ? (

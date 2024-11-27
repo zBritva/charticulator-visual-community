@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { Editor, IVisualSettings, View, VisualSettings, defaultTemplate, Colors, ChartSettings, Defaults, Highlight, Localization, Panels } from '../../settings'
+import { Editor, IVisualSettings, View, VisualSettings, defaultTemplate, Colors, Defaults, Highlight, Localization, Panels } from '../../settings'
 
 import powerbi from "powerbi-visuals-api"
 import IViewport = powerbi.IViewport
@@ -13,6 +13,7 @@ import PrivilegeStatus = powerbi.PrivilegeStatus;
 import { ColorUtils, Dataset, Prototypes, Specification } from './../../../charticulator/src/core';
 
 import { persistProperty } from './persistProperty'
+import { validateTemplate } from './validateTemplate'
 import { createChartFromTemplate } from '../../utils/template'
 import { convertData, highlightsColumnSuffix } from '../../utils/dataParser'
 import { deepClone } from '../../utils/main'
@@ -47,6 +48,7 @@ export interface VisualState {
     unmappedColumns: IColumnsMapping[]
     mapping: IColumnsMapping[]
     appStore: AppStore
+    importResult: string
 }
 
 export interface Property {
@@ -77,7 +79,8 @@ const initialState: VisualState = {
     view: ViewMode.View,
     appStore: null,
     mapping: [],
-    exportAllowed: false
+    exportAllowed: false,
+    importResult: ""
 }
 
 function rebuildTemplate(templateString: string, dataset: Dataset.Dataset, mapping: IColumnsMapping[]) {
@@ -221,7 +224,6 @@ export const visualSlice = createSlice({
             }
 
             const { chart, unmappedColumns } = createChartFromTemplate(state.settings.chart.template, dataset, mapping)
-
             state.unmappedColumns = unmappedColumns;
 
             state.chart = chart
@@ -261,19 +263,35 @@ export const visualSlice = createSlice({
             persistProperty(state.host, 'chart', 'columnMappings', JSON.stringify(state.mapping))
         },
         importTemplate: (state, action: PayloadAction<string>) => {
-            const template = action.payload
-            const parsed = JSON.parse(template)
-            const { chart, unmappedColumns } = createChartFromTemplate(template, state.dataset, state.mapping)
-
-            persistProperty(state.host, 'chart', 'template', JSON.stringify(parsed))
-            if (chart && unmappedColumns.length === 0) {
-                state.chart = chart
-                state.template = parsed
-                state.unmappedColumns = unmappedColumns
-            } else {
-                state.unmappedColumns = unmappedColumns
-                state.template = parsed
-                state.chart = null
+            try {
+                let template = action.payload
+                const parsed = JSON.parse(template);
+                if (parsed.default) {
+                    parsed.default = false;
+                    template = JSON.stringify(template);
+                }
+                const { valid, error } = validateTemplate(parsed);
+                if (!valid) {
+                    state.importResult = error;
+                    return;
+                }
+                const { chart, unmappedColumns } = createChartFromTemplate(template, state.dataset, state.mapping)
+                persistProperty(state.host, 'chart', 'template', template)
+                if (chart && unmappedColumns.length === 0) {
+                    state.chart = chart
+                    state.template = parsed
+                    state.settings.chart.template = template
+                    state.unmappedColumns = []
+                } else {
+                    state.unmappedColumns = unmappedColumns
+                    state.template = parsed
+                    state.settings.chart.template = template
+                    state.chart = null
+                }
+                state.importResult = "Import is done";
+            } 
+            catch(ex) {
+                state.importResult = `Error on loading template: ${ex.message}`;
             }
         }
     },
