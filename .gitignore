@@ -3,6 +3,7 @@ node_modules/
 extensions/
 datasets/
 dist/
+docs/
 .sass-cache/
 cert.pem
 key.pem
