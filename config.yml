@@ -24,6 +24,9 @@
 # Configure sample datasets if any
 #------------------------------------------------
 
+ExternalDatasets:
+  resourcesDescriptionUrl: https://ilfat-galiev.im/data.json
+
 # SampleDatasets:
 #   - name: DatasetName
 #     description: Dataset description
@@ -61,6 +64,7 @@ CorsPolicy:
 Backend: "hybrid"
 CDNBackend:
   resourcesDescriptionUrl: https://ilfat-galiev.im/charts.json
+#  externalExport: /pbi-upload
 
 #------------------------------------------------
 # Configure panels layout
