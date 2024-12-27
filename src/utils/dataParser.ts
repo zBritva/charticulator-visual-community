@@ -68,6 +68,7 @@ export function convertData(
     if (!dataView || !dataView.categorical) {
         return [null, null];
     }
+
     // const dateParse = true ? utcParse(timeFormat) : timeParse(timeFormat);
     const dateParse = utcParse(timeFormat);
     
@@ -106,7 +107,12 @@ export function convertData(
         const allColumns: DataViewColumn[] = [...(categories ?? []), ...(values ?? [])];
         allColumns.forEach(category => {
             const source = category.source;
-            const displayName = source.displayName;
+            const fieldParams = source.sourceFieldParameters;
+            let displayName = source.displayName;
+
+            if (fieldParams && fieldParams.length == 1) {
+                displayName = fieldParams[0].displayName;
+            }
 
             if (source.roles['primarykey'] && !mainTable.columns.find(c => c.displayName === displayName)) {
                 mainTable.columns.push({
@@ -114,7 +120,8 @@ export function convertData(
                     name: displayName,
                     type: mapColumnType(source.type),
                     metadata: {
-                        kind: mapColumnKind(source.type)
+                        kind: mapColumnKind(source.type),
+                        derivedColumns: allColumns.filter(col => col.source.sourceFieldParameters?.find(s => fieldParams?.find(fp => s.displayName === fp.displayName))).map(dc => dc.source.displayName)
                     }
                 });
 
@@ -125,6 +132,7 @@ export function convertData(
                         type: mapColumnType(source.type),
                         metadata: {
                             kind: mapColumnKind(source.type),
+                            derivedColumns: allColumns.filter(col => col.source.sourceFieldParameters?.find(s => fieldParams?.find(fp => s.displayName === fp.displayName))).map(dc => dc.source.displayName)
                         }
                     });
                 }
@@ -137,6 +145,7 @@ export function convertData(
                     type: mapColumnType(source.type),
                     metadata: {
                         kind: mapColumnKind(source.type),
+                        derivedColumns: allColumns.filter(col => col.source.sourceFieldParameters?.find(s => fieldParams?.find(fp => s.displayName === fp.displayName))).map(dc => dc.source.displayName)
                     }
                 });
             }
@@ -148,18 +157,26 @@ export function convertData(
                     type: mapColumnType(source.type),
                     metadata: {
                         kind: mapColumnKind(source.type),
+                        derivedColumns: allColumns.filter(col => col.source.sourceFieldParameters?.find(s => fieldParams?.find(fp => s.displayName === fp.displayName))).map(dc => dc.source.displayName)
                     }
                 });
             }
         });
 
+        // TODO check
         linksTable.rows = allColumns[0].values.map<Dataset.Row>((_cat, index) => {
             const row: Dataset.Row = {
                 _id: `${index}`
             }
 
             linksTable.columns.forEach(column => {
-                const categoryColumn = allColumns.find(category => category.source.displayName === column.displayName);
+                const categoryColumn = allColumns.find(category => {
+                    let displayName = category.source.displayName;
+                    if (category.source.sourceFieldParameters && category.source.sourceFieldParameters.length == 1) {
+                        displayName = category.source.sourceFieldParameters[0].displayName;
+                    }
+                    return displayName === column.displayName;
+                });
 
                 row[column.displayName] = categoryColumn.values[index] as any; 
             })
@@ -173,7 +190,13 @@ export function convertData(
             }
 
             tooltipsTable.columns.forEach(column => {
-                const categoryColumn = allColumns.find(category => category.source.displayName === column.displayName);
+                const categoryColumn = allColumns.find(category => {
+                    let displayName = category.source.displayName;
+                    if (category.source.sourceFieldParameters && category.source.sourceFieldParameters.length == 1) {
+                        displayName = category.source.sourceFieldParameters[0].displayName;
+                    }
+                    return displayName === column.displayName;
+                });
 
                 row[column.displayName] = categoryColumn.values[index] as any; 
             })
@@ -201,30 +224,55 @@ export function convertData(
             let rowID = `u_`;
 
             mainTable.columns.forEach(column => {
-                const categoryColumn: DataViewColumn = allColumns.find(category => category.source.displayName === column.displayName);
-                // highlights columns already added
-                if (!categoryColumn) {
-                    return;
-                }
-                const values = categoryColumn.values
-                let highlights = null
-                
-                // disabled
-                if (categoryColumn satisfies powerbi.DataViewValueColumn) {
-                    const dataViewValueColumn: powerbi.DataViewValueColumn = categoryColumn
-                    if (dataViewValueColumn.highlights) {
-                        highlights = dataViewValueColumn.highlights
+                const categoryColumns: DataViewColumn[] = allColumns.filter(category => {
+                    if (column.metadata.derivedColumns) {
+                        return !!column.metadata.derivedColumns.find(c => c == category.source.displayName)
                     }
-                }
-                
-                if (supportsHighlight) {
-                    rowID = addColumnToRow(column.displayName, column, values, index, row, rowID)
-                    rowID = addColumnToRow(column.displayName + highlightsColumnSuffix, column, highlights ?? values, index, row, rowID)
-                } else {
-                    if (highlights) {
-                        rowID = addColumnToRow(column.displayName, column, highlights, index, row, rowID)
+                    return category.source.displayName === column.displayName;
+                });
+
+                for(const categoryColumn of categoryColumns)
+                {
+                    // highlights columns already added
+                    if (!categoryColumn) {
+                        return;
+                    }
+                    const values = categoryColumn.values
+                    let highlights = null
+                    
+                    // disabled
+                    if (categoryColumn satisfies powerbi.DataViewValueColumn) {
+                        const dataViewValueColumn: powerbi.DataViewValueColumn = categoryColumn
+                        if (dataViewValueColumn.highlights) {
+                            highlights = dataViewValueColumn.highlights
+                        }
+                    }
+                    
+                    if (supportsHighlight) {
+                        rowID = addColumnToRow(categoryColumn.source.displayName, column, values, index, row, rowID)
+                        rowID = addColumnToRow(categoryColumn.source.displayName + highlightsColumnSuffix, column, highlights ?? values, index, row, rowID)
+                        if (categoryColumn.source.sourceFieldParameters) {
+                            categoryColumn.source.sourceFieldParameters.forEach(fp => {
+                                rowID = addColumnToRow(fp.displayName, column, values, index, row, rowID)
+                                rowID = addColumnToRow(fp.displayName + highlightsColumnSuffix, column, highlights ?? values, index, row, rowID)
+                            })
+                        }
                     } else {
-                        rowID = addColumnToRow(column.displayName, column, values, index, row, rowID)
+                        if (highlights) {
+                            rowID = addColumnToRow(categoryColumn.source.displayName, column, highlights, index, row, rowID)
+                            if (categoryColumn.source.sourceFieldParameters) {
+                                categoryColumn.source.sourceFieldParameters.forEach(fp => {
+                                    rowID = addColumnToRow(fp.displayName, column, highlights, index, row, rowID)
+                                })
+                            }
+                        } else {
+                            rowID = addColumnToRow(categoryColumn.source.displayName, column, values, index, row, rowID)
+                            if (categoryColumn.source.sourceFieldParameters) {
+                                categoryColumn.source.sourceFieldParameters.forEach(fp => {
+                                    rowID = addColumnToRow(fp.displayName, column, values, index, row, rowID)
+                                })
+                            }
+                        }
                     }
                 }
             });
