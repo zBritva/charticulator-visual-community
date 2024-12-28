@@ -10,7 +10,7 @@ import ViewMode = powerbi.ViewMode
 import IVisualHost = powerbi.extensibility.visual.IVisualHost
 import PrivilegeStatus = powerbi.PrivilegeStatus;
 
-import { ColorUtils, Dataset, Prototypes, Specification } from './../../../charticulator/src/core';
+import { Color, ColorUtils, Dataset, hexToRgb, Prototypes, Specification } from './../../../charticulator/src/core';
 
 import { persistProperty } from './persistProperty'
 import { validateTemplate } from './validateTemplate'
@@ -22,6 +22,7 @@ import { defaultVersionOfTemplate } from './../../../charticulator/src/app/store
 import { TableType } from 'charticulator/src/core/dataset'
 import { AppStore } from 'charticulator/src/app/stores'
 import { Actions } from 'charticulator/src/app'
+import { WritableDraft } from 'immer/dist/types/types-external'
 
 export interface IColumnsMapping {
     table: string,
@@ -318,7 +319,7 @@ export const {
 
 export default visualSlice.reducer
 
-function applyColors(state) {
+function applyColors(state: WritableDraft<VisualState>) {
     state.host.colorPalette.reset()
     const updateColors = (scale) => {
         if (scale.classID === "scale.categorical<string,color>") {
@@ -335,5 +336,9 @@ function applyColors(state) {
 
     state.chart.scales.forEach(updateColors)
     state.template.specification.scales.forEach(updateColors)
+
+    if (state.chart.properties["backgroundColor"] == null) {
+        state.chart.properties["backgroundColor"] = hexToRgb(state.host.colorPalette.background.value);
+    }
 }
 
