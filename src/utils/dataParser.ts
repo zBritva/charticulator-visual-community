@@ -101,8 +101,6 @@ export function convertData(
         type: Dataset.TableType.Links
     }
 
-    // const hasHighlights = values && values.find(v => v.highlights) !== undefined
-    
     if (categories?.length || values?.length) {
         const allColumns: DataViewColumn[] = [...(categories ?? []), ...(values ?? [])];
         allColumns.forEach(category => {
@@ -225,7 +223,7 @@ export function convertData(
 
             mainTable.columns.forEach(column => {
                 const categoryColumns: DataViewColumn[] = allColumns.filter(category => {
-                    if (column.metadata.derivedColumns) {
+                    if (column.metadata.derivedColumns && column.metadata.derivedColumns.length) {
                         return !!column.metadata.derivedColumns.find(c => c == category.source.displayName)
                     }
                     return category.source.displayName === column.displayName;

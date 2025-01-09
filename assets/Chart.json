@@ -121,6 +121,15 @@
               "projection": "Equirectangular",
               "latExpressions": null,
               "lonExpressions": null,
+              "featureProperty": "name",
+              "dataExpression": "id",
+              "strokeWidth": 1,
+              "strokeOpacity": 1,
+              "strokeColor": {
+                "g": 0,
+                "r": 0,
+                "b": 0
+              },
               "GeoJSON": null,
               "scale": 100,
               "rotateGamma": 0,
