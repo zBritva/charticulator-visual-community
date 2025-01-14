@@ -4,7 +4,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Checkout repository
@@ -23,11 +23,8 @@ jobs:
         run: yarn install --ignore-engines
       
       - name: Copy config.yml
-        uses: canastro/copy-action@0.0.2
-        with:
-          source: config.yml
-          target: ./charticulator/config.yml
-
+        continue-on-error: true
+        run: mv .\config.yml .\charticulator\config.yml
       # - name: Build charticulator
       #   env:
       #     NODE_OPTIONS: "--max-old-space-size=8192"
