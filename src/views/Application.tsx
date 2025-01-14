@@ -93,8 +93,10 @@ export const Application: React.FC = () => {
             });
             setTimeZone(settings.localization.utcTimeZone);
 
-            ColorUtils.setDefaultColorPaletteGenerator(key => ColorUtils.colorFromHTMLColor(host.colorPalette.getColor(key).value));
-            ColorUtils.setDefaultColorGeneratorResetFunction(() => host.colorPalette.reset());
+            if (settings.colors.updateColors) {
+                ColorUtils.setDefaultColorPaletteGenerator(key => ColorUtils.colorFromHTMLColor(host.colorPalette.getColor(key).value));
+                ColorUtils.setDefaultColorGeneratorResetFunction(() => host.colorPalette.reset());
+            }
 
             if (dataView) {
                 host.eventService.renderingFinished({});

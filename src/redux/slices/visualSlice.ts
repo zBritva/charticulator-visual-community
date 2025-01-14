@@ -182,7 +182,9 @@ export const visualSlice = createSlice({
             }
         },
         updateScales: (state) => {
-            applyColors(state)
+            if (state.settings.colors.updateColors) {
+                applyColors(state)
+            }
         },
         setTemplate: (state, action: PayloadAction<string>) => {
             loadTemplateToState(action.payload, state)
