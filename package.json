@@ -24,7 +24,7 @@
     "start:editor": "webpack-dev-server --config editor-webpack.config",
     "build:view": "webpack --config view-webpack.config",
     "start:view": "webpack-dev-server --config view-webpack.config",
-    "package": "npm run build:charticulator & npm run build:editor & npm run build:view & build:dev",
+    "package": "npm run build:charticulator & build:dev & npm run build:editor & npm run build:view",
     "build:visuals": "npm run build:view & npm run build:editor",
     "eslint:visual": "npx eslint ./src --ext .js,.jsx,.ts,.tsx",
     "eslint:charticulator": "npm run --prefix charticulator eslint",
