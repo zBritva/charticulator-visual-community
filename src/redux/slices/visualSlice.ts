@@ -10,7 +10,7 @@ import ViewMode = powerbi.ViewMode
 import IVisualHost = powerbi.extensibility.visual.IVisualHost
 import PrivilegeStatus = powerbi.PrivilegeStatus;
 
-import { Color, ColorUtils, Dataset, hexToRgb, Prototypes, Specification } from './../../../charticulator/src/core';
+import { ColorUtils, Dataset, hexToRgb, Prototypes, Specification } from './../../../charticulator/src/core';
 
 import { persistProperty } from './persistProperty'
 import { validateTemplate } from './validateTemplate'
