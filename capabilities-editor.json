@@ -212,6 +212,14 @@
           "type": {
             "bool": true
           }
+        },
+        "applyPowerBITheme": {
+          "displayName": "Power BI theme",
+          "description": "Charticulator applies Power BI theme for editor UI, such as colors or high contrast colors",
+          "displayNameKey": "Charticulator_ColorSettings_UpdateColors",
+          "type": {
+            "bool": true
+          }
         }
       }
     },

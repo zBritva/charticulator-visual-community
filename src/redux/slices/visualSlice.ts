@@ -32,6 +32,8 @@ export interface IColumnsMapping {
     powerbiColumn: string
 }
 
+export type ThemeShade = "light" | "dark" | "contrastLight" | "contrastDark"
+
 export interface VisualState {
     settings: IVisualSettings
     template: Specification.Template.ChartTemplate
@@ -50,6 +52,7 @@ export interface VisualState {
     mapping: IColumnsMapping[]
     appStore: AppStore
     importResult: string
+    themeShade: ThemeShade
 }
 
 export interface Property {
@@ -81,7 +84,8 @@ const initialState: VisualState = {
     appStore: null,
     mapping: [],
     exportAllowed: false,
-    importResult: ""
+    importResult: "",
+    themeShade: "light"
 }
 
 function rebuildTemplate(templateString: string, dataset: Dataset.Dataset, mapping: IColumnsMapping[]) {
@@ -341,6 +345,23 @@ function applyColors(state: WritableDraft<VisualState>) {
 
     if (state.chart.properties["backgroundColor"] == null) {
         state.chart.properties["backgroundColor"] = hexToRgb(state.host.colorPalette.background.value);
+    }
+
+    const background = hexToRgb(state.host.colorPalette.background.value);
+    // const foreground = hexToRgb(state.host.colorPalette.foreground.value);
+
+    if (state.host.colorPalette.isHighContrast) {
+        if ((background.b + background.g + background.r) < (255 * 3) * .3) {
+            state.themeShade = "contrastDark"
+        } else {
+            state.themeShade = "contrastLight"
+        }
+    } else {
+        if ((background.b + background.g + background.r) < (255 * 3) * .3) {
+            state.themeShade = "dark"
+        } else {
+            state.themeShade = "light"
+        }
     }
 }
 
