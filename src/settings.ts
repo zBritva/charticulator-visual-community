@@ -125,9 +125,10 @@ export class Panels {
 
 export class Colors {
     public updateColors: boolean = true;
+    public applyPowerBITheme: boolean = false;
 
     public static Equal(_this, other: Colors) {
-        return _this.updateColors == other.updateColors
+        return _this.updateColors == other.updateColors && _this.applyPowerBITheme == other.applyPowerBITheme
     }
 }
 

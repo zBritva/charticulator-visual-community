@@ -17,7 +17,9 @@ import { useAppSelector, useAppDispatch } from '../redux/hooks'
 import { setSolverInitialized, setMapping, IColumnsMapping, importTemplate, setProperty, setTemplate, setExportStatus } from '../redux/slices/visualSlice';
 import { deepClone, isEditor } from '../utils/main';
 import { importTemplateFromFile } from '../utils/importTemplate';
-import { FluentProvider, Label, Tooltip, makeStyles, shorthands, teamsLightTheme } from "@fluentui/react-components";
+import { FluentProvider, Label, Tooltip, makeStyles, shorthands, teamsHighContrastTheme, webLightTheme, webDarkTheme } from "@fluentui/react-components";
+
+import { darkTheme, lightTheme } from "../theme";
 
 import switchVisual from "./../../assets/label_tip.png"
 import { tooltipsTablename } from '../utils/dataParser';
@@ -54,6 +56,26 @@ export const Application: React.FC = () => {
     const chart = useAppSelector((store) => store.visual.chart);
     const template = useAppSelector((store) => store.visual.template);
     const unmappedColumns = useAppSelector((state) => state.visual.unmappedColumns);
+
+    const themeShade = useAppSelector((state) => state.visual.themeShade);
+    const applyPowerBITheme = useAppSelector((state) => state.visual.settings.colors.applyPowerBITheme);
+    let theme = lightTheme;
+    if (applyPowerBITheme) {
+        switch(themeShade) {
+            case 'contrastDark':
+                theme = teamsHighContrastTheme;
+                break;
+            case 'contrastLight':
+                theme = teamsHighContrastTheme;
+                break;
+            case 'light':
+                theme = lightTheme;
+                break;
+            case 'dark':
+                theme = darkTheme;
+        }
+    }
+
     const dispatch = useAppDispatch();
 
     const editorInstanceID = React.useMemo(() => uuid(), []);
@@ -268,6 +290,7 @@ export const Application: React.FC = () => {
             return (
                 <>
                     <Editor
+                        theme={theme}
                         instanceID={editorInstanceID}
                         setTemplate={(template) => {
                             if (typeof template === 'string') {
@@ -328,7 +351,7 @@ export const Application: React.FC = () => {
     if (unmappedColumns.filter(c => c.powerbiColumn === UnmappedColumnName).length > 0) {
         return (
             <>
-                <FluentProvider theme={teamsLightTheme}>
+                <FluentProvider theme={theme}>
                     <Mapping
                         dataset={dataset}
                         unmappedColumns={deepClone(unmappedColumns)}
@@ -364,19 +387,21 @@ export const Application: React.FC = () => {
             <>
                 {isEditor() && !settings.editor.hideLabel ? (
                     <>
-                        <Tooltip
-                            content={{
-                                className: styles.tooltipWidthClass,
-                                children: (<>
-                                    <p className={styles.label}>Switch the visual to view version to hide this label</p>
-                                    <img className={styles.imageBorder} src={switchVisual}></img>
-                                    <p className={styles.label}>or disable the label in visual settings</p>
-                                </>),
-                            }}
-                            relationship="label"
-                        >
-                            <Label ref={previewLabel} className='preview-label'>Editor preview:</Label>
-                        </Tooltip>
+                        <FluentProvider theme={theme}>
+                                <Tooltip
+                                    content={{
+                                        className: styles.tooltipWidthClass,
+                                        children: (<>
+                                            <p className={styles.label}>Switch the visual to view version to hide this label</p>
+                                            <img className={styles.imageBorder} src={switchVisual}></img>
+                                            <p className={styles.label}>or disable the label in visual settings</p>
+                                        </>),
+                                    }}
+                                    relationship="label"
+                                >
+                                    <Label  ref={previewLabel} className='preview-label'>Editor preview:</Label>
+                                </Tooltip>
+                        </FluentProvider>
                     </>
                 ) : null}
                 <div onContextMenu={onBackgroundContextMenu} onClick={onBackgroundClick}>

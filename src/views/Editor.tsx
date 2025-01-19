@@ -14,6 +14,7 @@ import {
 import {
     deepClone,
     defaultDigitsGroup,
+    hexToRgb,
     Prototypes,
     Specification,
     uuid,
@@ -27,7 +28,7 @@ import { EditorType } from "charticulator/src/app/stores/app_store";
 import { PositionsLeftRight, PositionsLeftRightTop, UndoRedoLocation } from './../../charticulator/src/app/main_view';
 
 import { LocalizationConfig } from "charticulator/src/container/container";
-import { FluentProvider, Toaster, teamsLightTheme, useId, useToastController } from "@fluentui/react-components";
+import { FluentProvider, Toaster, useId, useToastController, Theme } from "@fluentui/react-components";
 
 import {
     ToastLayout
@@ -58,6 +59,8 @@ export interface EditorProps {
     //     template: Specification.Template.ChartTemplate
     // }) => void;
     localization?: LocalizationConfig,
+    backgroundColor?: string,
+    theme?: Partial<Theme>,
     utcTimeZone: boolean,
 
     settings?: IVisualSettings,
@@ -113,10 +116,18 @@ export const Editor: React.FC<EditorProps> = ({
     dataset,
     settings,
     template,
-    name
+    name,
+    theme
 }) => {
     const nestedChartStack = React.useRef<NestedChartStack>(null);
     const exportAllowed = useAppSelector((store) => store.visual.exportAllowed);
+    
+    const backgroundColor = useAppSelector((store) => {
+        if (store.visual.settings.colors.updateColors) {
+            store.visual.host.colorPalette.background.value
+        }
+        return null;
+    });
 
     const dispatch = useAppDispatch();
 
@@ -345,14 +356,17 @@ export const Editor: React.FC<EditorProps> = ({
                         appStore.emit(AppStore.EVENT_GRAPHICS);
                     }}
                     onWebAccessStatus={onWebAccessStatus}
+                    backgroundColor={backgroundColor}
                 />
             </>) :
             (<>
-                <FluentProvider theme={teamsLightTheme}>
+                <FluentProvider theme={theme}>
                     <Toaster toasterId={chartSavedToasterId} />
                     <MainView
                         key={"MainView " + (Math.random())}
+                        theme={theme}
                         store={appStore}
+                        backgroundColor={hexToRgb(backgroundColor)}
                         viewConfiguration={{
                             ColumnsPosition: settings.panels.defaultDatasetPanelPosition as PositionsLeftRight,
                             EditorPanelsPosition: settings.panels.defaultPanelsPosition as PositionsLeftRight,
