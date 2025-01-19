@@ -12,7 +12,7 @@ import { Dataset } from "charticulator/src/core";
 
 import { MainViewConfig } from "./IEditor"
 import { useAppSelector } from '../redux/hooks'
-import { Button, FluentProvider, teamsLightTheme } from "@fluentui/react-components";
+import { Button, FluentProvider, Theme } from "@fluentui/react-components";
 import { IVisualSettings } from "../settings";
 
 export interface EditorProps {
@@ -32,14 +32,14 @@ export interface EditorProps {
     onExport: (template: Specification.Template.ChartTemplate, clipboard: boolean) => void;
     onImport: () => Promise<Specification.Chart>;
     settings?: IVisualSettings;
+    theme?: Partial<Theme>;
 }
 
-export const Editor: React.FC<EditorProps> = ({ onImport, onExport, settings }) => {
+export const Editor: React.FC<EditorProps> = ({ onImport, onExport, settings, theme }) => {
 
     const host = useAppSelector((store) => store.visual.host);
     const exportAllowed = useAppSelector((store) => store.visual.exportAllowed);
     const importError = useAppSelector((store) => store.visual.importResult);
-
 
     const onUrl = React.useCallback((url: string) => {
         return () => host.launchUrl(url);
@@ -48,7 +48,7 @@ export const Editor: React.FC<EditorProps> = ({ onImport, onExport, settings }) 
     const template: Specification.Template.ChartTemplate = settings ? JSON.parse(settings.chart.template) : null;
 
     return (<>
-        <FluentProvider theme={teamsLightTheme} style={{height: '100%'}}>
+        <FluentProvider theme={theme} style={{height: '100%'}}>
             <div className='warning-container'>
                 <div className="editor-warning">
                     <h4>This version of the visual doesn't support editing chart.</h4>
