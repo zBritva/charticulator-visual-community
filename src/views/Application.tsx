@@ -97,6 +97,10 @@ export const Application: React.FC = () => {
                 ColorUtils.setDefaultColorPaletteGenerator(key => ColorUtils.colorFromHTMLColor(host.colorPalette.getColor(key).value));
                 ColorUtils.setDefaultColorGeneratorResetFunction(() => host.colorPalette.reset());
             }
+            else {
+                ColorUtils.setDefaultColorPaletteGenerator(null);
+                ColorUtils.setDefaultColorGeneratorResetFunction(null);
+            }
 
             if (dataView) {
                 host.eventService.renderingFinished({});
