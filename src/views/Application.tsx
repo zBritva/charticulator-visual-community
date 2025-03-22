@@ -312,7 +312,7 @@ export const Application: React.FC = () => {
                             return access == powerbi.PrivilegeStatus.Allowed;
                         }}
                         onImport={onImportTemplate}
-                        onSupportDev={onUrl('https://github.com/sponsors/zBritva')}
+                        onSupportDev={onUrl('https://github.com/sponsors/aveirun')}
                         onContactUsLink={onUrl('https://github.com/zBritva/charticulator-visual-community/discussions')}
                         onGalleryClick={onUrl('https://ilfat-galiev.im/docs/category/gallery')}
                         onGettingStartedClick={onUrl('https://ilfat-galiev.im/docs/category/charticulator')}

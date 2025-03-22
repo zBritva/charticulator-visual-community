@@ -325,7 +325,7 @@ function applyColors(state: WritableDraft<VisualState>) {
     state.host.colorPalette.reset()
     const updateColors = (scale) => {
         if (scale.classID === "scale.categorical<string,color>") {
-            if (scale.properties.mapping) {
+            if (scale.properties.mapping && scale.properties.autoDomainMin) {
                 for (const key of Object.keys(scale.properties.mapping)) {
                     const color = state.host.colorPalette.getColor(key).value
                     scale.properties.mapping[key] = ColorUtils.colorFromHTMLColor(color)
