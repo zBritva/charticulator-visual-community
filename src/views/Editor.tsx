@@ -43,7 +43,7 @@ import { setEditorStore } from "../redux/slices/visualSlice";
 const script = require("raw-loader!charticulator/dist/scripts/worker.bundle.js");
 const containerScript = require("raw-loader!charticulator/dist/scripts/container.bundle.js");
 
-const charticulatorConfig = require("json-loader!../../charticulator/dist/scripts/config.json");
+const charticulatorConfig: CharticulatorAppConfig = require("json-loader!../../charticulator/dist/scripts/config.json");
 
 export interface EditorProps {
     instanceID: string;
@@ -122,14 +122,7 @@ export const Editor: React.FC<EditorProps> = ({
 
     const [nestedEditorId, setNestedEditorId] = React.useState<string>(null);
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [_, forceUpdate] = useReducer((x) => x + 1, 0);
-
     const [appStore, setAppStore] = React.useState<AppStore | null>(null);
-    const config: CharticulatorAppConfig = React.useMemo(
-        () => charticulatorConfig,
-        []
-    );
     const workerScript = React.useMemo(() => {
         const blob = new Blob([script.default], { type: "application/javascript" });
 
@@ -149,6 +142,8 @@ export const Editor: React.FC<EditorProps> = ({
 
     React.useEffect(() => {
         let EVENT_NESTED_EDITOR_EDIT_SUBSCRIPTION = null;
+        let EVENT_OPEN_NESTED_EDITOR_SUBSCRIPTION = null;
+        let EVENT_NESTED_EDITOR_CLOSE_SUBSCRIPTION = null;
         let appStore: AppStore = null;
         (async () => {
             const worker: CharticulatorWorkerInterface = new CharticulatorWorker(
@@ -156,7 +151,7 @@ export const Editor: React.FC<EditorProps> = ({
             );
             // worker should be initialized before creating appstore
             await worker.initialize({
-                ...config,
+                ...charticulatorConfig,
                 localization: localization
             });
 
@@ -232,12 +227,11 @@ export const Editor: React.FC<EditorProps> = ({
                         }), { intent: "success", timeout: 3000, toastId: chartSavedToasterId })
                 });
 
-                appStore.addListener(AppStore.EVENT_OPEN_NESTED_EDITOR, (
+                EVENT_OPEN_NESTED_EDITOR_SUBSCRIPTION = appStore.addListener(AppStore.EVENT_OPEN_NESTED_EDITOR, (
                     options: NestedChartEditorOptions,
                     object: Specification.IObject<AttributeMap>,
                     property: Prototypes.Controls.Property
                 ) => {
-                    console.log('EVENT_OPEN_NESTED_EDITOR', instanceID, options, object, property);
                     const chartManager = new Prototypes.ChartStateManager(
                         options.specification,
                         options.dataset,
@@ -267,7 +261,7 @@ export const Editor: React.FC<EditorProps> = ({
                     setNestedEditorId(nestedEditorId);
                 });
 
-                appStore.addListener(AppStore.EVENT_NESTED_EDITOR_CLOSE, () => {
+                EVENT_NESTED_EDITOR_CLOSE_SUBSCRIPTION = appStore.addListener(AppStore.EVENT_NESTED_EDITOR_CLOSE, () => {
                     console.log('EVENT_NESTED_EDITOR_CLOSE', instanceID);
                     onClose();
                 });
@@ -286,8 +280,17 @@ export const Editor: React.FC<EditorProps> = ({
             if (appStore && EVENT_NESTED_EDITOR_EDIT_SUBSCRIPTION) {
                 appStore.removeSubscription(EVENT_NESTED_EDITOR_EDIT_SUBSCRIPTION);
             }
+            if (appStore && EVENT_OPEN_NESTED_EDITOR_SUBSCRIPTION) {
+                appStore.removeSubscription(EVENT_OPEN_NESTED_EDITOR_SUBSCRIPTION);
+            }
+            if (appStore && EVENT_NESTED_EDITOR_CLOSE_SUBSCRIPTION) {
+                appStore.removeSubscription(EVENT_NESTED_EDITOR_CLOSE_SUBSCRIPTION);
+            }
+            if (appStore) {
+                appStore.destroy();
+            }
         }
-    }, [config]);
+    }, [charticulatorConfig]);
 
     if (!appStore) {
         return null;
@@ -295,7 +298,7 @@ export const Editor: React.FC<EditorProps> = ({
 
     return (
         <React.Fragment>
-            {nestedEditorId && nestedChartStack.current.options != null ?
+            {nestedEditorId && nestedChartStack.current && nestedChartStack.current.options != null ?
             (<>
                 <Editor
                     instanceID={nestedEditorId}
@@ -376,20 +379,22 @@ export const Editor: React.FC<EditorProps> = ({
                             onIssuesClick: onIssuesClick,
                             onGettingStartedClick: onGettingStartedClick,
                             onImportTemplateClick: async () => {
-                                // TODO refactor
-                                const specification = await onImport();
-                                const parsed = JSON.parse(specification);
-                                // console.log(specification);
-                                appStore.dispatcher.dispatch(
-                                    new Actions.ImportChartAndDataset(
-                                        parsed.specification,
-                                        dataset,
-                                        {
-                                            filterCondition: null,
-                                        },
-                                        parsed.specification
-                                    )
-                                );
+                                try {
+                                    const specification = await onImport();
+                                    const parsed = JSON.parse(specification);
+                                    appStore.dispatcher.dispatch(
+                                        new Actions.ImportChartAndDataset(
+                                            parsed.specification,
+                                            dataset,
+                                            {
+                                                filterCondition: null,
+                                            },
+                                            parsed.specification
+                                        )
+                                    );
+                                } catch (e) {
+                                    console.error(e);
+                                }
                             }
                         }}
                     />
