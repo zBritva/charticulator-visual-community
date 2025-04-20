@@ -122,6 +122,8 @@ function loadTemplateToState(templateString: string, state) {
     state.template = template
     state.unmappedColumns = unmappedColumns
     state.chart = chart
+
+    return template != null;
 }
 
 function writeObject(host: IVisualHost, name: string, object: any)
@@ -176,13 +178,13 @@ export const visualSlice = createSlice({
                     //convert old Charticulator mapping to new
                 }
             }
-            loadTemplateToState(action.payload.chart.template, state)
-            if (settings.colors.updateColors) {
+            const loaded = loadTemplateToState(action.payload.chart.template, state)
+            if (loaded && settings.colors.updateColors) {
                 applyColors(state);
-            }
-            const templateJSON: Specification.Template.ChartTemplate = JSON.parse(action.payload.chart.template);
-            if (templateJSON.default) {
-                state.template.default = true;
+                const templateJSON: Specification.Template.ChartTemplate = JSON.parse(action.payload.chart.template);
+                if (templateJSON.default) {
+                    state.template.default = true;
+                }
             }
         },
         updateScales: (state) => {
