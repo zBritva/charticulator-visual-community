@@ -1,6 +1,6 @@
 /* eslint-disable powerbi-visuals/insecure-random */
 /* eslint-disable max-lines-per-function */
-import React, { useReducer } from "react";
+import React from "react";
 
 import "./../../style/editor.less";
 
@@ -312,6 +312,7 @@ export const Editor: React.FC<EditorProps> = ({
             {nestedEditorId && nestedChartStack.current && nestedChartStack.current.options != null ?
             (<>
                 <Editor
+                    theme={theme}
                     instanceID={nestedEditorId}
                     // eslint-disable-next-line powerbi-visuals/insecure-random
                     key={"nestedEditor " + (nestedEditorId)}
