@@ -36,6 +36,18 @@ module.exports = merge(base, {
     resolve: {
         alias: {
             './Editor': './EditorViewMode',
+            [path.resolve(__dirname, './charticulator/src/core/common/fetch')]: false,
+            [path.resolve(__dirname, './charticulator/src/core/dataset/loader')]: false,
+            [path.resolve(__dirname, './charticulator/src/app/components')]: false,
+            [path.resolve(__dirname, './charticulator/src/app/views')]: false,
+            [path.resolve(__dirname, './charticulator/src/app/globals')]: false,
+            [path.resolve(__dirname, './charticulator/src/app/application')]: false,
+            [path.resolve(__dirname, './charticulator/src/about')]: false,
+            [path.resolve(__dirname, './charticulator/src/app/main_view')]: false,
+            [path.resolve(__dirname, './charticulator/src/app/controllers')]: false,
+            [path.resolve(__dirname, './charticulator/src/app/backend')]: false,
+            [path.resolve(__dirname, './charticulator/src/app/stores/action_handlers/document')]: false,
+            'lscg-solver': path.resolve(__dirname, './assets/lscg-solver-umd.js'),
         }
     },
     mode: 'development',
@@ -109,7 +121,8 @@ module.exports = merge(base, {
             visualSourceLocation: "../src/visual",
             pluginLocation: pluginLocation,
             packageOutPath: path.join(__dirname, "dist"),
-            dropPath: path.join(__dirname, "/.tmp", "drop")
+            dropPath: path.join(__dirname, "/.tmp", "drop"),
+            certificationFix: false
         })
     ]
 });

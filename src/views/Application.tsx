@@ -17,7 +17,7 @@ import { useAppSelector, useAppDispatch } from '../redux/hooks'
 import { setSolverInitialized, setMapping, IColumnsMapping, importTemplate, setProperty, setTemplate, setExportStatus } from '../redux/slices/visualSlice';
 import { deepClone, isEditor } from '../utils/main';
 import { importTemplateFromFile } from '../utils/importTemplate';
-import { FluentProvider, Label, Tooltip, makeStyles, shorthands, teamsHighContrastTheme, webLightTheme, webDarkTheme } from "@fluentui/react-components";
+import { FluentProvider, Label, Tooltip, makeStyles, shorthands, teamsHighContrastTheme } from "@fluentui/react-components";
 
 import { darkTheme, lightTheme } from "../theme";
 

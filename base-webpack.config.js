@@ -181,8 +181,9 @@ const devServer = {
 };
 
 const optimization = {
+    usedExports: true,
     concatenateModules: true,
-    minimize: true // enable minimization for create *.pbiviz file less than 2 Mb, can be disabled for dev mode
+    minimize: false // enable minimization for create *.pbiviz file less than 2 Mb, can be disabled for dev mode
 };
 
 module.exports = {

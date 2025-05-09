@@ -54,7 +54,7 @@
     "pegjs-loader": "0.5.8",
     "powerbi-visuals-api": "5.11.0",
     "powerbi-visuals-utils-dataviewutils": "6.1.0",
-    "powerbi-visuals-webpack-plugin": "4.0.1",
+    "powerbi-visuals-webpack-plugin": "4.3.0",
     "raw-loader": "4.0.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",

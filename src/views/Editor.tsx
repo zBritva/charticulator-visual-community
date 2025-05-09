@@ -21,22 +21,18 @@ import {
 } from "charticulator/src/core/index";
 import { CharticulatorAppConfig, MainViewConfig } from "charticulator/src/app/config";
 import { Actions } from "charticulator/src/app";
-import { Dataset } from "charticulator/src/core";
-// import { defaultVersionOfTemplate } from "charticulator/src/app/stores/defaults";
 import { EditorType } from "charticulator/src/app/stores/app_store";
 
 import { PositionsLeftRight, PositionsLeftRightTop, UndoRedoLocation } from './../../charticulator/src/app/main_view';
 
-import { LocalizationConfig } from "charticulator/src/container/container";
-import { FluentProvider, Toaster, useId, useToastController, Theme } from "@fluentui/react-components";
+import { FluentProvider, Toaster, useId, useToastController } from "@fluentui/react-components";
 
 import {
     ToastLayout
 } from "./ToastLayout";
 import { NestedChartEditorOptions } from "charticulator/src/core/prototypes/controls";
 import { AttributeMap } from "charticulator/src/core/specification";
-import { IVisualSettings } from "../settings";
-import { ChartTemplateBuilder } from "charticulator/src/app/template";
+import { ChartTemplateBuilder } from "charticulator/src/template";
 import { CDNBackend } from "charticulator/src/app/backend/cdn";
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
 import { setEditorStore } from "../redux/slices/visualSlice";
@@ -46,46 +42,7 @@ const containerScript = require("raw-loader!charticulator/dist/scripts/container
 
 const charticulatorConfig: CharticulatorAppConfig = require("json-loader!../../charticulator/dist/scripts/config.json");
 
-export interface EditorProps {
-    instanceID: string;
-    // width?: number;
-    // height?: number;
-    // chart?: any;
-    dataset: Dataset.Dataset;
-    columnMappings: { [key: string]: string };
-    mainView?: MainViewConfig,
-    // onSave: (chart: {
-    //     chart: Specification.Chart,
-    //     template: Specification.Template.ChartTemplate
-    // }) => void;
-    localization?: LocalizationConfig,
-    backgroundColor?: string,
-    theme?: Partial<Theme>,
-    utcTimeZone: boolean,
-
-    settings?: IVisualSettings,
-    template?: Specification.Template.ChartTemplate;
-
-    isNestedEditor?: boolean;
-    nestedEditorOptions?: NestedChartEditorOptions;
-    name?: string;
-
-    onClose?: () => void;
-    onExport?: (name: string, template: string, clipboard: boolean, filetype: string) => void;
-    onSupportDev?: () => void;
-    onImport?: () => Promise<string>;
-    onContactUsLink?: () => void;
-    onGettingStartedClick?: () => void;
-    onGalleryClick?: () => void;
-    onIssuesClick?: () => void;
-    onHomeClick?: () => void;
-    onAboutClick?: () => void;
-
-
-    setTemplate?: (template: string | Specification.Template.ChartTemplate, specification: Specification.Chart) => void;
-    setProperty?: (property: { objectName: string, objectProperty: string, value: any }) => void;
-    onWebAccessStatus?: () => Promise<boolean>;
-}
+import { EditorProps } from "./IEditorProps";
 
 interface NestedChartStack {
     options: NestedChartEditorOptions,

@@ -1,39 +1,15 @@
 import React from "react";
 
-import { LocalizationConfig } from "charticulator/src/container/container";
-
 import "./../../style/container.less";
 
 import {
     Specification,
 } from "charticulator/src/core/index";
 
-import { Dataset } from "charticulator/src/core";
-
-import { MainViewConfig } from "./IEditor"
 import { useAppSelector } from '../redux/hooks'
-import { Button, FluentProvider, Theme } from "@fluentui/react-components";
-import { IVisualSettings } from "../settings";
+import { Button, FluentProvider } from "@fluentui/react-components";
 
-export interface EditorProps {
-    width: number;
-    height: number;
-    chart: any;
-    dataset: Dataset.Dataset;
-    columnMappings: { [key: string]: string };
-    mainView?: MainViewConfig,
-    onSave: (chart: {
-        chart: Specification.Chart,
-        template: Specification.Template.ChartTemplate
-    }) => void;
-    localization?: LocalizationConfig,
-    utcTimeZone: boolean,
-    onClose: () => void;
-    onExport: (template: Specification.Template.ChartTemplate, clipboard: boolean) => void;
-    onImport: () => Promise<Specification.Chart>;
-    settings?: IVisualSettings;
-    theme?: Partial<Theme>;
-}
+import { EditorProps } from "./IEditorProps";
 
 export const Editor: React.FC<EditorProps> = ({ onImport, onExport, settings, theme }) => {
 
@@ -82,7 +58,7 @@ export const Editor: React.FC<EditorProps> = ({ onImport, onExport, settings, th
                                     return;
                                 }
                                 
-                                onExport(template, !exportAllowed);
+                                onExport("chart", settings.chart.template, !exportAllowed, ".json");
                             }}
                         >
                             Download current template
