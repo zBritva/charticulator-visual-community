@@ -122,7 +122,7 @@ module.exports = merge(base, {
             pluginLocation: pluginLocation,
             packageOutPath: path.join(__dirname, "dist"),
             dropPath: path.join(__dirname, "/.tmp", "drop"),
-            certificationFix: false
+            certificationFix: true
         })
     ]
 });
