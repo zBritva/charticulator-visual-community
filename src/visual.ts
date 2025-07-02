@@ -45,7 +45,7 @@ import VisualUpdateType = powerbi.VisualUpdateType;
 
 import { VisualSettings } from "./settings";
 import { deepClone } from "./utils/main";
-import { checkSupportsHighlight, setDataView, setHost, setMode, setSettings, setViewMode, setViewport, updateScales } from './redux/slices/visualSlice';
+import { checkSupportsHighlight, computeTheme, setDataView, setHost, setMode, setSettings, setViewMode, setViewport, updateScales } from './redux/slices/visualSlice';
 
 export class Visual implements IVisual {
     private target: HTMLElement;
@@ -84,6 +84,7 @@ export class Visual implements IVisual {
         dispatch(setMode(options.editMode));
         dispatch(setViewMode(options.viewMode));
         dispatch(setSettings(deepClone(this.settings)));
+        dispatch(computeTheme());
         if (options.type & VisualUpdateType.Data) {
             dispatch(updateScales());
         }

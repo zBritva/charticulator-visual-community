@@ -126,9 +126,10 @@ export class Panels {
 export class Colors {
     public updateColors: boolean = true;
     public applyPowerBITheme: boolean = false;
+    public invertTextColors: boolean = false;
 
     public static Equal(_this, other: Colors) {
-        return _this.updateColors == other.updateColors && _this.applyPowerBITheme == other.applyPowerBITheme
+        return _this.updateColors == other.updateColors && _this.applyPowerBITheme == other.applyPowerBITheme && _this.invertTextColors && other.invertTextColors;
     }
 }
 

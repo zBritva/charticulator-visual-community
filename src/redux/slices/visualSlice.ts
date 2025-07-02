@@ -10,7 +10,7 @@ import ViewMode = powerbi.ViewMode
 import IVisualHost = powerbi.extensibility.visual.IVisualHost
 import PrivilegeStatus = powerbi.PrivilegeStatus;
 
-import { ColorUtils, Dataset, hexToRgb, Prototypes, Specification } from './../../../charticulator/src/core';
+import { Color, ColorUtils, Dataset, hexToRgb, Prototypes, Specification } from './../../../charticulator/src/core';
 
 import { persistProperty } from './persistProperty'
 import { validateTemplate } from './validateTemplate'
@@ -23,6 +23,9 @@ import { TableType } from 'charticulator/src/core/dataset'
 import { AppStore } from 'charticulator/src/app/stores'
 import { Actions } from 'charticulator/src/app'
 import { WritableDraft } from 'immer/dist/types/types-external'
+import { ValueMapping } from 'charticulator/src/core/specification'
+import { CartesianProperties } from 'charticulator/src/core/prototypes/plot_segments/region_2d/cartesian'
+import { LineGuideProperties } from 'charticulator/src/core/prototypes/plot_segments/line'
 
 export interface IColumnsMapping {
     table: string,
@@ -186,11 +189,18 @@ export const visualSlice = createSlice({
                     state.template.default = true;
                 }
             }
+            if (loaded && settings.colors.invertTextColors && (state.themeShade == "dark" || state.themeShade == "contrastDark"))
+            {
+                invertTextColors(state)
+            }
         },
         updateScales: (state) => {
             if (state.settings.colors.updateColors) {
                 applyColors(state)
             }
+        },
+        computeTheme: (state) => {
+            computeThemeColor(state);
         },
         setTemplate: (state, action: PayloadAction<string>) => {
             loadTemplateToState(action.payload, state)
@@ -322,10 +332,62 @@ export const {
     setTemplate,
     importTemplate,
     checkSupportsHighlight,
-    setExportStatus
+    setExportStatus,
+    computeTheme
 } = visualSlice.actions
 
 export default visualSlice.reducer
+
+function invertColor(rgbColor) {
+  return {
+    r: 255 - rgbColor.r,
+    g: 255 - rgbColor.g,
+    b: 255 - rgbColor.b
+  };
+}
+
+export function invertTextColors(state: WritableDraft<VisualState>)
+{
+    for(const object of Prototypes.forEachObject(state.chart))
+    {
+        if (object.mark && (Prototypes.isType(object.mark.classID, "mark.text") || Prototypes.isType(object.mark.classID, "mark.textbox")))
+        {
+            if (object.mark.mappings["color"].type == 'value')
+            {
+                const currentColor = (object.mark.mappings["color"] as ValueMapping).value as Color;
+                (object.mark.mappings["color"] as ValueMapping).value = invertColor(currentColor);
+            }
+        }
+        if (object.chartElement && (Prototypes.isType(object.chartElement.classID, "mark.text") || Prototypes.isType(object.chartElement.classID, "mark.textbox")))
+        {
+            if (object.chartElement.mappings["color"].type == 'value')
+            {
+                const currentColor = (object.chartElement.mappings["color"] as ValueMapping).value as Color;
+                (object.chartElement.mappings["color"] as ValueMapping).value = invertColor(currentColor);
+            }
+        }
+        if (object.chartElement && Prototypes.isType(object.chartElement.classID, "plot-segment"))
+        {
+            const ps = object.chartElement.properties as CartesianProperties;
+            if (ps.xData && ps.xData.style)
+            {
+                ps.xData.style.tickColor = invertColor(ps.xData.style.tickColor);
+                ps.xData.style.lineColor = invertColor(ps.xData.style.lineColor);
+            }
+            if (ps.yData && ps.yData.style)
+            {
+                ps.yData.style.tickColor = invertColor(ps.yData.style.tickColor);
+                ps.yData.style.lineColor = invertColor(ps.yData.style.lineColor);
+            }
+            const lg = object.chartElement.properties as LineGuideProperties;
+            if (lg.axis && lg.axis.style)
+            {
+                lg.axis.style.tickColor = invertColor(lg.axis.style.tickColor);
+                lg.axis.style.lineColor = invertColor(lg.axis.style.lineColor);
+            }
+        }
+    }
+}
 
 function applyColors(state: WritableDraft<VisualState>) {
     state.host.colorPalette.reset()
@@ -349,6 +411,12 @@ function applyColors(state: WritableDraft<VisualState>) {
         state.chart.properties["backgroundColor"] = hexToRgb(state.host.colorPalette.background.value);
     }
 
+    computeThemeColor(state);
+}
+
+
+export function computeThemeColor(state: WritableDraft<VisualState>)
+{
     const background = hexToRgb(state.host.colorPalette.background.value);
     // const foreground = hexToRgb(state.host.colorPalette.foreground.value);
 
@@ -366,4 +434,3 @@ function applyColors(state: WritableDraft<VisualState>) {
         }
     }
 }
-

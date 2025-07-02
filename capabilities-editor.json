@@ -220,6 +220,14 @@
           "type": {
             "bool": true
           }
+        },
+        "invertTextColors": {
+          "displayName": "Invert text colors",
+          "description": "Inverts colors of text, textbox, axis, legend labels when Power BI uses high contrast mode or dark theme",
+          "displayNameKey": "Charticulator_ColorSettings_InvertTextColors",
+          "type": {
+            "bool": true
+          }
         }
       }
     },
