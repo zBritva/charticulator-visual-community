@@ -331,6 +331,7 @@ export const Editor: React.FC<EditorProps> = ({
                             ToolbarPosition: PositionsLeftRightTop.Top,
                             ToolbarLabels: true,
                             Name: name || "Charticulator (Community version)",
+                            AppButtonName: "File",
                             MenuBarButtons: PositionsLeftRight.Right,
                             MenuBarSaveButtons: PositionsLeftRight.Left,
                             UndoRedoLocation: UndoRedoLocation.ToolBar
