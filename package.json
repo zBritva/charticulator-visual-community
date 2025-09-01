@@ -1,6 +1,6 @@
 {
   "name": "charticulator-visual-community",
-  "version": "1.6.8",
+  "version": "1.6.9",
   "description": "Community version of Charticulator visual",
   "repository": "https://github.com/zBritva/charticulator-visual-community",
   "author": "Ilfat Galiev",
@@ -94,7 +94,7 @@
     "webpack": "^5.94.0",
     "webpack-bundle-analyzer": "4.10.1",
     "webpack-cli": "5.1.4",
-    "webpack-dev-server": "4.15.1",
+    "webpack-dev-server": "^5.2.2",
     "webpack-merge": "5.10.0"
   },
   "resolutions": {
