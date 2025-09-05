@@ -364,23 +364,23 @@ export const Application: React.FC = () => {
         );
     }
 
-    if (template.default && mode === powerbi.EditMode.Default && !(settings.view.hideDefaultTemplateMessage)) {
-        return (<>
-            <div className='warning-container'>
-                <div className='view-warning'>
-                    <h4>Default template</h4>
-                    <div className='content'>
-                        <p>Default template without chart is loaded into the visual container</p>
-                        {isEditor() ?
-                            <p>Switch to editor to start creating or loading charts by using Charticulator</p> :
-                            <p>Switch to editor version of the visual to start creating charts by using Charticulator</p>}
-                    </div>
-                    <a className='intro' onClick={onUrl('https://ilfat-galiev.im/docs/charticulator/intro/')}>Read more about Charticulator visual (community) in official documentation</a>
-                    <a className='changelog' onClick={onUrl('https://ilfat-galiev.im/docs/charticulator/changelog/')}>Visual changelog</a>
-                </div>
-            </div>
-        </>);
-    }
+    // if (settings.view.hideDefaultTemplateMessage !== undefined && template.default && mode === powerbi.EditMode.Advanced && !(settings.view.hideDefaultTemplateMessage)) {
+    //     return (<>
+    //         <div className='warning-container'>
+    //             <div className='view-warning'>
+    //                 <h4>Default template</h4>
+    //                 <div className='content'>
+    //                     <p>Default template without chart is loaded into the visual container</p>
+    //                     {isEditor() ?
+    //                         <p>Switch to editor to start creating or loading charts by using Charticulator</p> :
+    //                         <p>Switch to editor version of the visual to start creating charts by using Charticulator</p>}
+    //                 </div>
+    //                 <a className='intro' onClick={onUrl('https://ilfat-galiev.im/docs/charticulator/intro/')}>Read more about Charticulator visual (community) in official documentation</a>
+    //                 <a className='changelog' onClick={onUrl('https://ilfat-galiev.im/docs/charticulator/changelog/')}>Visual changelog</a>
+    //             </div>
+    //         </div>
+    //     </>);
+    // }
 
     if (chart && !template.default && unmappedColumns.filter(c => c.powerbiColumn === UnmappedColumnName).length === 0) {
         return (

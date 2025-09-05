@@ -151,7 +151,7 @@ export class Editor {
 }
 
 export class View {
-    public hideDefaultTemplateMessage: boolean = false;
+    public hideDefaultTemplateMessage?: boolean = null;
 
     public static Equal(_this: View, other: View) {
         return _this.hideDefaultTemplateMessage == other.hideDefaultTemplateMessage

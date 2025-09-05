@@ -8,7 +8,8 @@
       "backgroundColor": null,
       "backgroundOpacity": 1,
       "enableContextMenu": true,
-      "exposed": true
+      "exposed": true,
+      "cursor": "default"
     },
     "mappings": {
       "marginTop": {
