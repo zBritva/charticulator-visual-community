@@ -44,6 +44,7 @@ export interface EditorProps {
     onExport?: (name: string, template: string, clipboard: boolean, filetype: string) => void;
     onSupportDev?: () => void;
     onImport?: () => Promise<string>;
+    onUrlClick?: (url: string) => void;
     onContactUsLink?: () => void;
     onGettingStartedClick?: () => void;
     onGalleryClick?: () => void;

@@ -19,13 +19,13 @@ import {
     Specification,
     uuid,
 } from "charticulator/src/core/index";
-import { CharticulatorAppConfig, MainViewConfig } from "charticulator/src/app/config";
+import { CharticulatorAppConfig } from "charticulator/src/app/config";
 import { Actions } from "charticulator/src/app";
 import { EditorType } from "charticulator/src/app/stores/app_store";
 
 import { PositionsLeftRight, PositionsLeftRightTop, UndoRedoLocation } from './../../charticulator/src/app/main_view';
 
-import { FluentProvider, Toaster, useId, useToastController } from "@fluentui/react-components";
+import { FluentProvider, Link, Toaster, useId, useToastController } from "@fluentui/react-components";
 
 import {
     ToastLayout
@@ -36,6 +36,19 @@ import { ChartTemplateBuilder } from "charticulator/src/template";
 import { CDNBackend } from "charticulator/src/app/backend/cdn";
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
 import { setEditorStore } from "../redux/slices/visualSlice";
+
+import akvelonLogo from "../../assets/akvelon.svg";
+
+import {
+    Dialog,
+    DialogTrigger,
+    DialogSurface,
+    DialogTitle,
+    DialogBody,
+    DialogActions,
+    DialogContent,
+    Button,
+} from "@fluentui/react-components";
 
 const script = require("raw-loader!charticulator/dist/scripts/worker.bundle.js");
 const containerScript = require("raw-loader!charticulator/dist/scripts/container.bundle.js");
@@ -60,6 +73,7 @@ export const Editor: React.FC<EditorProps> = ({
     onContactUsLink,
     onExport,
     onImport,
+    onUrlClick,
     onSupportDev,
     onGalleryClick,
     onHomeClick,
@@ -78,7 +92,7 @@ export const Editor: React.FC<EditorProps> = ({
 }) => {
     const nestedChartStack = React.useRef<NestedChartStack>(null);
     const exportAllowed = useAppSelector((store) => store.visual.exportAllowed);
-    
+
     const backgroundColor = useAppSelector((store) => {
         if (store.visual.settings.colors.updateColors) {
             store.visual.host.colorPalette.background.value
@@ -89,6 +103,8 @@ export const Editor: React.FC<EditorProps> = ({
     const dispatch = useAppDispatch();
 
     const [nestedEditorId, setNestedEditorId] = React.useState<string>(null);
+
+    const [isAboutDialogOpen, setIsAboutDialogOpen] = React.useState<boolean>(false);
 
     const [appStore, setAppStore] = React.useState<AppStore | null>(null);
     const workerScript = React.useMemo(() => {
@@ -267,112 +283,161 @@ export const Editor: React.FC<EditorProps> = ({
     return (
         <React.Fragment>
             {nestedEditorId && nestedChartStack.current && nestedChartStack.current.options != null ?
-            (<>
-                <Editor
-                    theme={theme}
-                    instanceID={nestedEditorId}
-                    // eslint-disable-next-line powerbi-visuals/insecure-random
-                    key={"nestedEditor " + (nestedEditorId)}
-                    isNestedEditor={nestedChartStack.current.options != null}
-                    template={nestedChartStack.current.template}
-                    nestedEditorOptions={nestedChartStack.current.options}
-                    dataset={nestedChartStack.current.options.dataset}
-                    localization={localization}
-                    columnMappings={settings.chart.columnMappings as any}
-                    utcTimeZone={settings.localization.utcTimeZone}
-                    onExport={onExport}
-                    onImport={async () => {
-                        return "";
-                    }}
-                    name=" "
-                    onSupportDev={onSupportDev}
-                    onContactUsLink={onContactUsLink}
-                    onGalleryClick={onGalleryClick}
-                    onGettingStartedClick={onGettingStartedClick}
-                    onHomeClick={onHomeClick}
-                    onAboutClick={onAboutClick}
-                    onIssuesClick={onIssuesClick}
-                    settings={settings}
-                    setTemplate={(template, specification) => {
-                        if (typeof specification === 'object') {
-                            appStore.setProperty({
-                                object: nestedChartStack.current.object,
-                                property: nestedChartStack.current.property.property,
-                                field: nestedChartStack.current.property.field,
-                                value: specification,
-                                noUpdateState: nestedChartStack.current.property.noUpdateState,
-                                noComputeLayout: nestedChartStack.current.property.noComputeLayout,
-                            });
-                        }
-                    }}
-                    setProperty={() => {
-                        // supress 
-                    }}
-                    onClose={() => {
-                        setNestedEditorId(null);
-                        nestedChartStack.current = null;
-                        appStore.emit(AppStore.EVENT_GRAPHICS);
-                    }}
-                    onWebAccessStatus={onWebAccessStatus}
-                    backgroundColor={backgroundColor}
-                />
-            </>) :
-            (<>
-                <FluentProvider theme={theme}>
-                    <Toaster toasterId={chartSavedToasterId} />
-                    <MainView
-                        key={"MainView " + (Math.random())}
+                (<>
+                    <Editor
                         theme={theme}
-                        store={appStore}
-                        backgroundColor={hexToRgb(backgroundColor)}
-                        viewConfiguration={{
-                            ColumnsPosition: settings.panels.defaultDatasetPanelPosition as PositionsLeftRight,
-                            EditorPanelsPosition: settings.panels.defaultPanelsPosition as PositionsLeftRight,
-                            ToolbarPosition: PositionsLeftRightTop.Top,
-                            ToolbarLabels: true,
-                            Name: name || "Charticulator (Community version)",
-                            AppButtonName: "File",
-                            MenuBarButtons: PositionsLeftRight.Right,
-                            MenuBarSaveButtons: PositionsLeftRight.Left,
-                            UndoRedoLocation: UndoRedoLocation.ToolBar
+                        instanceID={nestedEditorId}
+                        // eslint-disable-next-line powerbi-visuals/insecure-random
+                        key={"nestedEditor " + (nestedEditorId)}
+                        isNestedEditor={nestedChartStack.current.options != null}
+                        template={nestedChartStack.current.template}
+                        nestedEditorOptions={nestedChartStack.current.options}
+                        dataset={nestedChartStack.current.options.dataset}
+                        localization={localization}
+                        columnMappings={settings.chart.columnMappings as any}
+                        utcTimeZone={settings.localization.utcTimeZone}
+                        onExport={onExport}
+                        onImport={async () => {
+                            return "";
                         }}
-                        menuBarHandlers={{
-                            onContactUsLink: onContactUsLink,
-                            onCopyToClipboardClick: () => {
-                                const template = deepClone(appStore.buildChartTemplate());
-                                onExport(template.specification.properties?.name || "template" , JSON.stringify(template, null, " "), true, "json");
-                            },
-                            // onExportTemplateClick: () => {
-                            //     const template = deepClone(appStore.buildChartTemplate());
-                            //     onExport(template, false);
-                            // },
-                            onSupportDevClick: onSupportDev,
-                            onGalleryClick: onGalleryClick,
-                            onHomeClick: onHomeClick,
-                            onIssuesClick: onIssuesClick,
-                            onGettingStartedClick: onGettingStartedClick,
-                            onImportTemplateClick: async () => {
-                                try {
-                                    const specification = await onImport();
-                                    const parsed = JSON.parse(specification);
-                                    appStore.dispatcher.dispatch(
-                                        new Actions.ImportChartAndDataset(
-                                            parsed.specification,
-                                            dataset,
-                                            {
-                                                filterCondition: null,
-                                            },
-                                            parsed.specification
-                                        )
-                                    );
-                                } catch (e) {
-                                    console.error(e);
-                                }
+                        name=" "
+                        onSupportDev={onSupportDev}
+                        onContactUsLink={onContactUsLink}
+                        onGalleryClick={onGalleryClick}
+                        onGettingStartedClick={onGettingStartedClick}
+                        onHomeClick={onHomeClick}
+                        onAboutClick={onAboutClick}
+                        onIssuesClick={onIssuesClick}
+                        settings={settings}
+                        setTemplate={(template, specification) => {
+                            if (typeof specification === 'object') {
+                                appStore.setProperty({
+                                    object: nestedChartStack.current.object,
+                                    property: nestedChartStack.current.property.property,
+                                    field: nestedChartStack.current.property.field,
+                                    value: specification,
+                                    noUpdateState: nestedChartStack.current.property.noUpdateState,
+                                    noComputeLayout: nestedChartStack.current.property.noComputeLayout,
+                                });
                             }
                         }}
+                        setProperty={() => {
+                            // supress 
+                        }}
+                        onClose={() => {
+                            setNestedEditorId(null);
+                            nestedChartStack.current = null;
+                            appStore.emit(AppStore.EVENT_GRAPHICS);
+                        }}
+                        onWebAccessStatus={onWebAccessStatus}
+                        backgroundColor={backgroundColor}
                     />
-                </FluentProvider>
-            </>)}
+                </>) :
+                (<>
+                    <FluentProvider theme={theme}>
+                        <Toaster toasterId={chartSavedToasterId} />
+                        <MainView
+                            key={"MainView " + (Math.random())}
+                            theme={theme}
+                            store={appStore}
+                            backgroundColor={hexToRgb(backgroundColor)}
+                            viewConfiguration={{
+                                ColumnsPosition: settings.panels.defaultDatasetPanelPosition as PositionsLeftRight,
+                                EditorPanelsPosition: settings.panels.defaultPanelsPosition as PositionsLeftRight,
+                                ToolbarPosition: PositionsLeftRightTop.Top,
+                                ToolbarLabels: true,
+                                Name: name || "Charticulator (Community version)",
+                                AppButtonName: "File",
+                                MenuBarButtons: PositionsLeftRight.Right,
+                                MenuBarSaveButtons: PositionsLeftRight.Left,
+                                UndoRedoLocation: UndoRedoLocation.ToolBar
+                            }}
+                            menuBarHandlers={{
+                                onAboutClick: () => setIsAboutDialogOpen((v) => !v),
+                                onContactUsLink: onContactUsLink,
+                                onCopyToClipboardClick: () => {
+                                    const template = deepClone(appStore.buildChartTemplate());
+                                    onExport(template.specification.properties?.name || "template", JSON.stringify(template, null, " "), true, "json");
+                                },
+                                // onExportTemplateClick: () => {
+                                //     const template = deepClone(appStore.buildChartTemplate());
+                                //     onExport(template, false);
+                                // },
+                                onSupportDevClick: onSupportDev,
+                                onGalleryClick: onGalleryClick,
+                                onHomeClick: onHomeClick,
+                                onIssuesClick: onIssuesClick,
+                                onGettingStartedClick: onGettingStartedClick,
+                                onImportTemplateClick: async () => {
+                                    try {
+                                        const specification = await onImport();
+                                        const parsed = JSON.parse(specification);
+                                        appStore.dispatcher.dispatch(
+                                            new Actions.ImportChartAndDataset(
+                                                parsed.specification,
+                                                dataset,
+                                                {
+                                                    filterCondition: null,
+                                                },
+                                                parsed.specification
+                                            )
+                                        );
+                                    } catch (e) {
+                                        console.error(e);
+                                    }
+                                }
+                            }}
+                        />
+                        <Dialog open={isAboutDialogOpen}>
+                            <DialogTrigger disableButtonEnhancement>
+                                <Button>Open dialog</Button>
+                            </DialogTrigger>
+                            <DialogSurface>
+                                <DialogBody>
+                                    <DialogTitle>About</DialogTitle>
+                                    <DialogContent>
+                                        <img onClick={() => onUrlClick("https://akvelon.com/")} src={akvelonLogo} style={{ height: '16px', marginBottom: '8px' }} />
+                                        <br />
+                                        <br />
+                                        Akvelon is a business and technology solutions firm, works with clients to achieve success in their strategic goals and day-to-day missions.
+                                        <br />
+                                        <br />
+                                        We leverage the latest advances in software development to create industry-specific solutions that redefine all options. For more than two decades, we have been a trusted partner to global customers while utilizing the latest technologies. Partner with us and feel the impact of our expertise..
+                                        <br />
+                                        Currently working on Charticulator and maintain PlotlyJS Visual by Akvelon.
+                                        <br />
+                                        If you have a question related to PlotlyJS Visual, please contact throw Contact Us form on <a onClick={() => onUrlClick("https://akvelon.com/")} target="_blank" rel="noreferrer">Akvelon Inc. website</a>
+                                        <br />
+                                        <br />
+                                        <b>Ilfat Galiev</b>
+                                        <br />
+                                        Experienced developer with JavaScript/TypeScript, HTML/CSS and frameworks such as React.js, Redux, ExtJS, Angular, 3D.js moreover experienced in C#, .Net and Node.js for backend development.
+                                        <br />
+                                        Certified LookerML Developer and Power BI Data Analyst Associate
+                                        <br />
+                                        Led the entire project as project manager and solution architect with a 6-person development team.
+                                        <br />
+                                        Implemented a converter of query results into .Net objects, which accelerated code writing by 50%.
+                                        <br />
+                                        Implemented 5 complex Power BI plugins for data visualization.
+                                        <br />
+                                        <br />
+                                        Stay connected with me on <Link onClick={() => onUrlClick("https://www.linkedin.com/in/ilfatgaliev/")}>
+                                            LinkedIn
+                                        </Link> and <Link onClick={() => onUrlClick("https://github.com/zbritva")}>
+                                            GitHub
+                                        </Link>.
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <DialogTrigger disableButtonEnhancement>
+                                            <Button onClick={() => setIsAboutDialogOpen((v) => !v)} appearance="secondary">Close</Button>
+                                        </DialogTrigger>
+                                    </DialogActions>
+                                </DialogBody>
+                            </DialogSurface>
+                        </Dialog>
+                    </FluentProvider>
+                </>)}
         </React.Fragment>
     );
 };
